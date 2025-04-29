@@ -1,0 +1,59 @@
+# bank-security.yml from configuration-server service
+server:
+  port: 8989
+
+webclient:
+  ssl:
+    key-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
+    key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+    trust-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
+    trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
+    trust-store-type: PKCS12
+    client-auth: need
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/banking_system
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        default_schema: bank_security
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    open-in-view: false
+
+security:
+  service:
+    url: https://localhost:8989
+
+  argon2:
+    memory: 65536 # Use 64 MB of memory
+    iterations: 3 # Run 3 iterations
+    parallelism: 2 # Use 2 threads
+    hashLength: 64 # Generate a 64 byte (512 bit) hash
+    salt: ${ARGON2_SALT_FOR_BANK}
+    secretKey: ${ARGON2_SECRET_KEY_FOR_BANK}
+  token:
+    jwt:
+      keystore:
+        path: /Users/artyom_aroyan/.keys/.bankapp/JWT/keystore.p12
+        alias: ${BANK_KEYSTORE_ALIAS}
+        password: ${BANK_KEYSTORE_PASSWORD}
+        expiration: 720 # expiration in minutes
+    access:
+      password-recovery:
+        secret: ${PASSWORD_RESET_TOKEN_SECRET_FOR_BANK}
+        expiration: 3 # expiration in minutes
+      email-verification:
+        secret: ${EMAIL_VERIFICATION_TOKEN_SECRET_FOR_BANK}
+        expiration: 15 # expiration in minutes
+
+logging:
+  level:
+    org.springframework.cloud: debug
