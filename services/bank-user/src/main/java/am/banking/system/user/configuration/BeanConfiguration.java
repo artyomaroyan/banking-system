@@ -13,7 +13,6 @@ import static org.modelmapper.convention.MatchingStrategies.STRICT;
  */
 @Configuration
 public class BeanConfiguration {
-
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();

@@ -1,6 +1,6 @@
 package am.banking.system.user.model.mapper;
 
-import am.banking.system.user.infrastructure.client.SecurityServiceClient;
+import am.banking.system.user.infrastructure.client.PasswordServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserFactory {
     private final RoleMapper roleMapper;
-    private final SecurityServiceClient securityServiceClient;
+    private final PasswordServiceClient securityServiceClient;
 
     protected User createUser(UserRequest request) {
         return new User(
@@ -23,7 +23,7 @@ public class UserFactory {
                 request.firstName(),
                 request.lastName(),
                 request.email(),
-                securityServiceClient.hashPassword(request.password()).block(),
+                securityServiceClient.hashPassword(request.password()),
                 request.phone(),
                 request.age(),
                 roleMapper.getDefaultRole()

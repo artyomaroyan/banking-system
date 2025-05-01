@@ -1,6 +1,6 @@
 package am.banking.system.user.service;
 
-import am.banking.system.user.infrastructure.client.SecurityServiceClient;
+import am.banking.system.user.infrastructure.abstraction.IUserTokenServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.dto.UserResponse;
 import am.banking.system.user.model.mapper.UserMapper;
@@ -27,7 +27,7 @@ public class UserRegistrationService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RequestValidation requestValidation;
-    private final SecurityServiceClient securityServiceClient;
+    private final IUserTokenServiceClient userTokenServiceClient;
 
     public Result<UserResponse> register(UserRequest request) {
         var validationMessage = validateRequest(request);
@@ -38,7 +38,7 @@ public class UserRegistrationService {
         var user = userMapper.mapFromRequestToEntity(request);
         userRepository.save(user);
         var userDto = userMapper.mapFromEntityToDto(user);
-        var verificationToken = securityServiceClient.generateEmailVerificationToken(userDto);
+        var verificationToken = userTokenServiceClient.generateEmailVerificationToken(userDto);
         // todo: generate email verification token
         // todo: send verification email
         // todo: generate jwt token
