@@ -25,3 +25,17 @@ spring:
       port: 27017
       database: user
       authentication-database: admin
+
+resilience4j:
+  retry:
+    instances:
+      securityService:
+        max-attempts: 3
+        wait-duration: 500ms
+
+  circuitbreaker:
+    instances:
+      securityService:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        sliding-window-size: 10
