@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to <span th:text="${appName}">Our App</span></title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .content {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #FF6B6B;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .feature {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 4px solid #4ECDC4;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 30px;
+        }
+
+        .welcome-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <img th:src="${'https://yourwebsite.com/logo.png'}" alt="Company Logo" class="logo">
+    <h1>Welcome to <span th:text="${appName}">Our App</span>!</h1>
+</div>
+
+<div class="content">
+    <img th:src="${'https://yourwebsite.com/welcome-image.jpg'}" alt="Welcome" class="welcome-image">
+
+    <p>Hello <span th:text="${username}">Username</span>,</p>
+
+    <p>We're thrilled to have you join <strong th:text="${appName}">Our App</strong>!
+        Your account is all set up and ready to go.</p>
+
+    <div class="feature">
+        <h3>🚀 Get Started Quickly</h3>
+        <p>Complete your profile to unlock all features:</p>
+        <div style="text-align: center;">
+            <a th:href="${dashboardUrl}" class="button">Go to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="feature">
+        <h3>📚 Learn the Basics</h3>
+        <p>Check out our getting started guide to make the most of your experience:</p>
+        <ul>
+            <li><a th:href="${tutorialUrl}">Interactive tutorial</a></li>
+            <li><a th:href="${faqUrl}">Frequently asked questions</a></li>
+            <li><a th:href="${videoTutorialsUrl}">Video tutorials</a></li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>💡 Pro Tip</h3>
+        <p>Download our mobile app for access on the go:</p>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <a th:href="${appStoreUrl}"><img th:src="${'https://yourwebsite.com/app-store-badge.png'}" alt="App Store"
+                                             style="height: 40px;"></a>
+            <a th:href="${playStoreUrl}"><img th:src="${'https://yourwebsite.com/play-store-badge.png'}"
+                                              alt="Play Store" style="height: 40px;"></a>
+        </div>
+    </div>
+
+    <p>If you have any questions, simply reply to this email or contact our support team at
+        <a th:href="'mailto:' + ${supportEmail}" th:text="${supportEmail}">support@yourcompany.com</a>.</p>
+
+    <p>Happy exploring!<br>
+        The <span th:text="${appName}">Our App</span> Team</p>
+</div>
+
+<div class="footer">
+    <p>© <span th:text="${#dates.year(#dates.createNow())}">2023</span> <span th:text="${appName}">Our App</span>. All
+        rights reserved.</p>
+    <p>
+        <a th:href="${'https://yourwebsite.com/privacy'}">Privacy Policy</a> |
+        <a th:href="${'https://yourwebsite.com/terms'}">Terms of Service</a>
+    </p>
+    <p>
+        <span th:text="${companyName}">Banking System</span><br>
+        <span th:text="${companyAddress}">Armenia, Yerevan Davtashen 3rd Dis</span>
+    </p>
+    <p>
+        <a th:href="${twitterUrl}">Twitter</a> |
+        <a th:href="${facebookUrl}">Facebook</a> |
+        <a th:href="${instagramUrl}">Instagram</a>
+    </p>
+</div>
+</body>
+</html>
