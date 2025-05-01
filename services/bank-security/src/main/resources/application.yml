@@ -1,4 +1,4 @@
-# application.yml file in bank-security service
+# bank-security's application.yml file
 spring:
   config:
     import: optional:configserver:http://localhost:8888

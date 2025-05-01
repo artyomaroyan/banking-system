@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/security")
-public class SecurityController {
+public class SecurityWebClientController {
     private final Argon2Hashing argon2Hashing;
     private final IJwtTokenService jwtTokenService;
     private final IUserTokenService userTokenService;
