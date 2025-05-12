@@ -5,8 +5,8 @@ package am.banking.system.notification.model.enums;
  * Date: 01.05.25
  * Time: 00:44:45
  */
-public enum NotificationType {
+public enum EmailType {
     EMAIL_VERIFICATION,
     WELCOME_MESSAGE,
-    PASSWORD_RESET
+    PASSWORD_RECOVERY
 }

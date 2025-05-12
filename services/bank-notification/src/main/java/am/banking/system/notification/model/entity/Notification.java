@@ -4,7 +4,7 @@ import am.banking.system.common.entity.BaseEntity;
 import am.banking.system.notification.kafka.records.EmailVerification;
 import am.banking.system.notification.kafka.records.PasswordReset;
 import am.banking.system.notification.kafka.records.WelcomeMessage;
-import am.banking.system.notification.model.enums.NotificationType;
+import am.banking.system.notification.model.enums.EmailType;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,7 +27,7 @@ public class Notification extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private NotificationType notificationType;
+    private EmailType emailType;
     private LocalDateTime notificationDate;
     private EmailVerification emailVerification;
     private WelcomeMessage welcomeMessage;

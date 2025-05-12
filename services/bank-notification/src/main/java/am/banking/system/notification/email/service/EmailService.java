@@ -1,5 +1,6 @@
 package am.banking.system.notification.email.service;
 
+import am.banking.system.notification.model.enums.EmailType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +12,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import static am.banking.system.notification.email.enums.EmailTemplate.PASSWORD_RESET;
-import static am.banking.system.notification.email.enums.EmailTemplate.WELCOME_MESSAGE;
+import static am.banking.system.notification.email.enums.EmailTemplate.*;
+import static am.banking.system.notification.email.enums.EmailTemplate.EMAIL_VERIFICATION;
+import static am.banking.system.notification.model.enums.EmailType.PASSWORD_RECOVERY;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED;
 
@@ -37,13 +39,13 @@ public class EmailService {
     public void sendVerificationEmail(String to, String username, String verificationLink) {
         Context context = commonContext(username);
         context.setVariable("verificationLink", verificationLink);
-        sendEmail(to, WELCOME_MESSAGE.getSubject(), WELCOME_MESSAGE.getTemplate(), context, "Verification");
+        sendEmail(to, EMAIL_VERIFICATION.getSubject(), EMAIL_VERIFICATION.getTemplate(), context, EmailType.EMAIL_VERIFICATION);
     }
 
     @Async
-    public void sendWelcomeEmail(String to, String username, String dashboardUrl) {
+    public void sendWelcomeEmail(String to, String username) {
         Context context = commonContext(username);
-        context.setVariable("dashboardUrl", dashboardUrl);
+        context.setVariable("dashboardUrl", null);
         context.setVariable("tutorialUrl", "https://localhost:8080/tutorial");
         context.setVariable("faqUrl", "https://localhost:8080/faq");
         context.setVariable("videoTutorialsUrl", "https://localhost:8080/videoTutorials");
@@ -53,17 +55,17 @@ public class EmailService {
         context.setVariable("twitterUrl", "https://twitter.com/banking-system");
         context.setVariable("facebookUrl", "https://facebook.com/banking-system");
         context.setVariable("instagramUrl", "https://instagram.com/banking-system");
-        sendEmail(to, WELCOME_MESSAGE.getSubject(), WELCOME_MESSAGE.getTemplate(), context, "Welcome");
+        sendEmail(to, WELCOME_MESSAGE.getSubject(), WELCOME_MESSAGE.getTemplate(), context, EmailType.WELCOME_MESSAGE);
     }
 
     @Async
     public void sendPasswordResetEmail(String to, String username, String resetUrl) {
         Context context = commonContext(username);
         context.setVariable("resetUrl", resetUrl);
-        sendEmail(to, PASSWORD_RESET.getSubject(), PASSWORD_RESET.getTemplate(), context, "Password Reset");
+        sendEmail(to, PASSWORD_RESET.getSubject(), PASSWORD_RESET.getTemplate(), context, PASSWORD_RECOVERY);
     }
 
-    private void sendEmail(String to, String subject, String templateName, Context context, String emailType) {
+    private void sendEmail(String to, String subject, String templateName, Context context, EmailType type) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MULTIPART_MODE_MIXED_RELATED, UTF_8.name());
@@ -75,9 +77,9 @@ public class EmailService {
             helper.setText(htmlContent, true);
 
             mailSender.send(mimeMessage);
-            log.info("{} email sent to {}", emailType, to);
+            log.info("{} email sent to {}", type, to);
         } catch (MessagingException ex) {
-            log.error("Failed to send {} email to {}", emailType, to, ex);
+            log.error("Failed to send {} email to {}", type, to, ex);
         }
     }
 

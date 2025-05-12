@@ -1,9 +1,6 @@
 package am.banking.system.notification.email.controller;
 
 import am.banking.system.notification.email.service.EmailService;
-import am.banking.system.notification.kafka.records.EmailVerification;
-import am.banking.system.notification.kafka.records.PasswordReset;
-import am.banking.system.notification.kafka.records.WelcomeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,20 +24,20 @@ public class NotificationWebClientController {
     private final EmailService emailService;
 
     @PostMapping("/email-verification")
-    public ResponseEntity<Void> sendVerificationEmail(@RequestBody EmailVerification verification) {
-        emailService.sendVerificationEmail(verification.email(), verification.username(), verification.link());
+    public ResponseEntity<Void> sendVerificationEmail(@RequestBody String email, @RequestBody String username, @RequestBody String link) {
+        emailService.sendVerificationEmail(email, username, link);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password-reset")
-    public ResponseEntity<Void> sendPasswordResetEmail(@RequestBody PasswordReset reset) {
-        emailService.sendPasswordResetEmail(reset.email(), reset.username(), reset.link());
+    public ResponseEntity<Void> sendPasswordResetEmail(@RequestBody String email, @RequestBody String username, @RequestBody String link) {
+        emailService.sendPasswordResetEmail(email, username, link);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/welcome-email")
-    public ResponseEntity<Void> sendWelcomeEmail(@RequestBody WelcomeMessage message) {
-        emailService.sendWelcomeEmail(message.email(), message.username(), null);
+    public ResponseEntity<Void> sendWelcomeEmail(@RequestBody String email, @RequestBody String username) {
+        emailService.sendWelcomeEmail(email, username);
         return ResponseEntity.ok().build();
     }
 }
