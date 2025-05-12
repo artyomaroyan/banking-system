@@ -1,5 +1,6 @@
 package am.banking.system.notification.email.configuration;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -11,8 +12,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
  * Time: 00:16:29
  */
 @Configuration
+@EnableConfigurationProperties(NotificationProperties.class)
 public class BeanConfiguration {
-
     @Bean
     protected JavaMailSender javaMailSender() {
         return new JavaMailSenderImpl();

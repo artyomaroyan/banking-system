@@ -10,7 +10,7 @@ import lombok.Getter;
 public enum EmailTemplate {
     EMAIL_VERIFICATION("email-verification.html", "Email successfully verified"),
     WELCOME_MESSAGE("welcome-message.html", "Welcome to the banking system"),
-    PASSWORD_RESET("password-reset.html", "Password reset"),;
+    PASSWORD_RESET("password-reset.html", "Password reset");
 
     @Getter
     private final String template;

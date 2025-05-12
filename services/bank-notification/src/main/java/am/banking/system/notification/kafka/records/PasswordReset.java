@@ -5,5 +5,5 @@ package am.banking.system.notification.kafka.records;
  * Date: 01.05.25
  * Time: 02:36:34
  */
-public record PasswordReset(String email, String username) {
+public record PasswordReset(String email, String username, String link) {
 }
