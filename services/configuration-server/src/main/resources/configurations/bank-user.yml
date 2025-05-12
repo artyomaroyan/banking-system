@@ -1,10 +1,10 @@
-# bank-core.yml from configuration-server service
+# bank-user.yml from configuration-server service
 server:
   port: 8090
 
-security:
-  service:
-    url: https://localhost:8090
+#security:
+#  service:
+#    url: https://localhost:8090
 
 webclient:
   ssl:
