@@ -1,6 +1,6 @@
-package am.banking.system.common.ssl.configuration;
+package am.banking.system.common.tls.configuration;
 
-import am.banking.system.common.ssl.WebClientFactory;
+import am.banking.system.common.tls.WebClientFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
  * Time: 23:45:15
  */
 @Configuration
-@EnableConfigurationProperties(SecuritySSLProperties.class)
+@EnableConfigurationProperties(SecurityTLSProperties.class)
 public class BeanConfiguration {
     @Bean
-    public WebClientFactory webClientFactory(SecuritySSLProperties securitySSLProperties) {
-        return new WebClientFactory(securitySSLProperties);
+    public WebClientFactory webClientFactory(SecurityTLSProperties securityTLSProperties) {
+        return new WebClientFactory(securityTLSProperties);
     }
 }

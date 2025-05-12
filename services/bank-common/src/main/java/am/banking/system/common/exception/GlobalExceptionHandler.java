@@ -1,7 +1,7 @@
-package am.banking.system.security.controller;
+package am.banking.system.common.exception;
 
 import am.banking.system.common.dto.ErrorResponse;
-import am.banking.system.security.exception.*;
+import am.banking.system.common.tls.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

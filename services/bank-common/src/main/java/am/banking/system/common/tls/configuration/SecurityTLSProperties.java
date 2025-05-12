@@ -1,4 +1,4 @@
-package am.banking.system.common.ssl.configuration;
+package am.banking.system.common.tls.configuration;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,8 +15,8 @@ import java.util.Objects;
  * Time: 15:50:24
  */
 @Validated
-@ConfigurationProperties(prefix = "webclient.ssl")
-public record SecuritySSLProperties(
+@ConfigurationProperties(prefix = "webclient.tls")
+public record SecurityTLSProperties(
         @NotBlank String url,
         @NotBlank String keyStorePath,
         @NotNull char[] keyStorePassword,
@@ -29,7 +29,7 @@ public record SecuritySSLProperties(
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        SecuritySSLProperties that = (SecuritySSLProperties) obj;
+        SecurityTLSProperties that = (SecurityTLSProperties) obj;
         return Objects.equals(this.url, that.url) &&
                 Objects.equals(this.keyStorePath, that.keyStorePath) &&
                 Arrays.equals(this.keyStorePassword, that.keyStorePassword) &&
@@ -50,7 +50,7 @@ public record SecuritySSLProperties(
     @NonNull
     @Override
     public String toString() {
-        return "SecuritySSLProperties{" +
+        return "SecurityTLSProperties{" +
                 "url='" + url + '\'' +
                 ", keyStorePath='" + keyStorePath + '\'' +
                 ", keyStorePassword=[PROTECTED]" +

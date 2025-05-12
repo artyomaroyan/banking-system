@@ -1,7 +1,7 @@
-package am.banking.system.common.ssl;
+package am.banking.system.common.tls;
 
-import am.banking.system.common.ssl.configuration.SecuritySSLProperties;
-import am.banking.system.common.ssl.exception.WebClientSslContextException;
+import am.banking.system.common.tls.configuration.SecurityTLSProperties;
+import am.banking.system.common.tls.exception.WebClientTLSContextException;
 import io.netty.handler.ssl.SslContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,15 +16,18 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
+import static io.netty.handler.ssl.SslContextBuilder.*;
+
 /**
  * Author: Artyom Aroyan
  * Date: 01.05.25
  * Time: 22:12:36
  */
 @Slf4j
-public class SslContextBuilder {
+public class TLSContextBuilder {
 
-    public static SslContext buildSslContext(SecuritySSLProperties properties) {
+    // even if class name is SslContext by default it creates TLS connection.
+    public static SslContext buildSslContext(SecurityTLSProperties properties) {
 
         try {
             KeyStore keyStore = KeyStore.getInstance(properties.keyStoreType());
@@ -45,13 +48,14 @@ public class SslContextBuilder {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(trustStore);
 
-            return io.netty.handler.ssl.SslContextBuilder.forClient()
+            return forClient()
                     .keyManager(kmf)
                     .trustManager(tmf)
+                    .protocols("TLSv1.3", "TLSv1.2")
                     .build();
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException |
                  UnrecoverableKeyException ex) {
-            throw new WebClientSslContextException("Failed to build SSL context", ex);
+            throw new WebClientTLSContextException("Failed to build SSL context", ex);
         }
     }
 }

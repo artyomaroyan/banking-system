@@ -1,4 +1,4 @@
-package am.banking.system.security.exception;
+package am.banking.system.common.tls.exception;
 
 /**
  * Author: Artyom Aroyan
