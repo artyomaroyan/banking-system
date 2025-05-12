@@ -17,13 +17,6 @@ import java.util.Optional;
 public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
     Optional<UserToken> findByToken(String token);
 
-//    @Query("select ut.token from UserToken ut where ut.token = :token")
-//    String findUserTokenByToken(@Param("token") String token);
-//
-//    @Modifying
-//    @Query("update UserToken ut set ut.tokenState = 'ACTIVE' where ut.tokenState = 'PENDING' and ut.token = :token")
-//    void updateTokenState(@Param("token") String token);
-
     @Modifying
     @Query("update UserToken ut set ut.tokenState = 'FORCIBLY_EXPIRED' where ut.tokenState = 'PENDING' and ut.expirationDate < CURRENT_TIMESTAMP")
     int markTokensForciblyExpired();

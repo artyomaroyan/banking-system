@@ -1,6 +1,6 @@
 package am.banking.system.security.model.dto;
 
-import am.banking.system.security.model.enums.AccountState;
+import am.banking.system.common.enums.AccountState;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

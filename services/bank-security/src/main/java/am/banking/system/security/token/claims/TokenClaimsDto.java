@@ -1,6 +1,6 @@
 package am.banking.system.security.token.claims;
 
-import am.banking.system.security.model.enums.AccountState;
+import am.banking.system.common.enums.AccountState;
 import am.banking.system.security.model.enums.TokenPurpose;
 import am.banking.system.security.model.enums.TokenState;
 import lombok.Builder;

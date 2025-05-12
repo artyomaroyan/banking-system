@@ -1,8 +1,8 @@
 package am.banking.system.security.permission;
 
 import am.banking.system.security.model.entity.OwnableEntity;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,9 +19,12 @@ import java.time.Duration;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class CustomPermissionEvaluator implements PermissionEvaluator {
-    private final WebClient userWebClient;
+    private final WebClient webClient;
+
+    public CustomPermissionEvaluator(@Qualifier("securedWebClient") WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -58,7 +61,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private boolean checkUserPermission(String currentUsername, Long userId) {
         try {
-            return Boolean.TRUE.equals(userWebClient.get()
+            return Boolean.TRUE.equals(webClient.get()
                     .uri("api/user/{userId}/verify-ownership?username={username}", userId, currentUsername)
                     .retrieve()
                     .bodyToMono(Boolean.class)
