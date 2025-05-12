@@ -1,13 +1,11 @@
 package am.banking.system.security.token.validator;
 
-import am.banking.system.common.enums.PermissionEnum;
 import am.banking.system.security.token.key.provider.JwtTokenKeyProvider;
 import am.banking.system.security.token.validator.abstraction.IJwtTokenValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Author: Artyom Aroyan
@@ -17,8 +15,8 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenValidator implements IJwtTokenValidator {
-    private final ExtractTokenClaims extractTokenClaims;
     private final JwtTokenKeyProvider jwtTokenKeyProvider;
+    private final TokenClaimsExtractor tokenClaimsExtractor;
 
     @Override
     public boolean isValidToken(String token, String username) {
@@ -28,12 +26,7 @@ public class JwtTokenValidator implements IJwtTokenValidator {
 
     @Override
     public String extractUsername(final String token) {
-        return extractTokenClaims.extractAllClaims(token, jwtTokenKeyProvider.getPublicKey()).getSubject();
-    }
-
-    @Override
-    public Set<PermissionEnum> extractPermissions(final String token) {
-        return extractTokenClaims.extractPermissions(token, jwtTokenKeyProvider.getPublicKey());
+        return tokenClaimsExtractor.extractAllClaims(token, jwtTokenKeyProvider.getPublicKey()).getSubject();
     }
 
     private boolean isTokenExpired(final String token) {
@@ -41,6 +34,6 @@ public class JwtTokenValidator implements IJwtTokenValidator {
     }
 
     private Date extractExpiration(final String token) {
-        return extractTokenClaims.extractAllClaims(token, jwtTokenKeyProvider.getPublicKey()).getExpiration();
+        return tokenClaimsExtractor.extractAllClaims(token, jwtTokenKeyProvider.getPublicKey()).getExpiration();
     }
 }

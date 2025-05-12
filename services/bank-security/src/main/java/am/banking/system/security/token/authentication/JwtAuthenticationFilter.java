@@ -1,7 +1,6 @@
 package am.banking.system.security.token.authentication;
 
-import am.banking.system.security.token.key.provider.JwtTokenKeyProvider;
-import am.banking.system.security.token.validator.ExtractTokenClaims;
+import am.banking.system.security.token.validator.TokenClaimsExtractor;
 import am.banking.system.security.token.validator.abstraction.IJwtTokenValidator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,15 +10,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -32,8 +28,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final IJwtTokenValidator jwtTokenValidator;
-    private final ExtractTokenClaims extractTokenClaims;
-    private final JwtTokenKeyProvider jwtTokenKeyProvider;
+    private final TokenClaimsExtractor tokenClaimsExtractor;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -44,24 +39,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String username = jwtTokenValidator.extractUsername(token);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null &&
                     jwtTokenValidator.isValidToken(token, username)) {
-                    List<GrantedAuthority> authorities = extractAuthorities(token);
+                    List<GrantedAuthority> authorities = tokenClaimsExtractor.extractAuthorities(token);
                     var authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
         }
         filterChain.doFilter(request, response);
-    }
-
-    private List<GrantedAuthority> extractAuthorities(String token) {
-        var claims = extractTokenClaims.extractAllClaims(token, jwtTokenKeyProvider.getPublicKey());
-        Object rolesClaim = claims.get("roles");
-        if (!(rolesClaim instanceof List<?>)) {
-            return Collections.emptyList();
-        }
-        return ((List<?>) rolesClaim).stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toUnmodifiableList());
     }
 }

@@ -33,7 +33,7 @@ import static am.banking.system.security.model.enums.TokenType.PASSWORD_RESET;
 @Component
 @RequiredArgsConstructor
 public class UserTokenValidator implements IUserTokenValidator {
-    private final ExtractTokenClaims extractTokenClaims;
+    private final TokenClaimsExtractor tokenClaimsExtractor;
     private final UserTokenRepository userTokenRepository;
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
@@ -50,7 +50,7 @@ public class UserTokenValidator implements IUserTokenValidator {
     @Override
     public String extractUsername(final String token, final TokenType type) {
         final Key key = tokenSigningKeyManager.retrieveSigningKey(type);
-        return extractTokenClaims.extractAllClaims(token, key).getSubject();
+        return tokenClaimsExtractor.extractAllClaims(token, key).getSubject();
     }
 
     private boolean validateToken(final String token, final TokenPurpose purpose, final TokenType type) {
@@ -78,7 +78,7 @@ public class UserTokenValidator implements IUserTokenValidator {
 
         try {
             final Key key = tokenSigningKeyManager.retrieveSigningKey(type);
-            extractTokenClaims.extractAllClaims(token, key);
+            tokenClaimsExtractor.extractAllClaims(token, key);
             log.info(LogConstants.TOKEN_VALIDATION_SUCCESS);
             return true;
         } catch (SecurityException | MalformedJwtException ex) {

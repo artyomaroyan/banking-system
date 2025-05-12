@@ -2,5 +2,8 @@
 spring:
   config:
     import: optional:configserver:http://localhost:8888
+    location: classpath:/configurations/bank-common.yml
   application:
     name: bank-security
+  main:
+    web-application-type: reactive

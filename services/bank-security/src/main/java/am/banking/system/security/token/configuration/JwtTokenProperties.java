@@ -22,6 +22,7 @@ public record JwtTokenProperties(
         @NotBlank String alias,
         @NotNull char[] password,
         @Positive Long expiration) {
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
