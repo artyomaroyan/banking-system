@@ -1,5 +1,10 @@
 server:
   port: 8040
+
+notification:
+  tls:
+    base-url: https://localhost:8040
+
 spring:
   data:
     mongodb:
@@ -9,6 +14,7 @@ spring:
       port: 27017
       database: notification
       authentication-database: admin
+
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
@@ -19,6 +25,7 @@ spring:
       properties:
         spring.json.trusted.packages: '*'
         spring.json.type.mapping:
+
   mail:
     host: localhost
     port: 1025
