@@ -1,4 +1,4 @@
-# bank-user.yml from configuration-server service
+# bank-core.yml from configuration-server service
 server:
   port: 8090
 
@@ -8,10 +8,10 @@ security:
 
 webclient:
   ssl:
-    keyStorePath: /Users/artyom_aroyan/.keys/.bankapp/REST/user-keystore.p12
+    keyStorePath: /Users/artyom_aroyan/.keys/.bankapp/REST/core-keystore.p12
     keyStorePassword: ${USER_KEYSTORE_PASSWORD}
     keyStoreType: PKCS12
-    trustStorePath: /Users/artyom_aroyan/.keys/.bankapp/REST/user-truststore.p12
+    trustStorePath: /Users/artyom_aroyan/.keys/.bankapp/REST/core-truststore.p12
     trustStorePassword: ${USER_TRUSTSTORE_PASSWORD}
     trustStoreType: PKCS12
     clientAuth: need
@@ -23,7 +23,7 @@ spring:
       password: secret
       host: localhost
       port: 27017
-      database: user
+      database: core
       authentication-database: admin
 
 resilience4j:
@@ -33,9 +33,36 @@ resilience4j:
         max-attempts: 3
         wait-duration: 500ms
 
+      notificationService:
+        max-attempts: 3
+        wait-duration: 500ms
+        retry-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - java.io.IOException
+        ignore-exceptions:
+          - com.example.exception.ClientBadRequestException
+        fail-after-max-attempts: true
+
   circuitbreaker:
     instances:
       securityService:
         failure-rate-threshold: 50
         wait-duration-in-open-state: 5s
         sliding-window-size: 10
+
+      notificationService:
+        register-health-indicator: true
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10 # look at last 10 calls
+        minimum-number-of-calls: 5 # only start calculating after 5 calls
+        failure-rate-threshold: 50 # if 50% of calls fail -> open the circuit
+        slow-call-rate-threshold: 50 # if 50% slow calls (timeout) -> open the circuit
+        slow-call-duration-threshold: 2s # anything longer than 2s is considered slow
+        wait-duration-in-open-state: 15s # after 15s circuit will move to half-open
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - java.io.IOException
+        ignore-exceptions:
+          - com.example.exception.ClientBadRequestException
