@@ -25,7 +25,7 @@ public class NotificationsConsumer {
     private final EmailService emailService;
     private final NotificationRepository notificationRepository;
 
-    @KafkaListener(topics = "email-verification")
+    @KafkaListener(topics = "email-verification", groupId = "notification-service-group")
     public void consumeEmailVerificationNotification(EmailVerification verification) {
         notificationRepository.save(
                 Notification.builder()
@@ -36,7 +36,7 @@ public class NotificationsConsumer {
         emailService.sendVerificationEmail(verification.email(), verification.username(), verification.link());
     }
 
-    @KafkaListener(topics = "password-recovery")
+    @KafkaListener(topics = "password-recovery", groupId = "notification-service-group")
     public void consumePasswordRecoveryNotification(String email, String username, String link) {
         notificationRepository.save(
                 Notification.builder()
@@ -46,7 +46,7 @@ public class NotificationsConsumer {
         emailService.sendPasswordResetEmail(email, username, link);
     }
 
-    @KafkaListener(topics = "welcome-email")
+    @KafkaListener(topics = "welcome-email", groupId = "notification-service-group")
     public void consumeWelcomeEmailNotification(String email, String username) {
         notificationRepository.save(
                 Notification.builder()
