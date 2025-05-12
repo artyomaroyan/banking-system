@@ -1,4 +1,4 @@
-package am.banking.system.user.infrastructure.abstraction;
+package am.banking.system.user.infrastructure.security.abstraction;
 
 import am.banking.system.common.enums.PermissionEnum;
 

@@ -1,6 +1,6 @@
 package am.banking.system.user.service;
 
-import am.banking.system.user.infrastructure.abstraction.IUserTokenServiceClient;
+import am.banking.system.user.infrastructure.security.abstraction.IUserTokenServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.dto.UserResponse;
 import am.banking.system.user.model.mapper.UserMapper;

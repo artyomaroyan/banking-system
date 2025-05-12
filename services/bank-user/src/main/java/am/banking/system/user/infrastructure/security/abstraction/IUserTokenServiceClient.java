@@ -1,7 +1,7 @@
-package am.banking.system.user.infrastructure.abstraction;
+package am.banking.system.user.infrastructure.security.abstraction;
 
-import am.banking.system.common.dto.TokenResponse;
 import am.banking.system.common.dto.UserDto;
+import am.banking.system.common.dto.security.TokenResponse;
 import jakarta.validation.Valid;
 
 /**

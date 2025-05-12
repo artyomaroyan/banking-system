@@ -1,8 +1,8 @@
-package am.banking.system.user.infrastructure.client;
+package am.banking.system.user.infrastructure.security.client;
 
-import am.banking.system.common.dto.AuthorizationRequest;
+import am.banking.system.common.dto.security.AuthorizationRequest;
 import am.banking.system.common.enums.PermissionEnum;
-import am.banking.system.user.infrastructure.abstraction.ISecurityServiceClient;
+import am.banking.system.user.infrastructure.security.abstraction.ISecurityServiceClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;

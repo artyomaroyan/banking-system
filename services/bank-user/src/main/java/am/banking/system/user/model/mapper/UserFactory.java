@@ -1,6 +1,6 @@
 package am.banking.system.user.model.mapper;
 
-import am.banking.system.user.infrastructure.client.PasswordServiceClient;
+import am.banking.system.user.infrastructure.security.client.PasswordServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.entity.User;
 import lombok.RequiredArgsConstructor;

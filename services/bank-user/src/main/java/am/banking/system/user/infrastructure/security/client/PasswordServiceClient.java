@@ -1,8 +1,8 @@
-package am.banking.system.user.infrastructure.client;
+package am.banking.system.user.infrastructure.security.client;
 
-import am.banking.system.common.dto.PasswordHashingRequest;
-import am.banking.system.common.dto.PasswordValidatorRequest;
-import am.banking.system.user.infrastructure.abstraction.IPasswordServiceClient;
+import am.banking.system.common.dto.security.PasswordHashingRequest;
+import am.banking.system.common.dto.security.PasswordValidatorRequest;
+import am.banking.system.user.infrastructure.security.abstraction.IPasswordServiceClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,9 @@
-package am.banking.system.user.infrastructure.client;
+package am.banking.system.user.infrastructure.security.client;
 
-import am.banking.system.common.dto.TokenResponse;
-import am.banking.system.common.dto.TokenValidatorRequest;
 import am.banking.system.common.dto.UserDto;
-import am.banking.system.user.infrastructure.abstraction.IUserTokenServiceClient;
+import am.banking.system.common.dto.security.TokenResponse;
+import am.banking.system.common.dto.security.TokenValidatorRequest;
+import am.banking.system.user.infrastructure.security.abstraction.IUserTokenServiceClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;

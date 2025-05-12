@@ -1,6 +1,7 @@
 package am.banking.system.user.infrastructure.configuration;
 
-import am.banking.system.common.ssl.WebClientFactory;
+import am.banking.system.common.tls.WebClientFactory;
+import am.banking.system.common.tls.configuration.SecurityTLSProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -17,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 @RequiredArgsConstructor
 public class WebClientConfiguration {
+    private final SecurityTLSProperties tlsProperties;
 
     @Bean
     @LoadBalanced
@@ -26,6 +28,6 @@ public class WebClientConfiguration {
 
     @Bean
     public WebClient securedWebClient(WebClientFactory webClientFactory) {
-        return webClientFactory.createSecuredWebClient();
+        return webClientFactory.createSecuredWebClient(tlsProperties.url());
     }
 }
