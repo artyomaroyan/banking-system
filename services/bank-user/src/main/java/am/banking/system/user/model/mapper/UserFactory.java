@@ -1,5 +1,6 @@
 package am.banking.system.user.model.mapper;
 
+import am.banking.system.common.enums.AccountState;
 import am.banking.system.user.infrastructure.security.client.PasswordServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.entity.User;
@@ -26,6 +27,7 @@ public class UserFactory {
                 securityServiceClient.hashPassword(request.password()),
                 request.phone(),
                 request.age(),
+                AccountState.PENDING,
                 roleMapper.getDefaultRole()
         );
     }

@@ -4,3 +4,14 @@ spring:
     import: optional:configserver:http://localhost:8888
   application:
     name: bank-user
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
