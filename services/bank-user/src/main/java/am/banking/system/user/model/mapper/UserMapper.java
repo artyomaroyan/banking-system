@@ -2,6 +2,7 @@ package am.banking.system.user.model.mapper;
 
 import am.banking.system.common.dto.UserDto;
 import am.banking.system.user.model.dto.UserRequest;
+import am.banking.system.user.model.dto.UserResponse;
 import am.banking.system.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,5 +25,9 @@ public class UserMapper {
 
     public UserDto mapFromEntityToDto(User user) {
         return modelMapper.map(user, UserDto.class);
+    }
+
+    public UserResponse mapFromEntityToResponse(User user) {
+        return modelMapper.map(user, UserResponse.class);
     }
 }

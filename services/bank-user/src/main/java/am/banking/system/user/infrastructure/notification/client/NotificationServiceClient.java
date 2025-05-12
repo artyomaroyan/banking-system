@@ -1,12 +1,11 @@
 package am.banking.system.user.infrastructure.notification.client;
 
-import am.banking.system.common.dto.notification.EmailVerification;
-import am.banking.system.common.dto.notification.PasswordReset;
-import am.banking.system.common.dto.notification.WelcomeMessage;
+import am.banking.system.common.dto.notification.EmailRequest;
 import am.banking.system.user.infrastructure.notification.abstraction.INotificationServiceClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -15,44 +14,43 @@ import org.springframework.web.reactive.function.client.WebClient;
  * Date: 12.05.25
  * Time: 03:25:31
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceClient implements INotificationServiceClient {
     private final WebClient webClient;
 
-    @Retry(name = "securityService")
-    @CircuitBreaker(name = "securityService")
+    @Retry(name = "notificationService")
+    @CircuitBreaker(name = "notificationService")
     @Override
-    public Void sendEmailVerificationEmail(EmailVerification email) {
-        return webClient.post()
-                .uri("/api/notification/email-verification")
-                .bodyValue(email)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+    public void sendVerificationEmail(String email, String username, String link) {
+        EmailRequest request = new EmailRequest(email, username, link);
+        sendNotification("/api/notification/email-verification", request);
     }
 
-    @Retry(name = "securityService")
-    @CircuitBreaker(name = "securityService")
+    @Retry(name = "notificationService")
+    @CircuitBreaker(name = "notificationService")
     @Override
-    public Void sendPasswordResetEmail(PasswordReset email) {
-        return webClient.post()
-                .uri("/api/notification/password-reset")
-                .bodyValue(email)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+    public void sendPasswordResetEmail(String email, String username, String link) {
+        EmailRequest request = new EmailRequest(email, username, link);
+        sendNotification("/api/notification/password-reset", request);
     }
 
-    @Retry(name = "securityService")
-    @CircuitBreaker(name = "securityService")
+    @Retry(name = "notificationService")
+    @CircuitBreaker(name = "notificationService")
     @Override
-    public Void sendWelcomeEmail(WelcomeMessage email) {
-        return webClient.post()
-                .uri("/api/notification/welcome-email")
-                .bodyValue(email)
+    public void sendWelcomeEmail(String email) {
+        EmailRequest request = new EmailRequest(email, null, null);
+        sendNotification("/api/notification/welcome-email", request);
+    }
+
+    private void sendNotification(String uri, EmailRequest request) {
+        webClient.post()
+                .uri(uri)
+                .bodyValue(request)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .block();
+                .doOnError(error -> log.error("Failed to send notification to {}", request.email(), error))
+                .subscribe();
     }
 }

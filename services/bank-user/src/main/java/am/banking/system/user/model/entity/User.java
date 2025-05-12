@@ -1,6 +1,7 @@
 package am.banking.system.user.model.entity;
 
 import am.banking.system.common.entity.BaseEntity;
+import am.banking.system.common.enums.AccountState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class User extends BaseEntity implements Serializable {
     private String password;
     private String phone;
     private Integer age;
+    private AccountState state;
     @DBRef
     private Set<Role> roles;
 }

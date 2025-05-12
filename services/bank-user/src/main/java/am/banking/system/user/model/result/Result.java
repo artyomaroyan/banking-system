@@ -8,7 +8,7 @@ import lombok.Builder;
  * Time: 00:58:20
  */
 @Builder
-public record Result<T> (T data, boolean success, String message) {
+public record Result<T> (T data, boolean success, String message, Integer errorCode) {
 
     public static <T> Result<T> success(T data, String message) {
         return Result.<T>builder()
@@ -22,11 +22,12 @@ public record Result<T> (T data, boolean success, String message) {
         return success(null, message);
     }
 
-    public static <T> Result<T> error(String message) {
+    public static <T> Result<T> error(String message, Integer errorCode) {
         return Result.<T>builder()
                 .data(null)
                 .success(false)
                 .message(message)
+                .errorCode(errorCode)
                 .build();
     }
 
