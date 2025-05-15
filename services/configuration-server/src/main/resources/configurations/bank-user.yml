@@ -2,19 +2,16 @@
 server:
   port: 8090
 
-#security:
-#  service:
-#    url: https://localhost:8090
-
 webclient:
-  ssl:
-    keyStorePath: /Users/artyom_aroyan/.keys/.bankapp/REST/core-keystore.p12
-    keyStorePassword: ${USER_KEYSTORE_PASSWORD}
-    keyStoreType: PKCS12
-    trustStorePath: /Users/artyom_aroyan/.keys/.bankapp/REST/core-truststore.p12
-    trustStorePassword: ${USER_TRUSTSTORE_PASSWORD}
-    trustStoreType: PKCS12
-    clientAuth: need
+  tls:
+    url: https://localhost:8989
+    key-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
+    key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+    trust-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
+    trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
+    trust-store-type: PKCS12
+    client-auth: need
 
 spring:
   data:
@@ -39,8 +36,7 @@ resilience4j:
         retry-exceptions:
           - org.springframework.web.reactive.function.client.WebClientRequestException
           - java.io.IOException
-        ignore-exceptions:
-          - com.example.exception.ClientBadRequestException
+        ignore-exceptions: []
         fail-after-max-attempts: true
 
   circuitbreaker:
@@ -64,5 +60,4 @@ resilience4j:
         record-exceptions:
           - org.springframework.web.reactive.function.client.WebClientRequestException
           - java.io.IOException
-        ignore-exceptions:
-          - com.example.exception.ClientBadRequestException
+        ignore-exceptions: []

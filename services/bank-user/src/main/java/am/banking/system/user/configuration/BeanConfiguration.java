@@ -11,7 +11,7 @@ import static org.modelmapper.convention.MatchingStrategies.STRICT;
  * Date: 14.04.25
  * Time: 20:42:51
  */
-@Configuration
+@Configuration("userBeanConfiguration")
 public class BeanConfiguration {
     @Bean
     public ModelMapper modelMapper() {

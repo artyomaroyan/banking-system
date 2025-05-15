@@ -1,9 +1,9 @@
 package am.banking.system.notification.model.entity;
 
 import am.banking.system.common.entity.BaseEntity;
-import am.banking.system.notification.kafka.records.EmailVerification;
-import am.banking.system.notification.kafka.records.PasswordReset;
-import am.banking.system.notification.kafka.records.WelcomeMessage;
+import am.banking.system.notification.kafka.dto.EmailVerification;
+import am.banking.system.notification.kafka.dto.PasswordReset;
+import am.banking.system.notification.kafka.dto.WelcomeEmail;
 import am.banking.system.notification.model.enums.EmailType;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -30,6 +30,6 @@ public class Notification extends BaseEntity implements Serializable {
     private EmailType emailType;
     private LocalDateTime notificationDate;
     private EmailVerification emailVerification;
-    private WelcomeMessage welcomeMessage;
     private PasswordReset passwordReset;
+    private WelcomeEmail welcomeEmail;
 }

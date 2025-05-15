@@ -15,16 +15,17 @@ spring:
       database: notification
       authentication-database: admin
 
-#  kafka:
-#    consumer:
-#      bootstrap-servers: ms_kafka:9092
-#      group-id: notification-service-group
-#      auto-offset-reset: earliest
-#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-#      properties:
-#        spring.json.trusted.packages: '*'
-#        spring.json.type.mapping:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        metadata.max.age.ms: 100
+        spring.json.trusted.packages: '*'
+        spring.json.type.mapping:
 
   mail:
     host: localhost
@@ -44,4 +45,4 @@ spring:
 
 logging:
   level:
-    org.springframework.kafka: debug
+    org.springframework.kafka: info

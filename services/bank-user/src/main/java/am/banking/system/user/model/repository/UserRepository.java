@@ -18,4 +18,6 @@ public interface UserRepository extends MongoRepository<User, Long> {
     boolean existsByEmail(String email);
 
     Optional<User> findUserByUsername(String username);
+
+    Optional<User> findUserByEmail(String email);
 }

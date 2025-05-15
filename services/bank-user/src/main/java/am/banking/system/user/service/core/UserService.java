@@ -51,4 +51,11 @@ public class UserService {
                 .map(response -> Result.success(response, SUCCESS))
                 .orElseGet(() -> Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
     }
+
+    public Result<UserResponse> getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .map(userMapper::mapFromEntityToResponse)
+                .map(response -> Result.success(response, SUCCESS))
+                .orElseGet(() -> Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
+    }
 }

@@ -1,7 +1,9 @@
 package am.banking.system.notification.kafka;
 
 import am.banking.system.notification.email.service.EmailService;
-import am.banking.system.notification.kafka.records.EmailVerification;
+import am.banking.system.notification.kafka.dto.EmailVerification;
+import am.banking.system.notification.kafka.dto.PasswordReset;
+import am.banking.system.notification.kafka.dto.WelcomeEmail;
 import am.banking.system.notification.model.entity.Notification;
 import am.banking.system.notification.model.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,33 +28,35 @@ public class NotificationsConsumer {
     private final NotificationRepository notificationRepository;
 
     @KafkaListener(topics = "email-verification", groupId = "notification-service-group")
-    public void consumeEmailVerificationNotification(EmailVerification verification) {
+    public void consumeEmailVerificationNotification(EmailVerification request) {
         notificationRepository.save(
                 Notification.builder()
                         .emailType(EMAIL_VERIFICATION)
                         .notificationDate(LocalDateTime.now())
-                        .emailVerification(verification)
+                        .emailVerification(request)
                         .build());
-        emailService.sendVerificationEmail(verification.email(), verification.username(), verification.link());
+        emailService.sendVerificationEmail(request.email(), request.username(), request.link());
     }
 
     @KafkaListener(topics = "password-recovery", groupId = "notification-service-group")
-    public void consumePasswordRecoveryNotification(String email, String username, String link) {
+    public void consumePasswordRecoveryNotification(PasswordReset request) {
         notificationRepository.save(
                 Notification.builder()
                         .emailType(PASSWORD_RECOVERY)
                         .notificationDate(LocalDateTime.now())
+                        .passwordReset(request)
                         .build());
-        emailService.sendPasswordResetEmail(email, username, link);
+        emailService.sendPasswordResetEmail(request.email(), request.username(), request.link());
     }
 
     @KafkaListener(topics = "welcome-email", groupId = "notification-service-group")
-    public void consumeWelcomeEmailNotification(String email, String username) {
+    public void consumeWelcomeEmailNotification(WelcomeEmail request) {
         notificationRepository.save(
                 Notification.builder()
                         .emailType(WELCOME_MESSAGE)
                         .notificationDate(LocalDateTime.now())
+                        .welcomeEmail(request)
                         .build());
-        emailService.sendWelcomeEmail(email, username);
+        emailService.sendWelcomeEmail(request.email(), request.username());
     }
 }
