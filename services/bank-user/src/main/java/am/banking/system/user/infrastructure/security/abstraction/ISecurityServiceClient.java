@@ -1,6 +1,7 @@
 package am.banking.system.user.infrastructure.security.abstraction;
 
 import am.banking.system.common.enums.PermissionEnum;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -8,5 +9,5 @@ import am.banking.system.common.enums.PermissionEnum;
  * Time: 00:32:21
  */
 public interface ISecurityServiceClient {
-    Boolean authorizeUser(String token, PermissionEnum permission);
+    Mono<Boolean> authorizeUser(String token, PermissionEnum permission);
 }

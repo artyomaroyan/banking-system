@@ -3,6 +3,7 @@ package am.banking.system.user.infrastructure.security.abstraction;
 import am.banking.system.common.dto.UserDto;
 import am.banking.system.common.dto.security.TokenResponse;
 import jakarta.validation.Valid;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
  * Time: 00:25:23
  */
 public interface IJwtTokenServiceClient {
-    TokenResponse generateJwtToken(@Valid UserDto user);
-    Boolean validateJwtToken(String token, String username);
+    Mono<TokenResponse> generateJwtToken(@Valid UserDto user);
+    Mono<String> generateSystemToken();
+    Mono<Boolean> validateJwtToken(String token, String username);
 }

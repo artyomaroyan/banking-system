@@ -6,6 +6,7 @@ import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -18,17 +19,18 @@ public class UserFactory {
     private final RoleMapper roleMapper;
     private final PasswordServiceClient securityServiceClient;
 
-    protected User createUser(UserRequest request) {
-        return new User(
-                request.username(),
-                request.firstName(),
-                request.lastName(),
-                request.email(),
-                securityServiceClient.hashPassword(request.password()),
-                request.phone(),
-                request.age(),
-                AccountState.PENDING,
-                roleMapper.getDefaultRole()
-        );
+    protected Mono<User> createUser(UserRequest request) {
+        return securityServiceClient.hashPassword(request.password()).map(
+                hashedPassword -> new User(
+                        request.username(),
+                        request.firstName(),
+                        request.lastName(),
+                        request.email(),
+                        hashedPassword,
+                        request.phone(),
+                        request.age(),
+                        AccountState.PENDING,
+                        roleMapper.getDefaultRole()
+                ));
     }
 }

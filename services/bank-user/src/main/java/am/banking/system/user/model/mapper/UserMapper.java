@@ -7,6 +7,7 @@ import am.banking.system.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -19,7 +20,7 @@ public class UserMapper {
     private final UserFactory userFactory;
     private final ModelMapper modelMapper;
 
-    public User mapFromRequestToEntity(UserRequest request) {
+    public Mono<User> mapFromRequestToEntity(UserRequest request) {
         return userFactory.createUser(request);
     }
 

@@ -8,6 +8,7 @@ import am.banking.system.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -21,34 +22,25 @@ public class UserAccountActivationService {
     private final UserService userService;
     private final IUserTokenServiceClient userTokenServiceClient;
 
-    public Result<String> activateAccount(String activationToken, String username) {
-        validateActivationToken(activationToken, username);
-        activateAccountAndDeactivateToken(activationToken, username);
-        return Result.success("Your account has been activated");
-    }
+    public Mono<Result<String>> activateAccount(String activationToken, String username) {
+        return userTokenServiceClient.validateEmailVerificationToken(activationToken, username)
+                .flatMap(valid -> {
+                    if (Boolean.FALSE.equals(valid)) {
+                        log.error("Invalid activation token: {}", activationToken);
+                        return Mono.error(new InvalidUserTokenException("Invalid activation token for user: " + username));
+                    }
 
-    private void validateActivationToken(String activationToken, String username) {
-        try {
-            if (!userTokenServiceClient.validateEmailVerificationToken(activationToken, username)) {
-                throw new InvalidUserTokenException("Invalid activation token for user " + username);
-            }
-        } catch (Exception e) {
-            log.error("Token validation failed for user: {}", username, e);
-            throw new InvalidUserTokenException("Invalid activation token", e.getCause());
-        }
-    }
+                    return userService.getUserByUsername(username)
+                            .flatMap(userResult -> {
+                                if (!userResult.success() || userResult.data() == null) {
+                                    log.error("User not found: {}", username);
+                                    return Mono.error(new UserAccountActivationException("User not found for username: " + username));
+                                }
 
-    private void activateAccountAndDeactivateToken(String activationToken, String username) {
-        var userResult = userService.getUserByUsername(username);
-        if (!userResult.success() || userResult.data() == null) {
-            throw new UserAccountActivationException("User not found for username: " + username);
-        }
-
-        try {
-            userService.updateUserAccountState(userResult.data().id());
-            userTokenServiceClient.invalidateUsedToken(activationToken);
-        } catch (UserAccountActivationException ex) {
-            throw new UserAccountActivationException("User account activation failed", ex.getCause());
-        }
+                                return userService.updateUserAccountState(userResult.data().id())
+                                        .then(userTokenServiceClient.invalidateUsedToken(activationToken))
+                                        .thenReturn(Result.success("Your account has been successfully activated"));
+                            });
+                });
     }
 }

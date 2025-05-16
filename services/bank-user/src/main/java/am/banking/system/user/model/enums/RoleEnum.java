@@ -9,5 +9,6 @@ public enum RoleEnum {
     GUEST,
     USER,
     MANAGER,
-    ADMIN
+    ADMIN,
+    SYSTEM
 }

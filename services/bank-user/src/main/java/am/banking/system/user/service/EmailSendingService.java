@@ -3,6 +3,7 @@ package am.banking.system.user.service;
 import am.banking.system.user.infrastructure.notification.abstraction.INotificationServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -14,15 +15,15 @@ import org.springframework.stereotype.Service;
 public final class EmailSendingService {
     private final INotificationServiceClient notificationServiceClient;
 
-    public void sendWelcomeEmail(String email) {
-        notificationServiceClient.sendWelcomeEmail(email);
+    public Mono<Void> sendWelcomeEmail(String email) {
+        return notificationServiceClient.sendWelcomeEmail(email);
     }
 
-    public void sendVerificationEmail(String email, String username, String link) {
-        notificationServiceClient.sendVerificationEmail(email, username, link);
+    public Mono<Void> sendVerificationEmail(String email, String username, String link) {
+        return notificationServiceClient.sendVerificationEmail(email, username, link);
     }
 
-    public void sendPasswordResetEmail(String email, String username, String link) {
-        notificationServiceClient.sendPasswordResetEmail(email, username, link);
+    public Mono<Void> sendPasswordResetEmail(String email, String username, String link) {
+        return notificationServiceClient.sendPasswordResetEmail(email, username, link);
     }
 }

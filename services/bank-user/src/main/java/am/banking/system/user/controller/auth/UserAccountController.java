@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
@@ -27,15 +28,15 @@ public class UserAccountController {
     private final UserAccountActivationService userAccountActivationService;
 
     @PostMapping("/register")
-    ResponseEntity<Result<String>> register(@Valid @RequestBody UserRequest request) {
-        var result = userRegistrationService.register(request);
-        return buildResponse(result);
+    Mono<ResponseEntity<Result<String>>> register(@Valid @RequestBody UserRequest request) {
+        return userRegistrationService.register(request)
+                .map(this::buildResponse);
     }
 
     @GetMapping("/activate")
-    ResponseEntity<Result<String>> activateAccount(@RequestBody String token, @RequestBody String username) {
-        var result = userAccountActivationService.activateAccount(token, username);
-        return buildResponse(result);
+    Mono<ResponseEntity<Result<String>>> activateAccount(@RequestParam String token, @RequestParam String username) {
+        return userAccountActivationService.activateAccount(token, username)
+                        .map(this::buildResponse);
     }
 
     private <T> ResponseEntity<Result<T>> buildResponse(Result<T> result) {

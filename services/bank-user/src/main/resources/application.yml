@@ -10,8 +10,6 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
-    operations-sorter: method
-    tags-sorter: alpha
-    doc-expansion: none
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true

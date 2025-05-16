@@ -1,10 +1,9 @@
 package am.banking.system.user.model.repository;
 
 import am.banking.system.user.model.entity.User;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -12,12 +11,12 @@ import java.util.Optional;
  * Time: 00:04:45
  */
 @Repository
-public interface UserRepository extends MongoRepository<User, Long> {
-    boolean existsByUsername(String username);
+public interface UserRepository extends ReactiveMongoRepository<User, Long> {
+    Mono<Boolean> existsByUsername(String username);
 
-    boolean existsByEmail(String email);
+    Mono<Boolean> existsByEmail(String email);
 
-    Optional<User> findUserByUsername(String username);
+    Mono<User> findUserByUsername(String username);
 
-    Optional<User> findUserByEmail(String email);
+    Mono<User> findUserByEmail(String email);
 }

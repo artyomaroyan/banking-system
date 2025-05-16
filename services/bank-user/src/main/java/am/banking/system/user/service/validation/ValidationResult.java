@@ -6,6 +6,7 @@ package am.banking.system.user.service.validation;
  * Time: 19:00:20
  */
 public record ValidationResult(boolean isValid, String message) {
+
     public static ValidationResult valid() {
         return new ValidationResult(true, "valid");
     }
