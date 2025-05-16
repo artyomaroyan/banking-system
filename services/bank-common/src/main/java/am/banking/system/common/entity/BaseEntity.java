@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Document
 public abstract class BaseEntity {
     @Id
-    private Long id;
+    private String id;
     @Setter
     @LastModifiedDate
     private LocalDateTime updatedAt;
