@@ -11,5 +11,10 @@ import java.util.Map;
  */
 public interface TokenGenerationStrategy {
     String generateToken(Map<String, Object> claims, String subject);
+
+    default String generateSystemToken() {
+        throw new UnsupportedOperationException("Generate system token is not supported");
+    }
+
     TokenType getSupportedTokenType();
 }

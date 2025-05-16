@@ -15,13 +15,12 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHENTICATION;
-import static org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers;
 
 /**
  * Author: Artyom Aroyan
@@ -48,29 +47,13 @@ public class SecurityConfiguration {
 
     private static final String[] CSRF_IGNORE = {
             "/api/v1/user/account/register/**",
-            "/api/v1/user/account/login/**",
-            "/api/v1/user/account/verify-email/**",
-            "/api/v1/user/password-reset/send-email",
-            "/api/v1/user/password-reset/reset/**",
+            "/api/v1/user/account/activate/**",
             "/swagger-ui/**",
             "/v3/api-docs/**"
     };
 
     private final JwtAuthenticationManager jwtAuthenticationManager;
     private final JwtAuthenticationConverter jwtAuthenticationConverter;
-
-    @Bean
-    protected CorsConfigurationSource corsConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("authorization", "content-type", "bearer"));
-        configuration.setAllowCredentials(true);
-
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
     @Bean
     protected SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -83,19 +66,31 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    private void configureCsrf(ServerHttpSecurity http) {
-        ServerWebExchangeMatcher csrfMatcher = exchange -> {
-            for (String path : CSRF_IGNORE) {
-                if (Objects.requireNonNull(pathMatchers(path).matches(exchange).block()).isMatch()) {
-                    return ServerWebExchangeMatcher.MatchResult.notMatch();
-                }
-            }
-            return ServerWebExchangeMatcher.MatchResult.match();
-        };
+    @Bean
+    protected CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8888", "http://localhost:8761", "http://localhost:9090", "http://localhost:8989", "http://localhost:8040", "http://localhost:8090"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("authorization", "content-type", "bearer"));
+        configuration.setAllowCredentials(true);
 
-        http.csrf(csrf -> csrf
-                .requireCsrfProtectionMatcher(csrfMatcher)
-        );
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    private void configureCsrf(ServerHttpSecurity http) {
+        ServerWebExchangeMatcher csrfMatcher = exchange ->
+                Mono.just(exchange.getRequest().getPath().toString())
+                        .flatMap(_ -> {
+                            for (String ignore : CSRF_IGNORE) {
+                                if (exchange.getRequest().getPath().value().matches(ignore.replace("**", "*"))) {
+                                    return ServerWebExchangeMatcher.MatchResult.notMatch();
+                                }
+                            }
+                            return ServerWebExchangeMatcher.MatchResult.match();
+                        });
+        http.csrf(csrf -> csrf.requireCsrfProtectionMatcher(csrfMatcher));
     }
 
     private void configureCors(ServerHttpSecurity http) {
@@ -111,12 +106,12 @@ public class SecurityConfiguration {
                 .pathMatchers(PUBLIC_URLS).permitAll()
                 .pathMatchers(
                         "/api/v1/user/account/register/**",
-                        "/api/v1/user/account/login",
-                        "/api/v1/user/account/verify-email/**",
+                        "/api/v1/user/account/activate/**",
                         "/api/v1/user/password-reset/send-email",
                         "/api/v1/user/password-reset/reset/**"
                 ).permitAll()
-                .anyExchange().authenticated()
+                .anyExchange()
+                .authenticated()
         );
     }
 

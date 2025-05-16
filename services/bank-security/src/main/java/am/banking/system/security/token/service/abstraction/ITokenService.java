@@ -11,4 +11,5 @@ import java.util.Map;
  */
 public interface ITokenService {
     String createToken(Map<String, Object> claims, String subject, TokenType type);
+    String createSystemToken(TokenType type);
 }

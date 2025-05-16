@@ -9,4 +9,5 @@ import am.banking.system.security.model.dto.UserPrincipal;
  */
 public interface IJwtTokenService {
     String generateJwtToken(UserPrincipal user);
+    String generateSystemToken();
 }

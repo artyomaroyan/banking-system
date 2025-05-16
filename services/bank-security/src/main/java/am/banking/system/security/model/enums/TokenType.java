@@ -8,5 +8,6 @@ package am.banking.system.security.model.enums;
 public enum TokenType {
     JSON_WEB_TOKEN,
     PASSWORD_RESET,
-    EMAIL_VERIFICATION
+    EMAIL_VERIFICATION,
+    INTERNAL_JWT_TOKEN
 }

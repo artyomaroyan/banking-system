@@ -42,6 +42,26 @@ public class JwtTokenFactory implements TokenGenerationStrategy {
     }
 
     @Override
+    public String generateSystemToken() {
+        var type = TokenType.INTERNAL_JWT_TOKEN;
+        var signingKey = tokenSigningKeyManager.retrieveSigningKey(type);
+        var issuedAt = new Date();
+        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
+
+        return Jwts.builder()
+                .subject(JwtTokenFactory.class.getSimpleName())
+                .issuer("bank-security service")
+                .issuedAt(issuedAt)
+                .expiration(expiration)
+                .audience().add("Internal communication Token")
+                .and()
+                .claim("roles", "ROLE_SYSTEM")
+                .id(UUID.randomUUID().toString())
+                .signWith(signingKey)
+                .compact();
+    }
+
+    @Override
     public TokenType getSupportedTokenType() {
         return TokenType.JSON_WEB_TOKEN;
     }

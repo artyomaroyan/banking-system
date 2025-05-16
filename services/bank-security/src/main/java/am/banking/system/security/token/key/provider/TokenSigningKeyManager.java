@@ -3,7 +3,6 @@ package am.banking.system.security.token.key.provider;
 import am.banking.system.security.exception.NotFoundTokenTypeException;
 import am.banking.system.security.model.enums.TokenType;
 import am.banking.system.security.token.strategy.SigningKeyProviderStrategy;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +17,17 @@ import java.util.stream.Collectors;
  * Time: 00:59:46
  */
 @Component
-@RequiredArgsConstructor
 public class TokenSigningKeyManager {
     private final JwtSigningKeyProvider jwtSigningKeyProvider;
+    private final SystemTokenKeyProvider systemTokenKeyProvider;
     private final PasswordRecoveryKeyProvider passwordRecoveryKeyProvider;
     private final EmailVerificationKeyProvider emailVerificationKeyProvider;
     private final Map<TokenType, SigningKeyProviderStrategy> signingKeyProvider;
 
     @Autowired
-    public TokenSigningKeyManager(JwtSigningKeyProvider jwtSigningKeyProvider, PasswordRecoveryKeyProvider passwordRecoveryKeyProvider, EmailVerificationKeyProvider emailVerificationKeyProvider, List<SigningKeyProviderStrategy> signingKeyProviders) {
+    public TokenSigningKeyManager(JwtSigningKeyProvider jwtSigningKeyProvider, PasswordRecoveryKeyProvider passwordRecoveryKeyProvider, EmailVerificationKeyProvider emailVerificationKeyProvider, List<SigningKeyProviderStrategy> signingKeyProviders, SystemTokenKeyProvider systemTokenKeyProvider) {
         this.jwtSigningKeyProvider = jwtSigningKeyProvider;
+        this.systemTokenKeyProvider = systemTokenKeyProvider;
         this.passwordRecoveryKeyProvider = passwordRecoveryKeyProvider;
         this.emailVerificationKeyProvider = emailVerificationKeyProvider;
         this.signingKeyProvider = signingKeyProviders.stream()
@@ -48,6 +48,7 @@ public class TokenSigningKeyManager {
             case JSON_WEB_TOKEN -> jwtSigningKeyProvider.getTokenExpiration();
             case PASSWORD_RESET -> passwordRecoveryKeyProvider.getTokenExpiration();
             case EMAIL_VERIFICATION -> emailVerificationKeyProvider.getTokenExpiration();
+            case INTERNAL_JWT_TOKEN -> systemTokenKeyProvider.getTokenExpiration();
         };
     }
 }
