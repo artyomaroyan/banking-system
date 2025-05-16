@@ -4,7 +4,7 @@ server:
 
 webclient:
   tls:
-    url: https://localhost:8989
+    url: http://localhost:8989
     key-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
     key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
     key-store-type: PKCS12

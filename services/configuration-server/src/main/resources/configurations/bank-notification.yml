@@ -3,7 +3,7 @@ server:
 
 notification:
   tls:
-    base-url: https://localhost:8040
+    base-url: https://localhost:8989
 
 spring:
   data:
