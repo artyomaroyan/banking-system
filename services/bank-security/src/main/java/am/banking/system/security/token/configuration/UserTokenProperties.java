@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Base64;
 
 /**
@@ -22,18 +22,19 @@ public record UserTokenProperties(
     @Validated
     public record TokenSpec(
             @NotBlank String secret,
+            @NotBlank String algorithm,
             @Positive Long expiration) {
     }
 
-    public Key getEmailVerificationKey() {
+    public SecretKey getEmailVerificationKey() {
         return getKey(emailVerification().secret);
     }
 
-    public Key getPasswordRecoveryKey() {
+    public SecretKey getPasswordRecoveryKey() {
         return getKey(passwordRecovery().secret);
     }
 
-    private Key getKey(final String secret) {
+    private SecretKey getKey(final String secret) {
         byte[] secretBytes = Base64.getDecoder().decode(secret);
         return Keys.hmacShaKeyFor(secretBytes);
     }

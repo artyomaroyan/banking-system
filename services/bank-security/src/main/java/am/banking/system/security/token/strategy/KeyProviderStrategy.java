@@ -1,6 +1,7 @@
 package am.banking.system.security.token.strategy;
 
 import java.security.Key;
+import java.security.PrivateKey;
 
 /**
  * Author: Artyom Aroyan
@@ -8,7 +9,8 @@ import java.security.Key;
  * Time: 00:50:06
  */
 public interface KeyProviderStrategy {
-    Key getPrivateKey();
+    PrivateKey getPrivateKey();
     Key getPublicKey();
     Long getExpiration();
+    String getKeyId();
 }

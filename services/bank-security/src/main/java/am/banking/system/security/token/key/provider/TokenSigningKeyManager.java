@@ -1,7 +1,7 @@
 package am.banking.system.security.token.key.provider;
 
-import am.banking.system.security.exception.NotFoundTokenTypeException;
 import am.banking.system.security.model.enums.TokenType;
+import am.banking.system.security.token.dto.SigningCredentials;
 import am.banking.system.security.token.strategy.SigningKeyProviderStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,10 +22,10 @@ public class TokenSigningKeyManager {
     private final SystemTokenKeyProvider systemTokenKeyProvider;
     private final PasswordRecoveryKeyProvider passwordRecoveryKeyProvider;
     private final EmailVerificationKeyProvider emailVerificationKeyProvider;
-    private final Map<TokenType, SigningKeyProviderStrategy> signingKeyProvider;
+    private final Map<TokenType, SigningKeyProviderStrategy<? extends Key>> signingKeyProvider;
 
     @Autowired
-    public TokenSigningKeyManager(JwtSigningKeyProvider jwtSigningKeyProvider, PasswordRecoveryKeyProvider passwordRecoveryKeyProvider, EmailVerificationKeyProvider emailVerificationKeyProvider, List<SigningKeyProviderStrategy> signingKeyProviders, SystemTokenKeyProvider systemTokenKeyProvider) {
+    public TokenSigningKeyManager(JwtSigningKeyProvider jwtSigningKeyProvider, PasswordRecoveryKeyProvider passwordRecoveryKeyProvider, EmailVerificationKeyProvider emailVerificationKeyProvider, List<SigningKeyProviderStrategy<? extends Key>> signingKeyProviders, SystemTokenKeyProvider systemTokenKeyProvider) {
         this.jwtSigningKeyProvider = jwtSigningKeyProvider;
         this.systemTokenKeyProvider = systemTokenKeyProvider;
         this.passwordRecoveryKeyProvider = passwordRecoveryKeyProvider;
@@ -35,12 +35,12 @@ public class TokenSigningKeyManager {
                         strategy -> strategy));
     }
 
-    public Key retrieveSigningKey(TokenType type) {
-        final SigningKeyProviderStrategy strategy = signingKeyProvider.get(type);
+    public SigningCredentials<? extends Key> retriveSigningCredentials(TokenType type) {
+        SigningKeyProviderStrategy<? extends Key> strategy = signingKeyProvider.get(type);
         if (strategy == null) {
-            throw new NotFoundTokenTypeException("No signing key found for type " + type);
+            throw new IllegalArgumentException("No SigningKeyProviderStrategy found for type " + type);
         }
-        return strategy.getSigningKey();
+        return strategy.signingCredentials();
     }
 
     public Long retrieveTokenExpiration(TokenType type) {

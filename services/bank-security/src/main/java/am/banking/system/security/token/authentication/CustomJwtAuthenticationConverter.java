@@ -15,7 +15,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  * Time: 01:28:48
  */
 @Component
-public class JwtAuthenticationConverter implements ServerAuthenticationConverter {
+public class CustomJwtAuthenticationConverter implements ServerAuthenticationConverter {
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {

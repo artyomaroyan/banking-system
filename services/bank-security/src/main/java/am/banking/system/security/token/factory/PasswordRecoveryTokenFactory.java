@@ -25,11 +25,11 @@ public class PasswordRecoveryTokenFactory implements TokenGenerationStrategy {
     public String generateToken(Map<String, Object> claims, String subject) {
         // todo: add more claims
         var type = TokenType.PASSWORD_RESET;
-        var signingKey = tokenSigningKeyManager.retrieveSigningKey(type);
+        var credentials = tokenSigningKeyManager.retriveSigningCredentials(type);
         var issuedAt = new Date();
         var expiresAt = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(issuedAt)
@@ -37,9 +37,8 @@ public class PasswordRecoveryTokenFactory implements TokenGenerationStrategy {
                 .issuer("Token issuer")
                 .audience().add("Bank account web client")
                 .and()
-                .id(UUID.randomUUID().toString())
-                .signWith(signingKey)
-                .compact();
+                .id(UUID.randomUUID().toString());
+        return credentials.sign(builder).compact();
     }
 
     @Override
