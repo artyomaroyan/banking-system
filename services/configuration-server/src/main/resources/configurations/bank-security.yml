@@ -57,4 +57,10 @@ security:
 
 logging:
   level:
-    org.springframework.cloud: debug
+    root: info
+    web: info
+    sql: info
+    org.springframework.web: info
+    org.springframework.security: info
+    am.banking.system.security: info
+    org.springframework.cloud: info

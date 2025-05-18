@@ -61,3 +61,21 @@ resilience4j:
           - org.springframework.web.reactive.function.client.WebClientRequestException
           - java.io.IOException
         ignore-exceptions: []
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true
+
+logging:
+  level:
+    root: info
+    web: info
+    sql: info
+    org.springframework.web: info
+    org.springframework.security: info
+    org.springframework.cloud: info
