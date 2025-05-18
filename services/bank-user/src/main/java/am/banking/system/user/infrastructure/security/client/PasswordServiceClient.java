@@ -38,6 +38,7 @@ public class PasswordServiceClient implements IPasswordServiceClient {
     @Override
     public Mono<String> hashPassword(String password) {
         Mono<String> token = jwtTokenServiceClient.generateSystemToken();
+        log.info("generated system token: {}", token);
         return webClient.post()
                 .uri("/api/security/web/hash-password")
                 .header("authorization", "Bearer " + token)

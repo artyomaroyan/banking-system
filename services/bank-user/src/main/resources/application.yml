@@ -4,12 +4,3 @@ spring:
     import: optional:configserver:http://localhost:8888
   application:
     name: bank-user
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    operationsSorter: method
-    tagsSorter: alpha
-    display-request-duration: true
