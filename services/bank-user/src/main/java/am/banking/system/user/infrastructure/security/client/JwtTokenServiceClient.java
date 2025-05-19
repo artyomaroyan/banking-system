@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
 /**
  * Author: Artyom Aroyan
  * Date: 02.05.25
@@ -51,7 +53,18 @@ public class JwtTokenServiceClient implements IJwtTokenServiceClient {
         return webClient.post()
                 .uri("/api/v1/secure/local/system-token")
                 .retrieve()
+                .onStatus(status -> status == FORBIDDEN,
+                        response -> response.bodyToMono(String.class)
+                                .flatMap(errorBody -> {
+                                    log.error("Custom Log:: Forbidden error response body: {}", errorBody);
+                                    return Mono.error(new RuntimeException("Forbidden: " + errorBody));
+                                }))
                 .bodyToMono(String.class);
+//        return webClient.post()
+//                .uri("/api/v1/secure/local/system-token")
+//                .retrieve()
+//                .bodyToMono(String.class)
+//                .doOnError(error -> log.error("Custom Log:: Error during generateSystemToken: {}", error.getCause(), error));
     }
 
     @Retry(name = "securityService")

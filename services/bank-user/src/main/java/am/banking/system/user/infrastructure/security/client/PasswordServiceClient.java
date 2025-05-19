@@ -37,14 +37,16 @@ public class PasswordServiceClient implements IPasswordServiceClient {
     @CircuitBreaker(name = "securityService")
     @Override
     public Mono<String> hashPassword(String password) {
-        Mono<String> token = jwtTokenServiceClient.generateSystemToken();
-        log.info("generated system token: {}", token);
-        return webClient.post()
-                .uri("/api/security/web/hash-password")
-                .header("authorization", "Bearer " + token)
-                .bodyValue(new PasswordHashingRequest(password))
-                .retrieve()
-                .bodyToMono(String.class);
+        return jwtTokenServiceClient.generateSystemToken()
+                .flatMap(token -> {
+                    log.info("Custom Log:: Generated system token: {}", token);
+                    return webClient.post()
+                            .uri("/api/security/web/hash-password")
+                            .header("Authorization", "Bearer " + token)
+                            .bodyValue(new PasswordHashingRequest(password))
+                            .retrieve()
+                            .bodyToMono(String.class);
+                });
     }
 
     @Retry(name = "securityService")
