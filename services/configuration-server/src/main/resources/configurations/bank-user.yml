@@ -4,7 +4,8 @@ server:
 
 webclient:
   tls:
-    url: http://localhost:8989
+    url: https://localhost:8989
+    enabled: true
     key-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
     key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
     key-store-type: PKCS12
@@ -77,5 +78,5 @@ logging:
     web: info
     sql: info
     org.springframework.web: info
-    org.springframework.security: info
+    org.springframework.security: debug
     org.springframework.cloud: info
