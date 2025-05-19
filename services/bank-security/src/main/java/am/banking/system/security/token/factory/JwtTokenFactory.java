@@ -6,6 +6,7 @@ import am.banking.system.security.token.strategy.KeyProviderStrategy;
 import am.banking.system.security.token.strategy.TokenGenerationStrategy;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -20,6 +21,7 @@ import static am.banking.system.common.enums.PermissionEnum.GENERATE_SYSTEM_TOKE
  * Date: 19.04.25
  * Time: 01:50:29
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFactory implements TokenGenerationStrategy {
@@ -34,14 +36,16 @@ public class JwtTokenFactory implements TokenGenerationStrategy {
         var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
 
         var builder = Jwts.builder()
-                .setHeaderParam("kid", keyProviderStrategy.getKeyId())
+                .header()
+                .keyId(keyProviderStrategy.getKeyId())
+                    .and()
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(issuedAt)
                 .expiration(expiration)
                 .issuer("Token issuer")
                 .audience().add("Bank account web client")
-                .and()
+                    .and()
                 .id(UUID.randomUUID().toString());
         return credentials.sign(builder).compact();
     }
@@ -62,6 +66,7 @@ public class JwtTokenFactory implements TokenGenerationStrategy {
                 .and()
                 .claim("authorities", List.of("ROLE_SYSTEM", GENERATE_SYSTEM_TOKEN))
                 .id(UUID.randomUUID().toString());
+        log.info("Custom Log:: Generated system token from token factory class: {}", credentials.sign(builder).compact());
         return credentials.sign(builder).compact();
     }
 

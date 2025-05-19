@@ -7,6 +7,7 @@ import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import java.util.Map;
  * Date: 18.05.25
  * Time: 21:34:22
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/.well-known")
@@ -34,6 +36,7 @@ public class JwtTokenDecoderController {
                 .algorithm(JWSAlgorithm.ES256)
                 .keyID(keyProviderStrategy.getKeyId())
                 .build();
+        log.info("Custom Log:: JWK Set: {}", ecKey.toJSONObject());
         return new JWKSet(ecKey).toJSONObject();
     }
 }

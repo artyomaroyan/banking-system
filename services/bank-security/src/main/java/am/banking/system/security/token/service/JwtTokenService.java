@@ -6,6 +6,7 @@ import am.banking.system.security.token.claims.TokenClaimsService;
 import am.banking.system.security.token.service.abstraction.IJwtTokenService;
 import am.banking.system.security.token.service.abstraction.ITokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static am.banking.system.security.model.enums.TokenType.INTERNAL_JWT_TOKEN;
@@ -16,6 +17,7 @@ import static am.banking.system.security.model.enums.TokenType.JSON_WEB_TOKEN;
  * Date: 19.04.25
  * Time: 01:27:56
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtTokenService implements IJwtTokenService {
@@ -32,6 +34,7 @@ public class JwtTokenService implements IJwtTokenService {
 
     @Override
     public String generateSystemToken() {
+        log.info("Custom Log:: Generating system JWT token from token service class: {}", tokenService.createSystemToken(INTERNAL_JWT_TOKEN));
         return tokenService.createSystemToken(INTERNAL_JWT_TOKEN);
     }
 }
