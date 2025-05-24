@@ -29,7 +29,7 @@ public class UserTokenServiceClient implements IUserTokenServiceClient {
 
     @PostConstruct
     void logWebClientType() {
-        log.info("Logging WebClient type: {}", webClient.getClass().getSimpleName());
+        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")
@@ -51,7 +51,8 @@ public class UserTokenServiceClient implements IUserTokenServiceClient {
                 .uri("/api/security/web/validate-email-verification-token")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
-                .bodyToMono(Boolean.class);
+                .bodyToMono(Boolean.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 
     @Retry(name = "securityService")
@@ -62,7 +63,8 @@ public class UserTokenServiceClient implements IUserTokenServiceClient {
                 .uri("/api/security/web/generate-password-recovery-token")
                 .bodyValue(user)
                 .retrieve()
-                .bodyToMono(TokenResponse.class);
+                .bodyToMono(TokenResponse.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 
     @Retry(name = "securityService")
@@ -73,7 +75,8 @@ public class UserTokenServiceClient implements IUserTokenServiceClient {
                 .uri("/api/security/web/validate-password-recovery-token")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
-                .bodyToMono(Boolean.class);
+                .bodyToMono(Boolean.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 
     @Retry(name = "securityService")
@@ -84,6 +87,7 @@ public class UserTokenServiceClient implements IUserTokenServiceClient {
                 .uri("/api/security/web/invalidate-used-token")
                 .bodyValue(new TokenResponse(token))
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 }

@@ -28,12 +28,6 @@ public class Argon2Hashing implements PasswordEncoder {
 
     private final Argon2Properties argon2Properties;
 
-    /**
-     * Encodes the raw password using the Argon2 hashing algorithm.
-     *
-     * @param rawPassword the raw password to encode
-     * @return the encoded password in a Base64 format: salt:secret:hashedPassword
-     */
     @Override
     public String encode(CharSequence rawPassword) {
         byte[] salt = getSalt();
@@ -47,14 +41,6 @@ public class Argon2Hashing implements PasswordEncoder {
                 encoder.encodeToString(password));
     }
 
-    /**
-     * Verifies whether the raw password matches the encoded password.
-     *
-     * @param rawPassword     the raw password to verify
-     * @param encodedPassword the previously encoded password to match against
-     * @return true if the raw password matches the encoded password, false otherwise
-     * @throws InvalidEncodedPasswordFormatException if the encoded password format is invalid
-     */
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         String[] parts = encodedPassword.split(":");
@@ -69,14 +55,6 @@ public class Argon2Hashing implements PasswordEncoder {
         return Arrays.equals(expected, actual);
     }
 
-    /**
-     * Hashes the password using Argon2 with the specified salt and secret.
-     *
-     * @param password the raw password to hash
-     * @param salt     the salt to use for hashing
-     * @param secret   the secret key to enhance security
-     * @return the hashed password as a byte array
-     */
     private byte[] hashPassword(String password, byte[] salt, byte[] secret) {
         Argon2BytesGenerator generator = new Argon2BytesGenerator();
         Argon2Parameters.Builder parameters = new Argon2Parameters.Builder()
@@ -92,20 +70,10 @@ public class Argon2Hashing implements PasswordEncoder {
         return hash;
     }
 
-    /**
-     * Retrieves the salt to use in hashing
-     *
-     * @return the salt as a byte array
-     */
     private byte[] getSalt() {
         return toUtf8Bytes(argon2Properties.salt());
     }
 
-    /**
-     * Retrieves the secret key to use in hashing, encoded as UTF-8 bytes.
-     *
-     * @return the secret key as a byte array
-     */
     private byte[] getSecretKey() {
         return toUtf8Bytes(argon2Properties.secretKey());
     }

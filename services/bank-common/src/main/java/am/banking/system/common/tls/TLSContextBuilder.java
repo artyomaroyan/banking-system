@@ -31,18 +31,18 @@ public class TLSContextBuilder {
 
         try {
             KeyStore keyStore = KeyStore.getInstance(properties.keyStoreType());
-            try (InputStream ksStream = new FileInputStream(properties.keyStorePath())) {
+            try (InputStream ksStream = new FileInputStream(properties.keyStore())) {
                 keyStore.load(ksStream, properties.keyStorePassword());
-                log.info("Custom Log:: Loaded keystore from {}", properties.keyStorePath());
+                log.info("Custom Log:: Loaded keystore from {}", properties.keyStore());
             }
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, properties.keyStorePassword());
 
             KeyStore trustStore = KeyStore.getInstance(properties.trustStoreType());
-            try (InputStream tsStream = new FileInputStream(properties.trustStorePath())) {
+            try (InputStream tsStream = new FileInputStream(properties.trustStore())) {
                 trustStore.load(tsStream, properties.trustStorePassword());
-                log.info("Custom Log:: Loaded truststore from {}", properties.trustStorePath());
+                log.info("Custom Log:: Loaded truststore from {}", properties.trustStore());
             }
 
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

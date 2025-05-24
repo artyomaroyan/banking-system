@@ -12,5 +12,5 @@ public interface KeyProviderStrategy {
     PrivateKey getPrivateKey();
     Key getPublicKey();
     Long getExpiration();
-    String getKeyId();
+//    String getKeyId();
 }

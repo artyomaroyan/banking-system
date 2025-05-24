@@ -2,7 +2,6 @@ package am.banking.system.security.token.factory;
 
 import am.banking.system.security.model.enums.TokenType;
 import am.banking.system.security.token.key.provider.TokenSigningKeyManager;
-import am.banking.system.security.token.strategy.KeyProviderStrategy;
 import am.banking.system.security.token.strategy.TokenGenerationStrategy;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ import static am.banking.system.common.enums.PermissionEnum.GENERATE_SYSTEM_TOKE
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFactory implements TokenGenerationStrategy {
-    private final KeyProviderStrategy keyProviderStrategy;
+//    private final KeyProviderStrategy keyProviderStrategy;
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
     @Override
@@ -36,9 +35,9 @@ public class JwtTokenFactory implements TokenGenerationStrategy {
         var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
 
         var builder = Jwts.builder()
-                .header()
-                .keyId(keyProviderStrategy.getKeyId())
-                    .and()
+//                .header()
+//                .keyId(keyProviderStrategy.getKeyId())
+//                    .and()
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(issuedAt)

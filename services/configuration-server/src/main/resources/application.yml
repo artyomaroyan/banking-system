@@ -1,6 +1,8 @@
 # application.yml file in configuration-server service
 server:
   port: 8888
+  ssl:
+    enabled: false
 spring:
   profiles:
     active: native

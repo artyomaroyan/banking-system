@@ -1,4 +1,4 @@
-package am.banking.system.user.model.enums;
+package am.banking.system.common.enums;
 
 /**
  * Author: Artyom Aroyan

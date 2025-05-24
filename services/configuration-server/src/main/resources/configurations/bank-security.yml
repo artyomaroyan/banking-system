@@ -1,18 +1,23 @@
 # bank-security.yml from configuration-server service
 server:
   port: 8989
+  ssl:
+    enabled: false
 
 webclient:
   tls:
-    url: https://localhost:8989
-    enabled: true
-    key-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
+    url: http://localhost:8989
+    key-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
     key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
     key-store-type: PKCS12
-    trust-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
+    trust-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
     trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
     trust-store-type: PKCS12
     client-auth: need
+
+internal:
+  system:
+    secret: ${X_INTERNAL_SECRET}
 
 spring:
   datasource:
@@ -32,7 +37,7 @@ spring:
 
 security:
   service:
-    url: https://localhost:8989
+    url: http://localhost:8989
 
   argon2:
     memory: 65536 # Use 64 MB of memory

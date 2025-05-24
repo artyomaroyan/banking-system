@@ -30,7 +30,7 @@ public class PasswordServiceClient implements IPasswordServiceClient {
 
     @PostConstruct
     void logWebClientType() {
-        log.info("Logging WebClient type: {}", webClient.getClass().getSimpleName());
+        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")
@@ -45,7 +45,8 @@ public class PasswordServiceClient implements IPasswordServiceClient {
                             .header("Authorization", "Bearer " + token)
                             .bodyValue(new PasswordHashingRequest(password))
                             .retrieve()
-                            .bodyToMono(String.class);
+                            .bodyToMono(String.class)
+                            .doOnError(error -> log.error("Custom Log:: unable to hash password: {}", error.getMessage(), error));
                 });
     }
 
@@ -57,6 +58,7 @@ public class PasswordServiceClient implements IPasswordServiceClient {
                 .uri("/api/security/web/validate-password")
                 .bodyValue(new PasswordValidatorRequest(rawPassword, hashedPassword))
                 .retrieve()
-                .bodyToMono(Boolean.class);
+                .bodyToMono(Boolean.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 }

@@ -1,13 +1,7 @@
 package am.banking.system.security.token.key.provider;
 
 import am.banking.system.security.exception.InvalidECKeyType;
-import am.banking.system.security.exception.KeyIdGenerationException;
 import am.banking.system.security.exception.KeyStoreLoadException;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.Curve;
-import com.nimbusds.jose.jwk.ECKey;
-import com.nimbusds.jose.jwk.KeyUse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -75,18 +69,18 @@ public class ECKeyStoreManager {
         }
     }
 
-    public String generateKeyIdFromPublicKey(ECPublicKey publicKey) {
-        try {
-            ECKey ecKey = new ECKey.Builder(Curve.P_256, publicKey)
-                    .keyUse(KeyUse.SIGNATURE)
-                    .algorithm(JWSAlgorithm.ES256)
-                    .keyIDFromThumbprint()
-                    .build();
-            return ecKey.getKeyID();
-
-        } catch (JOSEException ex) {
-            log.error("Failed to generate Key ID from public key", ex);
-            throw new KeyIdGenerationException("Failed to generate Key ID from public key", ex);
-        }
-    }
+//    public String generateKeyIdFromPublicKey(ECPublicKey publicKey) {
+//        try {
+//            ECKey ecKey = new ECKey.Builder(Curve.P_256, publicKey)
+//                    .keyUse(KeyUse.SIGNATURE)
+//                    .algorithm(JWSAlgorithm.ES256)
+//                    .keyIDFromThumbprint()
+//                    .build();
+//            return ecKey.getKeyID();
+//
+//        } catch (JOSEException ex) {
+//            log.error("Failed to generate Key ID from public key", ex);
+//            throw new KeyIdGenerationException("Failed to generate Key ID from public key", ex);
+//        }
+//    }
 }

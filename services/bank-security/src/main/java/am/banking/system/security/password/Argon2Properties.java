@@ -2,6 +2,7 @@ package am.banking.system.security.password;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,7 +16,6 @@ import java.util.Objects;
  */
 @Validated
 @ConfigurationProperties("security.argon2")
-//@ConfigurationProperties(prefix = "spring.security.argon2")
 public record Argon2Properties(
         @Positive int memory,
         @Positive int iterations,
@@ -46,7 +46,7 @@ public record Argon2Properties(
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "Argon2 properties{" +

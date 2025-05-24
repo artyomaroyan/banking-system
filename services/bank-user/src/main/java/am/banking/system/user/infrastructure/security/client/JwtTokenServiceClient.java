@@ -3,6 +3,7 @@ package am.banking.system.user.infrastructure.security.client;
 import am.banking.system.common.dto.UserDto;
 import am.banking.system.common.dto.security.TokenResponse;
 import am.banking.system.common.dto.security.TokenValidatorRequest;
+import am.banking.system.common.tls.configuration.InternalSecretProperties;
 import am.banking.system.user.infrastructure.security.abstraction.IJwtTokenServiceClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -25,14 +26,16 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @Service
 public class JwtTokenServiceClient implements IJwtTokenServiceClient {
     private final WebClient webClient;
+    private final InternalSecretProperties secretProperties;
 
-    public JwtTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient) {
+    public JwtTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient, InternalSecretProperties secretProperties) {
         this.webClient = webClient;
+        this.secretProperties = secretProperties;
     }
 
     @PostConstruct
     void logWebClientType() {
-        log.info("Logging WebClient type: {}", webClient.getClass().getSimpleName());
+        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")
@@ -43,7 +46,8 @@ public class JwtTokenServiceClient implements IJwtTokenServiceClient {
                 .uri("/api/security/web/generate-jwt-token")
                 .bodyValue(user)
                 .retrieve()
-                .bodyToMono(TokenResponse.class);
+                .bodyToMono(TokenResponse.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 
     @Retry(name = "securityService")
@@ -52,19 +56,15 @@ public class JwtTokenServiceClient implements IJwtTokenServiceClient {
     public Mono<String> generateSystemToken() {
         return webClient.post()
                 .uri("/api/v1/secure/local/system-token")
+                .header("X-Internal-Secret", secretProperties.secret())
                 .retrieve()
                 .onStatus(status -> status == FORBIDDEN,
                         response -> response.bodyToMono(String.class)
-                                .flatMap(errorBody -> {
-                                    log.error("Custom Log:: Forbidden error response body: {}", errorBody);
-                                    return Mono.error(new RuntimeException("Forbidden: " + errorBody));
+                                .flatMap(error -> {
+                                    log.error("Custom Log:: Forbidden error response body: {}", error);
+                                    return Mono.error(new RuntimeException("Forbidden: " + error));
                                 }))
                 .bodyToMono(String.class);
-//        return webClient.post()
-//                .uri("/api/v1/secure/local/system-token")
-//                .retrieve()
-//                .bodyToMono(String.class)
-//                .doOnError(error -> log.error("Custom Log:: Error during generateSystemToken: {}", error.getCause(), error));
     }
 
     @Retry(name = "securityService")
@@ -75,6 +75,7 @@ public class JwtTokenServiceClient implements IJwtTokenServiceClient {
                 .uri("/api/security/web/validate-jwt-token")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
-                .bodyToMono(Boolean.class);
+                .bodyToMono(Boolean.class)
+                .doOnError(error -> log.error("Custom Log:: unable to validate token: {}", error.getMessage(), error));
     }
 }

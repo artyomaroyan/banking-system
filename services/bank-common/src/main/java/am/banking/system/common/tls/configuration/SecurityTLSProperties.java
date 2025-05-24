@@ -18,10 +18,10 @@ import java.util.Objects;
 @ConfigurationProperties(prefix = "webclient.tls")
 public record SecurityTLSProperties(
         @NotBlank String url,
-        @NotBlank String keyStorePath,
+        @NotBlank String keyStore,
         @NotNull char[] keyStorePassword,
         @NotBlank String keyStoreType,
-        @NotBlank String trustStorePath,
+        @NotBlank String trustStore,
         @NotNull char[] trustStorePassword,
         @NotBlank String trustStoreType) {
 
@@ -31,17 +31,17 @@ public record SecurityTLSProperties(
         if (obj == null || getClass() != obj.getClass()) return false;
         SecurityTLSProperties that = (SecurityTLSProperties) obj;
         return Objects.equals(this.url, that.url) &&
-                Objects.equals(this.keyStorePath, that.keyStorePath) &&
+                Objects.equals(this.keyStore, that.keyStore) &&
                 Arrays.equals(this.keyStorePassword, that.keyStorePassword) &&
                 Objects.equals(this.keyStoreType, that.keyStoreType) &&
-                Objects.equals(this.trustStorePath, that.trustStorePath) &&
+                Objects.equals(this.trustStore, that.trustStore) &&
                 Arrays.equals(this.trustStorePassword, that.trustStorePassword) &&
                 Objects.equals(this.trustStoreType, that.trustStoreType);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(url, keyStorePath, keyStoreType, trustStorePath, trustStoreType);
+        int result = Objects.hash(url, keyStore, keyStoreType, trustStore, trustStoreType);
         result = 31 * result + Arrays.hashCode(keyStorePassword);
         result = 31 * result + Arrays.hashCode(trustStorePassword);
         return result;
@@ -52,10 +52,10 @@ public record SecurityTLSProperties(
     public String toString() {
         return "SecurityTLSProperties{" +
                 "url='" + url + '\'' +
-                ", keyStorePath='" + keyStorePath + '\'' +
+                ", keyStore='" + keyStore + '\'' +
                 ", keyStorePassword=[PROTECTED]" +
                 ", keyStoreType='" + keyStoreType + '\'' +
-                ", trustStorePath='" + trustStorePath + '\'' +
+                ", trustStore='" + trustStore + '\'' +
                 ", trustStorePassword=[PROTECTED]" +
                 ", trustStoreType='" + trustStoreType + '\'' +
                 '}';

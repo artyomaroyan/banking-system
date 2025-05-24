@@ -20,7 +20,7 @@ public class InternalAuthorizationController {
     private final IJwtTokenService jwtTokenService;
 
     @PostMapping("system-token")
-    @PreAuthorize("hasRole('SYSTEM') && hasPermission('GENERATE_SYSTEM_TOKEN')")
+    @PreAuthorize("hasAuthority('GENERATE_SYSTEM_TOKEN')")
     public ResponseEntity<String> generateSystemToken() {
         return ResponseEntity.ok(jwtTokenService.generateSystemToken());
     }

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * Time: 23:45:15
  */
 @Configuration
-@EnableConfigurationProperties(SecurityTLSProperties.class)
+@EnableConfigurationProperties({SecurityTLSProperties.class, InternalSecretProperties.class})
 public class BeanConfiguration {
     @Bean
     public WebClientFactory webClientFactory(SecurityTLSProperties securityTLSProperties) {

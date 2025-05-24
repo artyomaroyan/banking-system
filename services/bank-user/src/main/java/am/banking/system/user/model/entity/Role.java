@@ -1,7 +1,7 @@
 package am.banking.system.user.model.entity;
 
 import am.banking.system.common.entity.BaseEntity;
-import am.banking.system.user.model.enums.RoleEnum;
+import am.banking.system.common.enums.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +26,7 @@ import java.util.Set;
 public class Role extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private String roleName;
+    private RoleEnum roleName;
     @DBRef
     private Set<Permission> permissions;
-
-    public Role(RoleEnum role, Set<Permission> permission) {
-        this.roleName = role.name();
-        this.permissions = permission;
-    }
 }

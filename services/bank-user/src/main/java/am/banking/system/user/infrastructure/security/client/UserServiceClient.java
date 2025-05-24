@@ -28,7 +28,7 @@ public class UserServiceClient implements ISecurityServiceClient {
 
     @PostConstruct
     void logWebClientType() {
-        log.info("Logging WebClient type: {}", webClient.getClass().getSimpleName());
+        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")
@@ -39,6 +39,7 @@ public class UserServiceClient implements ISecurityServiceClient {
                 .uri("/api/security/web/authorize")
                 .bodyValue(new AuthorizationRequest(token, permission))
                 .retrieve()
-                .bodyToMono(Boolean.class);
+                .bodyToMono(Boolean.class)
+                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
     }
 }

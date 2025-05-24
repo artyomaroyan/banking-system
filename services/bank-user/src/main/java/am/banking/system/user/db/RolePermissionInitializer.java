@@ -3,7 +3,7 @@ package am.banking.system.user.db;
 import am.banking.system.common.enums.PermissionEnum;
 import am.banking.system.user.model.entity.Permission;
 import am.banking.system.user.model.entity.Role;
-import am.banking.system.user.model.enums.RoleEnum;
+import am.banking.system.common.enums.RoleEnum;
 import am.banking.system.user.model.repository.PermissionRepository;
 import am.banking.system.user.model.repository.RoleRepository;
 import jakarta.annotation.PostConstruct;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static am.banking.system.common.enums.PermissionEnum.*;
-import static am.banking.system.user.model.enums.RoleEnum.*;
+import static am.banking.system.common.enums.RoleEnum.*;
 
 /**
  * Author: Artyom Aroyan
@@ -68,7 +68,7 @@ final class RolePermissionInitializer {
                         (existing, _) -> existing));
 
         rolePermission.forEach((roleEnum, permissionEnum) -> {
-            Role existingRole = roleRepository.findByRoleName(roleEnum.name()).orElse(null);
+            Role existingRole = roleRepository.findByRoleName(roleEnum).orElse(null);
 
             Set<Permission> permissionForRole = permissionEnum.stream()
                     .map(permissionEntity::get)

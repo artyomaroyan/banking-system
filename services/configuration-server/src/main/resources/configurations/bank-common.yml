@@ -1,15 +1,20 @@
 # bank-common.yml from configuration-server service
 server:
   port: 9090
+  ssl:
+    enabled: false
 
 webclient:
   tls:
-    url: https://localhost:8989
-    enabled: true
-    key-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
+    url: http://localhost:8989
+    key-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
     key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
     key-store-type: PKCS12
-    trust-store-path: /Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
+    trust-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
     trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
     trust-store-type: PKCS12
     client-auth: need
+
+internal:
+  system:
+    secret: ${X_INTERNAL_SECRET}

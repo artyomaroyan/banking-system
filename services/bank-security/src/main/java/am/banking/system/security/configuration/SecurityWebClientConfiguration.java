@@ -50,16 +50,4 @@ public class SecurityWebClientConfiguration {
                         .header(AUTHORIZATION, "Bearer ", iJwtTokenService.generateSystemToken())
                         .build()));
     }
-
-//    private ExchangeFilterFunction jwtTokenPropagationFilter() {
-//        return (request, next) -> {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            if (authentication != null && authentication.isAuthenticated() &&
-//                    authentication.getPrincipal() instanceof UserPrincipal user) {
-//                String jwt = jwtTokenService.generateJwtToken(user);
-//                request.headers().set(AUTHORIZATION, "Bearer " + jwt);
-//            }
-//            return next.exchange(request);
-//        };
-//    }
 }

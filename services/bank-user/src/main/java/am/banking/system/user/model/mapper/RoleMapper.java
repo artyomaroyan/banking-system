@@ -1,7 +1,7 @@
 package am.banking.system.user.model.mapper;
 
 import am.banking.system.user.model.entity.Role;
-import am.banking.system.user.model.enums.RoleEnum;
+import am.banking.system.common.enums.RoleEnum;
 import am.banking.system.user.model.repository.RoleRepository;
 import am.banking.system.user.service.permission.PermissionService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class RoleMapper {
 
     public Set<Role> getDefaultRole() {
         var defaultRole = RoleEnum.USER;
-        return roleRepository.findByRoleName(defaultRole.name())
+        return roleRepository.findByRoleName(defaultRole)
                 .map(Set::of)
                 .orElseGet(() -> {
                     var permission = permissionService.getPermissionsByRole(defaultRole);
