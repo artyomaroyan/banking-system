@@ -3,6 +3,7 @@ server:
   port: 8888
   ssl:
     enabled: false
+
 spring:
   profiles:
     active: native
@@ -13,3 +14,22 @@ spring:
       server:
         native:
           search-locations: classpath:/configurations
+
+logging:
+  level:
+    org.apache.tomcat.util.net: TRACE
+    org.apache.coyote: TRACE
+    org.springframework.boot.web.embedded.tomcat: TRACE
+#logging:
+#  level:
+#    javax.net.ssl: debug
+#    sun.security.ssl: debug
+#    org.springframework.cloud.config.server: debug
+#    com.netflix.discovery: debug
+#    org.apache.http: debug
+#    org.apache.tomcat.util.net: debug
+#    org.springframework.boot.web.embedded.tomcat: debug
+#    org.springframework.boot.env: debug
+#    org.springframework.cloud.bootstrap: debug
+#    org.springframework.context.config: debug
+#debug: true

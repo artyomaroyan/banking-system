@@ -13,7 +13,6 @@ webclient:
     trust-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
     trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
     trust-store-type: PKCS12
-    client-auth: need
 
 internal:
   system:
