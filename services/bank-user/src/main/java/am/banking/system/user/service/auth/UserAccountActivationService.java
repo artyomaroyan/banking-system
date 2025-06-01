@@ -1,9 +1,9 @@
 package am.banking.system.user.service.auth;
 
+import am.banking.system.common.reponse.Result;
 import am.banking.system.user.exception.InvalidUserTokenException;
 import am.banking.system.user.exception.UserAccountActivationException;
 import am.banking.system.user.infrastructure.security.abstraction.IUserTokenServiceClient;
-import am.banking.system.user.model.result.Result;
 import am.banking.system.user.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

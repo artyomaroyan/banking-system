@@ -1,11 +1,11 @@
 package am.banking.system.user.service.core;
 
+import am.banking.system.common.reponse.Result;
 import am.banking.system.user.exception.UserAccountActivationException;
 import am.banking.system.user.model.dto.UserResponse;
 import am.banking.system.user.model.entity.User;
 import am.banking.system.user.model.mapper.UserMapper;
 import am.banking.system.user.model.repository.UserRepository;
-import am.banking.system.user.model.result.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;

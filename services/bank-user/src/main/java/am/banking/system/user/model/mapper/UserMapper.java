@@ -1,6 +1,6 @@
 package am.banking.system.user.model.mapper;
 
-import am.banking.system.common.dto.UserDto;
+import am.banking.system.common.dto.user.UserDto;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.dto.UserResponse;
 import am.banking.system.user.model.entity.User;

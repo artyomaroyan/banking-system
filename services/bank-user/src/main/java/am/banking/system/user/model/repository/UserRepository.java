@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
  * Time: 00:04:45
  */
 @Repository
-public interface UserRepository extends ReactiveMongoRepository<User, Long> {
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
     Mono<Boolean> existsByUsername(String username);
 
     Mono<Boolean> existsByEmail(String email);

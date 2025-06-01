@@ -1,12 +1,12 @@
 package am.banking.system.user.service.auth;
 
-import am.banking.system.common.dto.UserDto;
+import am.banking.system.common.dto.user.UserDto;
+import am.banking.system.common.reponse.Result;
 import am.banking.system.user.infrastructure.security.abstraction.IJwtTokenServiceClient;
 import am.banking.system.user.infrastructure.security.abstraction.IUserTokenServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
 import am.banking.system.user.model.mapper.UserMapper;
 import am.banking.system.user.model.repository.UserRepository;
-import am.banking.system.user.model.result.Result;
 import am.banking.system.user.service.EmailSendingService;
 import am.banking.system.user.service.validation.RequestValidation;
 import lombok.RequiredArgsConstructor;

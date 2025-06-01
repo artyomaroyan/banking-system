@@ -1,7 +1,7 @@
 package am.banking.system.security.controller;
 
-import am.banking.system.common.dto.UserDto;
 import am.banking.system.common.dto.security.*;
+import am.banking.system.common.dto.user.UserDto;
 import am.banking.system.security.model.dto.UserPrincipal;
 import am.banking.system.security.password.Argon2Hashing;
 import am.banking.system.security.service.AuthorizationService;

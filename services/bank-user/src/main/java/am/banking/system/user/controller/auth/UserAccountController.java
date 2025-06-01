@@ -1,7 +1,7 @@
 package am.banking.system.user.controller.auth;
 
+import am.banking.system.common.reponse.Result;
 import am.banking.system.user.model.dto.UserRequest;
-import am.banking.system.user.model.result.Result;
 import am.banking.system.user.service.auth.UserAccountActivationService;
 import am.banking.system.user.service.auth.UserRegistrationService;
 import jakarta.validation.Valid;

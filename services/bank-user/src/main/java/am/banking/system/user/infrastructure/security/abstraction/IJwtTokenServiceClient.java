@@ -1,7 +1,7 @@
 package am.banking.system.user.infrastructure.security.abstraction;
 
-import am.banking.system.common.dto.UserDto;
 import am.banking.system.common.dto.security.TokenResponse;
+import am.banking.system.common.dto.user.UserDto;
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
 
