@@ -1,0 +1,20 @@
+server:
+  port: 8181
+  ssl:
+    enabled: false
+
+flyway:
+  enabled: true
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+
+datasource:
+  url: jdbc:postgresql://localhost:5432/banking_system
+  username: postgres
+  password: root
+  driver-class-name: org.postgresql.Driver
+
+r2dbc:
+  url: r2dbc:postgresql://localhost:5432/banking_system
+  username: postgres
+  password: root
