@@ -19,7 +19,7 @@ public class UserFactory {
     private final RoleMapper roleMapper;
     private final PasswordServiceClient securityServiceClient;
 
-    protected Mono<User> createUser(UserRequest request) {
+    public Mono<User> createUser(UserRequest request) {
         return securityServiceClient.hashPassword(request.password()).map(
                 hashedPassword -> new User(
                         request.username(),

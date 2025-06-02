@@ -1,10 +1,10 @@
 package am.banking.system.user.service.core;
 
+import am.banking.system.common.mapper.GenericMapper;
 import am.banking.system.common.reponse.Result;
 import am.banking.system.user.exception.UserAccountActivationException;
 import am.banking.system.user.model.dto.UserResponse;
 import am.banking.system.user.model.entity.User;
-import am.banking.system.user.model.mapper.UserMapper;
 import am.banking.system.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserMapper userMapper;
+    private final GenericMapper genericMapper;
     private final UserRepository userRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
@@ -52,14 +52,14 @@ public class UserService {
 
     public Mono<Result<UserResponse>> getUserByUsername(String username) {
         return userRepository.findUserByUsername(username)
-                .map(userMapper::mapFromEntityToResponse)
+                .map(user -> genericMapper.map(user, UserResponse.class))
                 .map(response -> Result.success(response, SUCCESS))
                 .defaultIfEmpty(Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
     }
 
     public Mono<Result<UserResponse>> getUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
-                .map(userMapper::mapFromEntityToResponse)
+                .map(user -> genericMapper.map(user, UserResponse.class))
                 .map(response -> Result.success(response, SUCCESS))
                 .defaultIfEmpty(Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
     }
