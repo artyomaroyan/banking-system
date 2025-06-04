@@ -3,10 +3,10 @@ package am.banking.system.security.controller;
 import am.banking.system.security.token.service.abstraction.IJwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/secure/local/")
+@RequestMapping("/api/v1/secure/local")
 public class InternalAuthorizationController {
     private final IJwtTokenService jwtTokenService;
 
-    @PostMapping("system-token")
-    @PreAuthorize("hasAuthority('GENERATE_SYSTEM_TOKEN')")
-    public ResponseEntity<String> generateSystemToken() {
-        return ResponseEntity.ok(jwtTokenService.generateSystemToken());
+    @PostMapping("/system-token")
+//    @PreAuthorize("hasAuthority('GENERATE_SYSTEM_TOKEN')")
+    public Mono<ResponseEntity<String>> generateSystemToken() {
+        return Mono.fromSupplier(jwtTokenService::generateSystemToken)
+                .map(ResponseEntity::ok);
     }
 }

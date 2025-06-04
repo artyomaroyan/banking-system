@@ -17,8 +17,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static am.banking.system.common.enums.PermissionEnum.GENERATE_SYSTEM_TOKEN;
-
 /**
  * Author: Artyom Aroyan
  * Date: 20.04.25
@@ -69,7 +67,7 @@ public class SecurityConfiguration {
                         )
                             .permitAll()
                         .pathMatchers("/api/v1/secure/local/system-token")
-                            .hasAuthority(GENERATE_SYSTEM_TOKEN.name())
+                            .permitAll()
                         .anyExchange()
                             .authenticated()
                 );

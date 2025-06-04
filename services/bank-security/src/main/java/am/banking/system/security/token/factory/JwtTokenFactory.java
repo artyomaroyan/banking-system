@@ -9,11 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static am.banking.system.common.enums.PermissionEnum.GENERATE_SYSTEM_TOKEN;
 
 /**
  * Author: Artyom Aroyan
@@ -46,26 +43,6 @@ public class JwtTokenFactory implements TokenGenerationStrategy {
                 .audience().add("Bank account web client")
                     .and()
                 .id(UUID.randomUUID().toString());
-        return credentials.sign(builder).compact();
-    }
-
-    @Override
-    public String generateSystemToken() {
-        var type = TokenType.INTERNAL_JWT_TOKEN;
-        var credentials = tokenSigningKeyManager.retriveSigningCredentials(type);
-        var issuedAt = new Date();
-        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
-
-        var builder = Jwts.builder()
-                .subject(JwtTokenFactory.class.getSimpleName())
-                .issuer("bank-security service")
-                .issuedAt(issuedAt)
-                .expiration(expiration)
-                .audience().add("Internal communication Token")
-                .and()
-                .claim("authorities", List.of("ROLE_SYSTEM", GENERATE_SYSTEM_TOKEN))
-                .id(UUID.randomUUID().toString());
-        log.info("Custom Log:: Generated system token from token factory class: {}", credentials.sign(builder).compact());
         return credentials.sign(builder).compact();
     }
 

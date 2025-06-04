@@ -10,7 +10,9 @@ import java.util.Map;
  * Time: 01:35:25
  */
 public interface TokenGenerationStrategy {
-    String generateToken(Map<String, Object> claims, String subject);
+    default String generateToken(Map<String, Object> claims, String subject) {
+        throw new UnsupportedOperationException("Generate system token is not supported");
+    }
 
     default String generateSystemToken() {
         throw new UnsupportedOperationException("Generate system token is not supported");
