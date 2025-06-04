@@ -56,7 +56,7 @@ public class JwtTokenServiceClient implements IJwtTokenServiceClient {
     public Mono<String> generateSystemToken() {
         return webClient.post()
                 .uri("/api/v1/secure/local/system-token")
-                .header("X-Internal-Secret", secretProperties.secret())
+                .headers(headers -> headers.set("X-Internal-Secret", secretProperties.secret()))
                 .retrieve()
                 .onStatus(status -> status == FORBIDDEN,
                         response -> response.bodyToMono(String.class)

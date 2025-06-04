@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 /**
  * Author: Artyom Aroyan
  * Date: 20.04.25
@@ -42,7 +44,7 @@ public class PasswordServiceClient implements IPasswordServiceClient {
                     log.info("Custom Log:: Generated system token: {}", token);
                     return webClient.post()
                             .uri("/api/security/web/hash-password")
-                            .header("Authorization", "Bearer " + token)
+                            .header(AUTHORIZATION, "Bearer " + token)
                             .bodyValue(new PasswordHashingRequest(password))
                             .retrieve()
                             .bodyToMono(String.class)

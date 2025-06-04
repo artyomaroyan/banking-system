@@ -4,3 +4,10 @@ spring:
     import: optional:configserver:http://localhost:8888
   application:
     name: bank-user
+
+logging:
+  level:
+    org.springframework.web: trace
+    org.springframework.security: trace
+    am.banking.system.security: debug
+    am.banking.system.user: debug
