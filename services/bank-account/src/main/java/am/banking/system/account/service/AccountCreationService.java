@@ -6,7 +6,6 @@ import am.banking.system.account.model.entity.Account;
 import am.banking.system.account.model.repository.AccountRepository;
 import am.banking.system.common.dto.user.UserRegistrationEvent;
 import am.banking.system.common.mapper.GenericMapper;
-import am.banking.system.common.reponse.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Service;
@@ -30,11 +29,7 @@ public class AccountCreationService implements IAccountCreationService {
     private final AccountRepository accountRepository;
 
     @Override
-    public Result<AccountResponse> createDefaultAccount(AccountRequest request) {
-        return null;
-    }
-
-    private Mono<AccountResponse> createAccount(UserRegistrationEvent event) {
+    public Mono<AccountResponse> createDefaultAccount(UserRegistrationEvent event) {
         return generateAccountNumber()
                 .flatMap(accountNumber -> {
                     AccountRequest accountRequest = new AccountRequest(

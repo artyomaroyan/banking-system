@@ -1,8 +1,8 @@
 package am.banking.system.account.service;
 
-import am.banking.system.account.model.dto.AccountRequest;
 import am.banking.system.account.model.dto.AccountResponse;
-import am.banking.system.common.reponse.Result;
+import am.banking.system.common.dto.user.UserRegistrationEvent;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -10,5 +10,5 @@ import am.banking.system.common.reponse.Result;
  * Time: 15:52:35
  */
 public interface IAccountCreationService {
-    Result<AccountResponse> createDefaultAccount(AccountRequest request);
+    Mono<AccountResponse> createDefaultAccount(UserRegistrationEvent event);
 }
