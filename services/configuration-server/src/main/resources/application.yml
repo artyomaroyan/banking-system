@@ -5,21 +5,31 @@ server:
     enabled: false
 
 spring:
-  profiles:
-    active: native
   application:
     name: configuration-server
+  profiles:
+    active: native
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/configurations
 
-logging:
-  level:
-    org.apache.tomcat.util.net: TRACE
-    org.apache.coyote: TRACE
-    org.springframework.boot.web.embedded.tomcat: TRACE
+---
+spring:
+  config:
+    activate:
+      on-profile: native
+
+#logging:
+#  level:
+#    org.springframework.boot.web.embedded.tomcat: DEBUG
+
+#logging:
+#  level:
+#    org.apache.tomcat.util.net: TRACE
+#    org.apache.coyote: TRACE
+#    org.springframework.boot.web.embedded.tomcat: TRACE
 #logging:
 #  level:
 #    javax.net.ssl: debug
