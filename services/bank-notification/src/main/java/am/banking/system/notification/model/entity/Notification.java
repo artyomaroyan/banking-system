@@ -5,8 +5,9 @@ import am.banking.system.notification.kafka.dto.EmailVerification;
 import am.banking.system.notification.kafka.dto.PasswordReset;
 import am.banking.system.notification.kafka.dto.WelcomeEmail;
 import am.banking.system.notification.model.enums.EmailType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -17,12 +18,13 @@ import java.time.LocalDateTime;
  * Date: 01.05.25
  * Time: 00:41:22
  */
+@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "notification")
+@Table(name = "notification", schema = "bank-notification")
 public class Notification extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
