@@ -44,5 +44,5 @@ public enum PermissionEnum {
     VIEW_AUDIT_LOGS,
 
     // SYSTEM
-    GENERATE_SYSTEM_TOKEN
+    DO_INTERNAL_TASKS
 }
