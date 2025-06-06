@@ -20,14 +20,24 @@ internal:
     secret: ${X_INTERNAL_SECRET}
 
 spring:
-  data:
-    mongodb:
-      username: admin
-      password: secret
-      host: localhost
-      port: 27017
-      database: core
-      authentication-database: admin
+  datasource:
+    url: jdbc:postgres://localhost:5432/user_db
+    username: user_owner
+    password: user_owner
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    open-in-view: false
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: true
 
 resilience4j:
   retry:

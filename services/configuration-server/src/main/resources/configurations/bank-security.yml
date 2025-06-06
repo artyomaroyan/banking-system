@@ -21,19 +21,23 @@ internal:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/banking_system
-    username: postgres
-    password: root
+    url: jdbc:postgresql://localhost:5432/security_db
+    username: security_owner
+    password: security_owner
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
       hibernate:
-        default_schema: bank_security
         format_sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: false
     open-in-view: false
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: true
 
 security:
   service:
