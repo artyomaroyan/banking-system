@@ -53,7 +53,7 @@ final class RolePermissionInitializer {
                         APPROVE_LARGE_TRANSACTION, ROLLBACK_TRANSACTION, VIEW_ROLES_AND_PERMISSIONS, ASSIGN_ROLES,
                         MANAGE_PERMISSIONS, VIEW_OWN_NOTIFICATIONS, VIEW_AUDIT_LOGS),
 
-                SYSTEM, Set.of(GENERATE_SYSTEM_TOKEN));
+                SYSTEM, Set.of(DO_INTERNAL_TASKS));
 
         Set<PermissionEnum> allPermissions = rolePermission.values().stream()
                 .flatMap(Set::stream)
@@ -110,7 +110,7 @@ final class RolePermissionInitializer {
                 VIEW_OWN_NOTIFICATIONS, VIEW_AUDIT_LOGS,
 
                 // SYSTEM
-                GENERATE_SYSTEM_TOKEN
+                DO_INTERNAL_TASKS
         );
 
         permissionEnums.forEach(permission ->
