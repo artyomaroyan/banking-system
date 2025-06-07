@@ -6,25 +6,22 @@ server:
 notification:
   tls:
     base-url: http://localhost:8989
+
 spring:
-  datasource:
-    url: jdbc:postgres://localhost:5432/notification_db
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/notification_db
     username: notification_owner
     password: notify_owner
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate:
-      ddl-auto: create
-    show-sql: false
-    open-in-view: false
 
   flyway:
-    enabled: false
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/notification_db
+    user: notification_owner
+    password: notify_owner
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    driver-class-name: org.postgresql.Driver
+    schemas: notification
+    default-schema: notification
 
   kafka:
     consumer:

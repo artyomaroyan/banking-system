@@ -4,21 +4,16 @@ server:
     enabled: false
 
 spring:
-  datasource:
-    url: jdbc:postgres://localhost:5432/account_db
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/account_db
     username: account_owner
     password: account_owner
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate:
-      ddl-auto: create
-    show-sql: false
-    open-in-view: false
 
   flyway:
-    enabled: false
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/account_db
+    user: account_owner
+    password: account_owner
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    driver-class-name: org.postgresql.Driver
+    default-schema: account

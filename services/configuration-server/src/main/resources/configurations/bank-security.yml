@@ -20,24 +20,19 @@ internal:
     secret: ${X_INTERNAL_SECRET}
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/security_db
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/security_db
     username: security_owner
     password: security_owner
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate:
-      ddl-auto: create
-    show-sql: false
-    open-in-view: false
 
   flyway:
-    enabled: false
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/security_db
+    user: security_owner
+    password: security_owner
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    driver-class-name: org.postgresql.Driver
+    default-schema: security
 
 security:
   service:
@@ -67,10 +62,12 @@ security:
 
 logging:
   level:
+    org.flywaydb: info
     root: info
     web: info
     sql: info
-    org.springframework.web: info
-    org.springframework.security: debug
-    am.banking.system.security: info
+    org.springframework.web: trace
+    org.springframework.security: trace
+    am.banking.system.security: debug
+    am.banking.system.user: debug
     org.springframework.cloud: info
