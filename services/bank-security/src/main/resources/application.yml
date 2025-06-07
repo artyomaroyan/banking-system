@@ -7,10 +7,3 @@ spring:
     name: bank-security
   main:
     web-application-type: reactive
-
-logging:
-  level:
-    org.springframework.web: trace
-    org.springframework.security: trace
-    am.banking.system.security: debug
-    am.banking.system.user: debug

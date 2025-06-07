@@ -24,7 +24,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_token", schema = "bank_security")
+@Table(name = "user_token", schema = "security")
 public class UserToken implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
