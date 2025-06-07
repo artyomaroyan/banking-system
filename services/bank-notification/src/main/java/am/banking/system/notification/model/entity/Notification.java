@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "notification", schema = "bank-notification")
+@Table(name = "notification", schema = "notification")
 public class Notification extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

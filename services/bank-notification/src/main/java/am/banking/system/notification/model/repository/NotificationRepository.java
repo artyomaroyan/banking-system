@@ -1,7 +1,7 @@
 package am.banking.system.notification.model.repository;
 
 import am.banking.system.notification.model.entity.Notification;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * Time: 00:47:23
  */
 @Repository
-public interface NotificationRepository extends MongoRepository<Notification, Long> {
+public interface NotificationRepository extends ReactiveCrudRepository<Notification, Long> {
 }
