@@ -25,7 +25,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "role", schema = "bank-user")
+@Table(name = "role", schema = "usr")
 public class Role extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

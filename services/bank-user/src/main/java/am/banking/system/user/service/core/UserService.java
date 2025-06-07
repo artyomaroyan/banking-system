@@ -8,16 +8,13 @@ import am.banking.system.user.model.entity.User;
 import am.banking.system.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
+import org.springframework.data.relational.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
-import static am.banking.system.common.enums.AccountState.ACTIVE;
-import static am.banking.system.common.enums.AccountState.PENDING;
 import static am.banking.system.user.util.LogConstants.SUCCESS;
 import static am.banking.system.user.util.LogConstants.USER_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -33,16 +30,17 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class UserService {
     private final GenericMapper genericMapper;
     private final UserRepository userRepository;
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
+    private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
-    @Transactional
     public Mono<Void> updateUserAccountState(Long id) {
-        Query query = new Query(Criteria.where("_id").is(id).and("state").is(PENDING));
-        Update update = new Update().set("state", ACTIVE);
-
-        return reactiveMongoTemplate.updateFirst(query,update,User.class)
-                .flatMap(result -> {
-                    if (result.getModifiedCount() == 0) {
+        return r2dbcEntityTemplate.update(User.class)
+                .matching(Query.query(
+                        Criteria.where("id").is(id)
+                                .and("state").is("PENDING")
+                ))
+                .apply(Update.update("state", "ACTIVE"))
+                .flatMap(rows -> {
+                    if (rows == 0) {
                         return Mono.error(new UserAccountActivationException(
                                 "User account state update failed. No pending user found with id: " + id));
                     }

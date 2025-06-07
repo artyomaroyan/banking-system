@@ -24,7 +24,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "permission", schema = "bank-user")
+@Table(name = "permission", schema = "usr")
 public class Permission extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
