@@ -1,12 +1,10 @@
 package am.banking.system.user.model.repository;
 
-import am.banking.system.user.model.entity.Role;
 import am.banking.system.common.enums.RoleEnum;
+import am.banking.system.user.model.entity.Role;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 
 /**
  * Author: Artyom Aroyan
@@ -15,5 +13,5 @@ import java.util.Optional;
  */
 @Repository
 public interface RoleRepository extends ReactiveCrudRepository<Role, Long> {
-    Mono<Optional<Role>> findByRoleName(RoleEnum roleEnum);
+    Mono<Role> findByRoleName(RoleEnum roleEnum);
 }

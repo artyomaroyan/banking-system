@@ -2,12 +2,11 @@ package am.banking.system.user.model.repository;
 
 import am.banking.system.common.enums.PermissionEnum;
 import am.banking.system.user.model.entity.Permission;
-import am.banking.system.user.model.entity.Role;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -16,7 +15,13 @@ import java.util.Set;
  */
 @Repository
 public interface PermissionRepository extends ReactiveCrudRepository<Permission, Long> {
-    Set<Permission> findByRolesContains(Optional<Role> role);
+    @Query("""
+SELECT p.* FROM user_db.usr.permission p
+JOIN user_db.usr.role_permission rp ON p.id = rp.permission_id
+WHERE rp.role_id = :roleId
+""")
+    Flux<Permission> findAllByRoleId(Long roleId);
 
-    Optional<Permission> findByPermissionName(PermissionEnum permissionName);
+    @Query("SELECT * FROM user_db.usr.permission WHERE permission_enum = :permissionName")
+    Mono<Permission> findByPermissionEnum(PermissionEnum permissionName);
 }

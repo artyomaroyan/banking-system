@@ -1,12 +1,16 @@
 package am.banking.system.user.model.mapper;
 
-import am.banking.system.common.enums.AccountState;
 import am.banking.system.user.infrastructure.security.client.PasswordServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
+import am.banking.system.user.model.entity.Role;
 import am.banking.system.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
+
+import static am.banking.system.common.enums.AccountState.PENDING;
 
 /**
  * Author: Artyom Aroyan
@@ -20,17 +24,21 @@ public class UserFactory {
     private final PasswordServiceClient securityServiceClient;
 
     public Mono<User> createUser(UserRequest request) {
-        return securityServiceClient.hashPassword(request.password()).map(
-                hashedPassword -> new User(
-                        request.username(),
-                        request.firstName(),
-                        request.lastName(),
-                        request.email(),
-                        hashedPassword,
-                        request.phone(),
-                        request.age(),
-                        AccountState.PENDING,
-                        roleMapper.getDefaultRole()
-                ));
+        return Mono.zip(securityServiceClient.hashPassword(request.password()),roleMapper.getDefaultRole())
+                .map(tuple -> {
+                    String password = tuple.getT1();
+                    Set<Role> roles = tuple.getT2();
+                    return new User(
+                            request.username(),
+                            request.firstName(),
+                            request.lastName(),
+                            request.email(),
+                            password,
+                            request.phone(),
+                            request.age(),
+                            PENDING,
+                            roles
+                    );
+                });
     }
 }

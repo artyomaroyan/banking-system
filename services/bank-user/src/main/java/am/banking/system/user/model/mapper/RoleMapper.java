@@ -1,13 +1,15 @@
 package am.banking.system.user.model.mapper;
 
 import am.banking.system.user.model.entity.Role;
-import am.banking.system.common.enums.RoleEnum;
 import am.banking.system.user.model.repository.RoleRepository;
 import am.banking.system.user.service.permission.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
+
+import static am.banking.system.common.enums.RoleEnum.USER;
 
 /**
  * Author: Artyom Aroyan
@@ -20,14 +22,15 @@ public class RoleMapper {
     private final RoleRepository roleRepository;
     private final PermissionService permissionService;
 
-    public Set<Role> getDefaultRole() {
-        var defaultRole = RoleEnum.USER;
+    public Mono<Set<Role>> getDefaultRole() {
+        var defaultRole = USER;
         return roleRepository.findByRoleName(defaultRole)
                 .map(Set::of)
-                .orElseGet(() -> {
-                    var permission = permissionService.getPermissionsByRole(defaultRole);
-                    var newRole = new Role(defaultRole, permission);
-                    return Set.of(roleRepository.save(newRole));
-                });
+                .switchIfEmpty(permissionService.getPermissionsByRole(defaultRole)
+                        .flatMap(permissions -> {
+                            Role newRole = new Role(defaultRole, permissions);
+                            return roleRepository.save(newRole).map(Set::of);
+                        })
+                );
     }
 }

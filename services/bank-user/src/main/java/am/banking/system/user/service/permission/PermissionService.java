@@ -2,6 +2,7 @@ package am.banking.system.user.service.permission;
 
 import am.banking.system.user.model.entity.Permission;
 import am.banking.system.common.enums.RoleEnum;
+import am.banking.system.user.model.entity.Role;
 import am.banking.system.user.model.repository.PermissionRepository;
 import am.banking.system.user.model.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Author: Artyom Aroyan
@@ -22,7 +24,9 @@ public class PermissionService {
     private final PermissionRepository permissionRepository;
 
     public Mono<Set<Permission>> getPermissionsByRole(RoleEnum roleEnum) {
-        var role = roleRepository.findByRoleName(roleEnum);
-        return permissionRepository.findByRolesContains(role);
+        return roleRepository.findByRoleName(roleEnum)
+                .map(Role::getId)
+                .flatMapMany(permissionRepository::findAllByRoleId)
+                .collect(Collectors.toSet());
     }
 }

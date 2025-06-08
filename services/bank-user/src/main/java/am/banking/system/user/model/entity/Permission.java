@@ -2,8 +2,8 @@ package am.banking.system.user.model.entity;
 
 import am.banking.system.common.entity.BaseEntity;
 import am.banking.system.common.enums.PermissionEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,6 @@ import java.util.Set;
  * Date: 13.04.25
  * Time: 23:41:39
  */
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,11 +27,6 @@ import java.util.Set;
 public class Permission extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private PermissionEnum permissionName;
-    @ManyToMany(mappedBy = "permission")
-    private Set<Role> roles;
-
-    public Permission(PermissionEnum permissionName) {
-        this.permissionName = permissionName;
-    }
+    @Enumerated(EnumType.STRING)
+    private PermissionEnum permissionEnum;
 }

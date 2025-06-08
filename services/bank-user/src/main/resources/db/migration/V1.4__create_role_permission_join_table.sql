@@ -1,4 +1,4 @@
-create table if not exists role_permission(
+create table if not exists user_db.usr.role_permission(
     role_id integer not null ,
     permission_id integer not null ,
     primary key (role_id, permission_id),
