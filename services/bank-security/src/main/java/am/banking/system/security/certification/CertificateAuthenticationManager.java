@@ -11,7 +11,7 @@
 //
 //import java.util.List;
 //
-//import static am.banking.system.common.enums.PermissionEnum.GENERATE_SYSTEM_TOKEN;
+//import static am.banking.system.common.enums.PermissionEnum.DO_INTERNAL_TASKS;
 //import static am.banking.system.common.enums.RoleEnum.SYSTEM;
 //
 //**
@@ -34,7 +34,7 @@
 //        if ("bank-user".equals(cn)) {
 //            List<GrantedAuthority> authorities = List.of(
 //                    new SimpleGrantedAuthority(SYSTEM.name()),
-//                    new SimpleGrantedAuthority(GENERATE_SYSTEM_TOKEN.name())
+//                    new SimpleGrantedAuthority(DO_INTERNAL_TASKS.name())
 //            );
 //            log.info("Custom Log:: Authenticated CN: {}", cn);
 //            log.info("Custom Log:: Authenticated Authorities: {}", authorities);

@@ -1,12 +1,13 @@
 package am.banking.system.security.util;
 
-import am.banking.system.security.model.repository.UserTokenRepository;
+import am.banking.system.security.token.service.abstraction.IUserTokenService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+
+import java.time.Duration;
 
 /**
  * Author: Artyom Aroyan
@@ -15,16 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Component
-@EnableScheduling
 @RequiredArgsConstructor
 public class TokenScheduler {
-    private final UserTokenRepository userTokenRepository;
+    private final IUserTokenService userTokenService;
 
-    @Transactional
-    @Scheduled(fixedRate = 15 * 60 * 1000)
-    public void schedule() {
-        log.info(LogConstants.START_SCHEDULE);
-        int expiredTokens = userTokenRepository.markTokensForciblyExpired();
-        log.info(LogConstants.FINISH_SCHEDULE, expiredTokens);
+    @PostConstruct
+    public void init() {
+        Flux.interval(Duration.ofMinutes(15))
+                .flatMap(tick -> userTokenService.markTokensForciblyExpired())
+                .doOnNext(count -> log.info("Tokens marked as forcibly expired: {}", count))
+                .doOnError(error -> log.error("Failed to mark tokens for expired: {}", error.getMessage()))
+                .subscribe();
     }
 }
