@@ -39,6 +39,24 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- these dependencies are to fix spring cloud starter netflix eureka client's Vulnerability -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.4.8-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.21</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.14</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -79,7 +97,7 @@
             <artifactId>modelmapper</artifactId>
             <version>3.2.1</version>
         </dependency>
-        <!-- Database -->
+        <!-- Spring data -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
