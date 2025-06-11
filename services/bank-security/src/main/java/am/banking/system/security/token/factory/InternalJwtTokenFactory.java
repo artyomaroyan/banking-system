@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static am.banking.system.common.enums.PermissionEnum.GENERATE_SYSTEM_TOKEN;
+import static am.banking.system.common.enums.PermissionEnum.DO_INTERNAL_TASKS;
 
 /**
  * Author: Artyom Aroyan
@@ -39,7 +39,7 @@ public class InternalJwtTokenFactory implements TokenGenerationStrategy {
                 .expiration(expiration)
                 .audience().add("Internal communication Token")
                 .and()
-                .claim("authorities", List.of("ROLE_SYSTEM", GENERATE_SYSTEM_TOKEN))
+                .claim("authorities", List.of("ROLE_SYSTEM", DO_INTERNAL_TASKS))
                 .id(UUID.randomUUID().toString());
         log.info("Custom Log:: Generated system token from token factory class: {}", credentials.sign(builder).compact());
         return credentials.sign(builder).compact();

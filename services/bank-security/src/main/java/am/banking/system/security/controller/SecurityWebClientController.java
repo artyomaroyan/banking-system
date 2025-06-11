@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -69,7 +70,7 @@ public class SecurityWebClientController {
     }
 
     @PostMapping("/generate-email-verification-token")
-    public ResponseEntity<TokenResponse> generateEmailVerificationToken(@RequestBody UserDto userDto) {
+    public Mono<ResponseEntity<TokenResponse>> generateEmailVerificationToken(@RequestBody UserDto userDto) {
         UserPrincipal user = new UserPrincipal(
                 userDto.userId(),
                 userDto.username(),
@@ -78,8 +79,8 @@ public class SecurityWebClientController {
                 userDto.roles(),
                 userDto.permissions()
         );
-        final String token = userTokenService.generateEmailVerificationToken(user);
-        return ResponseEntity.ok(new TokenResponse(token));
+        return userTokenService.generateEmailVerificationToken(user)
+                .map(token -> ResponseEntity.ok(new TokenResponse(token)));
     }
 
     @PostMapping("/validate-email-verification-token")
@@ -89,7 +90,7 @@ public class SecurityWebClientController {
     }
 
     @PostMapping("/generate-password-recovery-token")
-    public ResponseEntity<TokenResponse> generatePasswordRecoveryToken(@RequestBody UserDto userDto) {
+    public Mono<ResponseEntity<TokenResponse>> generatePasswordRecoveryToken(@RequestBody UserDto userDto) {
         UserPrincipal user = new UserPrincipal(
                 userDto.userId(),
                 userDto.username(),
@@ -98,8 +99,8 @@ public class SecurityWebClientController {
                 userDto.roles(),
                 userDto.permissions()
         );
-        final String token = userTokenService.generatePasswordResetToken(user);
-        return ResponseEntity.ok(new TokenResponse(token));
+        return userTokenService.generatePasswordResetToken(user)
+                .map(token -> ResponseEntity.ok(new TokenResponse(token)));
     }
 
     @PostMapping("/validate-password-recovery-token")
@@ -109,9 +110,9 @@ public class SecurityWebClientController {
     }
 
     @PostMapping("/invalidate-used-token")
-    public ResponseEntity<String> invalidateUsedToken(@RequestBody Long tokenId) {
-        userTokenService.markTokenAsVerified(tokenId);
-        return ResponseEntity.ok("Token invalidated");
+    public Mono<ResponseEntity<String>> invalidateUsedToken() {
+        return userTokenService.markTokensForciblyExpired()
+                .thenReturn(ResponseEntity.ok("Tokens marked as forcibly expired"));
     }
 
     @PostMapping("/authorize")

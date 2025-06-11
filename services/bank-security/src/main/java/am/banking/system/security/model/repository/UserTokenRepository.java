@@ -14,8 +14,4 @@ import java.util.Optional;
 @Repository
 public interface UserTokenRepository extends ReactiveCrudRepository<UserToken, Long> {
     Optional<UserToken> findByToken(String token);
-
-//    @Modifying
-//    @Query("update UserToken ut set ut.tokenState = 'FORCIBLY_EXPIRED' where ut.tokenState = 'PENDING' and ut.expirationDate < CURRENT_TIMESTAMP")
-//    int markTokensForciblyExpired();
 }

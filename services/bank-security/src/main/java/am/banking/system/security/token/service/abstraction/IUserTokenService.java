@@ -1,6 +1,7 @@
 package am.banking.system.security.token.service.abstraction;
 
 import am.banking.system.security.model.dto.UserPrincipal;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -8,7 +9,7 @@ import am.banking.system.security.model.dto.UserPrincipal;
  * Time: 00:10:49
  */
 public interface IUserTokenService {
-    String generatePasswordResetToken(final UserPrincipal principal);
-    String generateEmailVerificationToken(final UserPrincipal principal);
-    void markTokenAsVerified(final Long token);
+    Mono<String> generatePasswordResetToken(final UserPrincipal principal);
+    Mono<String> generateEmailVerificationToken(final UserPrincipal principal);
+    Mono<Long> markTokensForciblyExpired();
 }
