@@ -22,6 +22,6 @@ WHERE rp.role_id = :roleId
 """)
     Flux<Permission> findAllByRoleId(Long roleId);
 
-    @Query("SELECT * FROM user_db.usr.permission WHERE permission_enum = :permissionName")
+    @Query("SELECT * FROM user_db.usr.permission WHERE permission_name = :permissionName")
     Mono<Permission> findByPermissionEnum(PermissionEnum permissionName);
 }

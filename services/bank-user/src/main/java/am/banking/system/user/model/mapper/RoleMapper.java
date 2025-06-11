@@ -27,8 +27,8 @@ public class RoleMapper {
         return roleRepository.findByRoleName(defaultRole)
                 .map(Set::of)
                 .switchIfEmpty(permissionService.getPermissionsByRole(defaultRole)
-                        .flatMap(permissions -> {
-                            Role newRole = new Role(defaultRole, permissions);
+                        .flatMap(_ -> {
+                            Role newRole = new Role(defaultRole);
                             return roleRepository.save(newRole).map(Set::of);
                         })
                 );

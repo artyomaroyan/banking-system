@@ -13,5 +13,5 @@ import reactor.core.publisher.Mono;
  */
 @Repository
 public interface RoleRepository extends ReactiveCrudRepository<Role, Long> {
-    Mono<Role> findByRoleName(RoleEnum roleEnum);
+    Mono<Role> findByRoleName(RoleEnum roleName);
 }
