@@ -39,6 +39,24 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- these dependencies are to fix bank-common's Vulnerability -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.4.8-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.21</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.14</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
