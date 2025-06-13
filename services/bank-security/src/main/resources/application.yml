@@ -7,3 +7,7 @@ spring:
     name: bank-security
   main:
     web-application-type: reactive
+
+logging:
+  level:
+    org.springframework.r2dbc: debug

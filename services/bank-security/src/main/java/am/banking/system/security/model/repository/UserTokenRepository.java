@@ -12,6 +12,6 @@ import java.util.Optional;
  * Time: 23:29:04
  */
 @Repository
-public interface UserTokenRepository extends ReactiveCrudRepository<UserToken, Long> {
+public interface UserTokenRepository extends ReactiveCrudRepository<UserToken, Integer> {
     Optional<UserToken> findByToken(String token);
 }
