@@ -17,12 +17,12 @@ import java.time.LocalDateTime;
  * Date: 01.05.25
  * Time: 00:41:22
  */
-@Table
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "notification")
 public class Notification extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
