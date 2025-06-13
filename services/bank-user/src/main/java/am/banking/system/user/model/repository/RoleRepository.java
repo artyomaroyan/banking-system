@@ -12,6 +12,6 @@ import reactor.core.publisher.Mono;
  * Time: 00:05:45
  */
 @Repository
-public interface RoleRepository extends ReactiveCrudRepository<Role, Long> {
+public interface RoleRepository extends ReactiveCrudRepository<Role, Integer> {
     Mono<Role> findByRoleName(RoleEnum roleName);
 }

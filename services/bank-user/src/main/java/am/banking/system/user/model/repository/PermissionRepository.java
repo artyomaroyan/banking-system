@@ -14,13 +14,13 @@ import reactor.core.publisher.Mono;
  * Time: 00:06:06
  */
 @Repository
-public interface PermissionRepository extends ReactiveCrudRepository<Permission, Long> {
+public interface PermissionRepository extends ReactiveCrudRepository<Permission, Integer> {
     @Query("""
 SELECT p.* FROM user_db.usr.permission p
 JOIN user_db.usr.role_permission rp ON p.id = rp.permission_id
 WHERE rp.role_id = :roleId
 """)
-    Flux<Permission> findAllByRoleId(Long roleId);
+    Flux<Permission> findAllByRoleId(Integer roleId);
 
     @Query("SELECT * FROM user_db.usr.permission WHERE permission_name = :permissionName")
     Mono<Permission> findByPermissionEnum(PermissionEnum permissionName);

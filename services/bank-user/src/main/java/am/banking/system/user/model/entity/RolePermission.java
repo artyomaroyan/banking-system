@@ -1,8 +1,8 @@
 package am.banking.system.user.model.entity;
 
-import am.banking.system.common.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -14,8 +14,9 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class RolePermission extends BaseEntity {
-    private Long roleId;
-    private Long permissionId;
+public class RolePermission {
+    private Integer roleId;
+    private Integer permissionId;
 }

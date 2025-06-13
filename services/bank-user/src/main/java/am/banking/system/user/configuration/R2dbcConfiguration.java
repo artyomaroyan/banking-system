@@ -1,7 +1,9 @@
 package am.banking.system.user.configuration;
 
-import am.banking.system.user.converter.EnumReadConverter;
-import am.banking.system.user.converter.EnumWriteConverter;
+import am.banking.system.user.converter.PermissionEnumReadConverter;
+import am.banking.system.user.converter.PermissionEnumWriteConverter;
+import am.banking.system.user.converter.RoleEnumReadConverter;
+import am.banking.system.user.converter.RoleEnumWriteConverter;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
@@ -49,6 +51,7 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
     public R2dbcCustomConversions r2dbcCustomConversions() {
         return new R2dbcCustomConversions(
                 CustomConversions.StoreConversions.NONE,
-                List.of(new EnumWriteConverter(), new EnumReadConverter()));
+                List.of(new PermissionEnumWriteConverter(), new PermissionEnumReadConverter(),
+                        new RoleEnumWriteConverter(), new RoleEnumReadConverter()));
     }
 }

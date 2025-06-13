@@ -10,7 +10,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Author: Artyom Aroyan
@@ -33,5 +32,4 @@ public class User extends BaseEntity implements Serializable {
     private String phone;
     private Integer age;
     private AccountState state;
-    private Set<Role> roles;
 }

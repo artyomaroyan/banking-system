@@ -11,7 +11,7 @@ import org.springframework.data.convert.ReadingConverter;
  * Time: 15:04:02
  */
 @ReadingConverter
-public class EnumReadConverter implements Converter<String, PermissionEnum> {
+public class PermissionEnumReadConverter implements Converter<String, PermissionEnum> {
     @Override
     public PermissionEnum convert(@NonNull String source) {
         return PermissionEnum.valueOf(source);

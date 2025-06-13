@@ -6,9 +6,9 @@ import am.banking.system.user.model.entity.RolePermission;
 import am.banking.system.user.model.repository.RolePermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,9 +22,16 @@ public class RolePermissionLinkService {
     private final RolePermissionRepository rolePermissionRepository;
 
     public Mono<Void> savePermissionsForRole(Role role, Set<Permission> permissions) {
-        List<RolePermission> links = permissions.stream()
-                .map(permission -> new RolePermission(role.getId(), permission.getId()))
-                .toList();
-        return rolePermissionRepository.saveAll(links).then();
+        return Flux.fromIterable(permissions)
+                .flatMap(permission ->
+                        rolePermissionRepository.existsByRoleIdAndPermissionId(role.getId(), permission.getId())
+                                .flatMap(exists -> {
+                                    if (Boolean.FALSE.equals(exists)) {
+                                        return rolePermissionRepository.save(
+                                                new RolePermission(role.getId(), permission.getId()));
+                                    }
+                                    return  Mono.empty();
+                                }))
+                .then();
     }
 }

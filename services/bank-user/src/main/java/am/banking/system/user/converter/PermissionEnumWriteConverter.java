@@ -10,7 +10,7 @@ import org.springframework.data.convert.WritingConverter;
  * Time: 15:06:17
  */
 @WritingConverter
-public class EnumWriteConverter implements Converter<PermissionEnum, String> {
+public class PermissionEnumWriteConverter implements Converter<PermissionEnum, String> {
     @Override
     public String convert(PermissionEnum source) {
         return source.name();
