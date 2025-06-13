@@ -1,0 +1,296 @@
+-- Insert roles
+insert into user_db.usr.role (created_at, updated_at, role_name)
+VALUES (current_timestamp, current_timestamp, 'GUEST'),
+       (current_timestamp, current_timestamp, 'USER'),
+       (current_timestamp, current_timestamp, 'MANAGER'),
+       (current_timestamp, current_timestamp, 'ADMIN'),
+       (current_timestamp, current_timestamp, 'SYSTEM')
+on conflict (role_name) do nothing;
+
+-- Insert permissions
+insert into user_db.usr.permission (created_at, updated_at, permission_name)
+-- AUTHENTICATION
+VALUES (current_timestamp, current_timestamp, 'VIEW_PUBLIC_INFO'),
+       (current_timestamp, current_timestamp, 'REGISTER_ACCOUNT'),
+       (current_timestamp, current_timestamp, 'LOGIN'),
+       (current_timestamp, current_timestamp, 'LOGOUT'),
+
+       -- USER PROFILE
+       (current_timestamp, current_timestamp, 'VIEW_OWN_PROFILE'),
+       (current_timestamp, current_timestamp, 'UPDATE_OWN_PROFILE'),
+       (current_timestamp, current_timestamp, 'VIEW_ALL_USERS'),
+       (current_timestamp, current_timestamp, 'UPDATE_ANY_USER'),
+       (current_timestamp, current_timestamp, 'DELETE_USER'),
+
+       -- ACCOUNTS
+       (current_timestamp, current_timestamp, 'OPEN_ACCOUNT'),
+       (current_timestamp, current_timestamp, 'VIEW_OWN_ACCOUNTS'),
+       (current_timestamp, current_timestamp, 'VIEW_ALL_ACCOUNTS'),
+       (current_timestamp, current_timestamp, 'FREEZE_ACCOUNT'),
+       (current_timestamp, current_timestamp, 'UNFREEZE_ACCOUNT'),
+       (current_timestamp, current_timestamp, 'CLOSE_ACCOUNT'),
+
+       -- TRANSACTIONS
+       (current_timestamp, current_timestamp, 'MAKE_TRANSACTION'),
+       (current_timestamp, current_timestamp, 'VIEW_OWN_TRANSACTIONS'),
+       (current_timestamp, current_timestamp, 'VIEW_ALL_TRANSACTIONS'),
+       (current_timestamp, current_timestamp, 'APPROVE_LARGE_TRANSACTION'),
+       (current_timestamp, current_timestamp, 'ROLLBACK_TRANSACTION'),
+       -- ROLES & PERMISSIONS
+       (current_timestamp, current_timestamp, 'VIEW_ROLES_AND_PERMISSIONS'),
+       (current_timestamp, current_timestamp, 'ASSIGN_ROLES'),
+       (current_timestamp, current_timestamp, 'MANAGE_PERMISSIONS'),
+
+       -- NOTIFICATIONS & AUDIT
+       (current_timestamp, current_timestamp, 'VIEW_OWN_NOTIFICATIONS'),
+       (current_timestamp, current_timestamp, 'VIEW_AUDIT_LOGS'),
+
+       -- SYSTEM
+       (current_timestamp, current_timestamp, 'DO_INTERNAL_TASKS')
+on conflict (permission_name) do nothing;
+
+-- Associate permissions with roles
+-- SYSTEM
+insert into user_db.usr.role_permission (role_id, permission_id)
+VALUES ((select id from user_db.usr.role where role = 'SYSTEM'),
+        (select id from user_db.usr.permission where permission = 'DO_INTERNAL_TASKS'))
+on conflict (role_id, permission_id) do nothing;
+
+-- Associate permissions with roles
+-- GUEST
+insert into user_db.usr.role_permission (role_id, permission_id)
+VALUES ((select id from user_db.usr.role where role = 'GUEST'),
+        (select id from user_db.usr.permission where permission = 'VIEW_PUBLIC_INFO')),
+       ((select id from user_db.usr.role where role = 'GUEST'),
+        (select id from user_db.usr.permission where permission = 'REGISTER_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'GUEST'),
+        (select id from user_db.usr.permission where permission = 'LOGIN')),
+       ((select id from user_db.usr.role where role = 'GUEST'),
+        (select id from user_db.usr.permission where permission = 'LOGOUT'))
+on conflict (role_id, permission_id) do nothing;
+
+-- Associate permissions with roles
+-- USER
+insert into user_db.usr.role_permission (role_id, permission_id)
+VALUES ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_PUBLIC_INFO')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'LOGOUT')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_PROFILE')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'UPDATE_OWN_PROFILE')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'OPEN_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_ACCOUNTS')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'MAKE_TRANSACTION')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_TRANSACTIONS')),
+       ((select id from user_db.usr.role where role = 'USER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_NOTIFICATIONS'))
+on conflict (role_id, permission_id) do nothing;
+
+-- Associate permissions with roles
+-- MANAGER
+insert into user_db.usr.role_permission (role_id, permission_id)
+VALUES ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_PUBLIC_INFO')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'LOGOUT')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_PROFILE')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'UPDATE_OWN_PROFILE')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_ALL_USERS')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'OPEN_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_ACCOUNTS')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_ALL_ACCOUNTS')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'FREEZE_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'UNFREEZE_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'CLOSE_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'MAKE_TRANSACTION')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_TRANSACTIONS')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_ALL_TRANSACTIONS')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'APPROVE_LARGE_TRANSACTION')),
+       ((select id from user_db.usr.role where role = 'MANAGER'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_NOTIFICATIONS'))
+on conflict (role_id, permission_id) do nothing;
+
+-- Associate permissions with roles
+-- ADMIN
+insert into user_db.usr.role_permission (role_id, permission_id)
+VALUES ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_PUBLIC_INFO')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'LOGOUT')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_PROFILE')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'UPDATE_OWN_PROFILE')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_ALL_USERS')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'UPDATE_ANY_USER')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'DELETE_USER')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'OPEN_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_ACCOUNTS')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_ALL_ACCOUNTS')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'FREEZE_ACCOUNT')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'APPROVE_LARGE_TRANSACTION')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'ROLLBACK_TRANSACTION')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_ROLES_AND_PERMISSIONS')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'ASSIGN_ROLES')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'MANAGE_PERMISSIONS')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_OWN_NOTIFICATIONS')),
+       ((select id from user_db.usr.role where role = 'ADMIN'),
+        (select id from user_db.usr.permission where permission = 'VIEW_AUDIT_LOGS'))
+on conflict (role_id, permission_id) do nothing;
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r, user_db.usr.permission p
+WHERE r.role_name = 'SYSTEM'
+  AND p.permission_name = 'DO_INTERNAL_TASKS'
+ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r, user_db.usr.permission p
+WHERE r.role_name = 'GUEST'
+  AND p.permission_name IN (
+                            'VIEW_PUBLIC_INFO',
+                            'REGISTER_ACCOUNT',
+                            'LOGIN',
+                            'LOGOUT'
+    )
+ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+------------------------------------------------------------------------------------------------------------------------
+
+-- SYSTEM
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r
+         JOIN user_db.usr.permission p ON TRUE
+WHERE r.role_name = 'SYSTEM'
+  AND p.permission_name = 'DO_INTERNAL_TASKS'
+ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+
+-- GUEST
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r
+         JOIN user_db.usr.permission p
+              ON p.permission_name IN (
+                                       'VIEW_PUBLIC_INFO',
+                                       'REGISTER_ACCOUNT',
+                                       'LOGIN',
+                                       'LOGOUT')
+WHERE r.role_name = 'GUEST'
+  AND EXISTS (SELECT 1 FROM user_db.usr.role WHERE role_name = 'GUEST')
+  AND EXISTS (SELECT 1 FROM user_db.usr.permission
+              WHERE permission_name IN ('VIEW_PUBLIC_INFO', 'REGISTER_ACCOUNT', 'LOGIN', 'LOGOUT'))
+ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+-- USER
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r,
+     user_db.usr.permission p
+WHERE r.role_name = 'USER'
+  AND p.permission_name IN (
+                            'VIEW_PUBLIC_INFO',
+                            'LOGOUT',
+                            'VIEW_OWN_PROFILE',
+                            'UPDATE_OWN_PROFILE',
+                            'OPEN_ACCOUNT',
+                            'VIEW_OWN_ACCOUNTS',
+                            'MAKE_TRANSACTION',
+                            'VIEW_OWN_TRANSACTIONS',
+                            'VIEW_OWN_NOTIFICATIONS'
+    )
+ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+-- MANAGER
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r,
+     user_db.usr.permission p
+WHERE r.role_name = 'MANAGER'
+  AND p.permission_name IN (
+                            'VIEW_PUBLIC_INFO',
+                            'LOGOUT',
+                            'VIEW_OWN_PROFILE',
+                            'UPDATE_OWN_PROFILE',
+                            'VIEW_ALL_USERS',
+                            'OPEN_ACCOUNT',
+                            'VIEW_OWN_ACCOUNTS',
+                            'VIEW_ALL_ACCOUNTS',
+                            'FREEZE_ACCOUNT',
+                            'UNFREEZE_ACCOUNT',
+                            'CLOSE_ACCOUNT',
+                            'MAKE_TRANSACTION',
+                            'VIEW_OWN_TRANSACTIONS',
+                            'VIEW_ALL_TRANSACTIONS',
+                            'APPROVE_LARGE_TRANSACTION',
+                            'VIEW_OWN_NOTIFICATIONS'
+    )
+ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+-- ADMIN
+INSERT INTO user_db.usr.role_permission (role_id, permission_id)
+SELECT r.id, p.id
+FROM user_db.usr.role r,
+     user_db.usr.permission p
+WHERE r.role_name = 'ADMIN'
+  AND p.permission_name IN (
+                            'VIEW_PUBLIC_INFO',
+                            'LOGOUT',
+                            'VIEW_OWN_PROFILE',
+                            'UPDATE_OWN_PROFILE',
+                            'VIEW_ALL_USERS',
+                            'UPDATE_ANY_USER',
+                            'DELETE_USER',
+                            'OPEN_ACCOUNT',
+                            'VIEW_OWN_ACCOUNTS',
+                            'VIEW_ALL_ACCOUNTS',
+                            'FREEZE_ACCOUNT',
+                            'APPROVE_LARGE_TRANSACTION',
+                            'ROLLBACK_TRANSACTION',
+                            'VIEW_ROLES_AND_PERMISSIONS',
+                            'ASSIGN_ROLES',
+                            'MANAGE_PERMISSIONS',
+                            'VIEW_OWN_NOTIFICATIONS',
+                            'VIEW_AUDIT_LOGS'
+    )
+ON CONFLICT (role_id, permission_id) DO NOTHING;
