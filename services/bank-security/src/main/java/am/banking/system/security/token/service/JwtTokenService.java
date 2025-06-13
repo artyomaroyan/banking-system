@@ -34,7 +34,6 @@ public class JwtTokenService implements IJwtTokenService {
 
     @Override
     public String generateSystemToken() {
-        log.info("Custom Log:: Generating system JWT token from token service class: {}", tokenService.createSystemToken(INTERNAL_JWT_TOKEN));
         return tokenService.createSystemToken(INTERNAL_JWT_TOKEN);
     }
 }

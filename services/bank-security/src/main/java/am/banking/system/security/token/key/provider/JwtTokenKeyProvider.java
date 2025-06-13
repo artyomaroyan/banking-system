@@ -18,20 +18,22 @@ public class JwtTokenKeyProvider implements KeyProviderStrategy {
     private final ECPrivateKey privateKey;
     private final ECPublicKey publicKey;
     private final Long expiration;
+    private final String keyId;
 
-    private JwtTokenKeyProvider(ECPrivateKey privateKey, ECPublicKey publicKey, Long expiration) {
+    private JwtTokenKeyProvider(ECPrivateKey privateKey, ECPublicKey publicKey, Long expiration, String keyId) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expiration = expiration;
+        this.keyId = keyId;
     }
 
     public static JwtTokenKeyProvider fromProperties(JwtTokenProperties properties, ECKeyStoreManager keyManager) {
         KeyStore keyStore = keyManager.loadKeyStore(properties.path(), properties.password());
         ECPrivateKey privateKey = keyManager.loadPrivateKey(keyStore, properties.alias(), properties.password());
         ECPublicKey publicKey = keyManager.loadPublicKey(keyStore, properties.alias());
-//        String keyId = keyManager.generateKeyIdFromPublicKey(publicKey);
+        String keyId = keyManager.generateKeyIdFromPublicKey(publicKey);
         long expiration = properties.expiration() * 60 * 1000L;
-        return new JwtTokenKeyProvider(privateKey, publicKey, expiration);
+        return new JwtTokenKeyProvider(privateKey, publicKey, expiration, keyId);
     }
 
     @Override
@@ -44,10 +46,10 @@ public class JwtTokenKeyProvider implements KeyProviderStrategy {
         return publicKey;
     }
 
-//    @Override
-//    public String getKeyId() {
-//        return keyId;
-//    }
+    @Override
+    public String getKeyId() {
+        return keyId;
+    }
 
     @Override
     public Long getExpiration() {

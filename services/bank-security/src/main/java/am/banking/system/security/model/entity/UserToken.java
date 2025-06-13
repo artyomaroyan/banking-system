@@ -18,11 +18,11 @@ import java.util.Date;
  * Date: 16.04.25
  * Time: 23:15:05
  */
-@Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "user_token")
 public class UserToken extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

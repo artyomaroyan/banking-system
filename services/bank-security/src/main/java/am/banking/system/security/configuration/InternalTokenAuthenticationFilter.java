@@ -33,6 +33,10 @@ public class InternalTokenAuthenticationFilter implements WebFilter {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
 
+        if (path.startsWith("/.well-known/jwks.json")) {
+            return chain.filter(exchange);
+        }
+
         log.info("Custom Log:: Intercepted request: {}", path);
 
         if ("/api/v1/secure/local/system-token".equals(path)) {

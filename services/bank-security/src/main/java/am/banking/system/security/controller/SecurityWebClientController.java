@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,7 @@ public class SecurityWebClientController {
     private final AuthorizationService authorizationService;
 
     @PostMapping("/hash-password")
+    @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public ResponseEntity<String> hashPassword(@Valid @RequestBody PasswordHashingRequest request) {
         return ResponseEntity.ok(argon2Hashing.encode(request.password()));
     }

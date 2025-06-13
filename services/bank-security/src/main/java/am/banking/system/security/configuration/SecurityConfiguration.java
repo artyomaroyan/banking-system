@@ -4,11 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
@@ -28,8 +33,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableReactiveMethodSecurity
 public class SecurityConfiguration {
-//    private final CertificateAuthenticationManager certificateAuthenticationManager;
-//    private final CertificateAuthenticationConverter certificateAuthenticationConverter;
 
     private static final String[] PUBLIC_URLS = {
             "/webjars/**",
@@ -48,6 +51,8 @@ public class SecurityConfiguration {
             "/api/v1/user/account/register/**",
             "/api/v1/user/account/activate/**",
             "/api/v1/secure/local/system-token",
+            "/api/security/web/hash-password",
+            "/.well-known/jwks.json",
             "/swagger-ui/**",
             "/v3/api-docs/**"
     };
@@ -57,43 +62,26 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.requireCsrfProtectionMatcher(customCsrfMatcher()))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(PUBLIC_URLS)
                             .permitAll()
                         .pathMatchers(
-                                "api/v1/user/account/register/**",
-                                "api/v1/user/account/activate/**"
+                                "/api/v1/user/account/register/**",
+                                "/api/v1/user/account/activate/**",
+                                "/api/v1/secure/local/system-token",
+                                "/.well-known/jwks.json"
                         )
                             .permitAll()
-                        .pathMatchers("/api/v1/secure/local/system-token")
-                            .permitAll()
+                        .pathMatchers("/api/security/web/hash-password")
+                                .hasAnyAuthority("ROLE_SYSTEM", "DO_INTERNAL_TASKS")
                         .anyExchange()
                             .authenticated()
-                );
-//                .authenticationManager(certificateAuthenticationManager)
-//                .addFilterAt(certificateAuthenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
-//                .oauth2ResourceServer(oauth -> oauth
-//                        .jwt(jwt -> jwt
-//                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
-
-//    @Bean
-//    protected ReactiveJwtAuthenticationConverter jwtAuthenticationConverter() {
-//        ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
-//        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-//            List<String> authorities = jwt.getClaimAsStringList("authorities");
-//            if (authorities == null || authorities.isEmpty()) {
-//                return Flux.empty();
-//            }
-//            return Flux.fromIterable(authorities.stream()
-//                    .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
-//                    .map(SimpleGrantedAuthority::new)
-//                    .toList());
-//        });
-//        return converter;
-//    }
 
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
@@ -103,7 +91,7 @@ public class SecurityConfiguration {
                 "http://localhost:9090", "http://localhost:8989", "http://localhost:8040", "http://localhost:8090"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("authorization", "content-type", "x-auth-token", "bearer "));
+        configuration.setAllowedHeaders(List.of("authorization", "content-type", "x-auth-token", "Bearer ", "X-Internal-Secret"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -111,22 +99,27 @@ public class SecurityConfiguration {
         return source;
     }
 
-//    private AuthenticationWebFilter certificateAuthenticationWebFilter() {
-//        AuthenticationWebFilter filter = new AuthenticationWebFilter(certificateAuthenticationManager);
-//        filter.setServerAuthenticationConverter(certificateAuthenticationConverter);
-//        return filter;
-//    }
-
     private ServerWebExchangeMatcher customCsrfMatcher() {
         return exchange ->
                 Mono.just(exchange.getRequest().getPath().value())
                         .flatMap(path -> {
                             for (String ignore : CSRF_IGNORE) {
-                                if (path.matches(ignore.replace("**", ".*"))) {
+                                if (path.matches(ignore.replace("**", ""))) {
                                     return ServerWebExchangeMatcher.MatchResult.notMatch();
                                 }
                             }
                             return ServerWebExchangeMatcher.MatchResult.match();
                         });
+    }
+
+    private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter  jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        jwtAuthenticationConverter.setPrincipalClaimName("sub");
+        return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
     }
 }

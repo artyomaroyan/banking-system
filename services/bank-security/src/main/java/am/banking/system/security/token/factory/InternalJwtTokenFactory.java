@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static am.banking.system.common.enums.PermissionEnum.DO_INTERNAL_TASKS;
-
 /**
  * Author: Artyom Aroyan
  * Date: 05.06.25
@@ -39,9 +37,10 @@ public class InternalJwtTokenFactory implements TokenGenerationStrategy {
                 .expiration(expiration)
                 .audience().add("Internal communication Token")
                 .and()
-                .claim("authorities", List.of("ROLE_SYSTEM", DO_INTERNAL_TASKS))
+                .claim("authorities", List.of("ROLE_SYSTEM", "DO_INTERNAL_TASKS"))
                 .id(UUID.randomUUID().toString());
         log.info("Custom Log:: Generated system token from token factory class: {}", credentials.sign(builder).compact());
+        log.info("Custom Log:: Expiration: {}", expiration);
         return credentials.sign(builder).compact();
     }
 
