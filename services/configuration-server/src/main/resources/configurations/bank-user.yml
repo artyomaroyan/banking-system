@@ -85,9 +85,6 @@ springdoc:
 
 logging:
   level:
-    root: info
-    web: info
-    sql: info
     org.springframework.web: info
-    org.springframework.security: debug
+    org.springframework.security: info
     org.springframework.cloud: info

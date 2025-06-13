@@ -64,11 +64,7 @@ security:
 logging:
   level:
     org.flywaydb: info
-    root: info
-    web: info
-    sql: info
-    org.springframework.web: trace
-    org.springframework.security: trace
-    am.banking.system.security: debug
-    am.banking.system.user: debug
+    org.springframework.web: info
+    org.springframework.security: info
+    am.banking.system.security: info
     org.springframework.cloud: info
