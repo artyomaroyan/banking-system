@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * Time: 00:47:23
  */
 @Repository
-public interface NotificationRepository extends ReactiveCrudRepository<Notification, Long> {
+public interface NotificationRepository extends ReactiveCrudRepository<Notification, Integer> {
 }
