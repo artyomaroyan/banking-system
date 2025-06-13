@@ -16,10 +16,10 @@ import java.math.BigDecimal;
  * Date: 01.06.25
  * Time: 14:37:27
  */
-@Table
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "account")
 public class Account extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
