@@ -16,11 +16,11 @@ import java.io.Serializable;
  * Date: 13.04.25
  * Time: 23:33:25
  */
-@Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "role")
 public class Role extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

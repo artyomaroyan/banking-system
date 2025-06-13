@@ -59,30 +59,4 @@ public class UserRegistrationService {
                             });
                 });
     }
-
-//    public Mono<Result<String>> register(UserRequest request) {
-//        return requestValidation.validateRequest(request)
-//                .flatMap(errors -> {
-//                    if (!errors.isEmpty()) {
-//                        String message = String.join(", ", errors);
-//                        log.error("Validation failed: {}", message);
-//                        return Mono.just(Result.error(message, BAD_REQUEST.value()));
-//                    }
-//
-//                    return userMapper.mapFromRequestToEntity(request)
-//                            .flatMap(userEntity -> userRepository.save(userEntity)
-//                                    .flatMap(savedUser -> {
-//                                        UserDto userDto = userMapper.mapFromEntityToDto(savedUser);
-//
-//                                        return userTokenServiceClient.generateEmailVerificationToken(userDto)
-//                                                .flatMap(verificationToken -> emailSendingService.sendVerificationEmail(
-//                                                                userDto.email(),
-//                                                                userDto.username(),
-//                                                                verificationToken.token())
-//                                                        .then(jwtTokenServiceClient.generateJwtToken(userDto))
-//                                                        .doOnNext(token -> log.info("Generated JWT token: {}", token))
-//                                                        .thenReturn(Result.success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email.")));
-//                                    }));
-//                });
-//    }
 }

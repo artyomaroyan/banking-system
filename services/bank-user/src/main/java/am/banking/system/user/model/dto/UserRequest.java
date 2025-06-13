@@ -9,14 +9,17 @@ import jakarta.validation.constraints.*;
  * Time: 20:40:22
  */
 public record UserRequest(
+        @Schema(example = "user1")
         @NotBlank(message = "username is required")
         @Size(message = "username must be between 8 - 30 characters", min = 3, max = 30)
         String username,
 
+        @Schema(example = "user1")
         @NotNull(message = "first name is required")
         @Size(message = "first name must be between 3 - 50 letters", min = 3, max = 50)
         String firstName,
 
+        @Schema(example = "user1")
         @NotNull(message = "last name is required")
         @Size(message = "last name must be between 3 - 50 letters", min = 3, max = 50)
         String lastName,
@@ -27,6 +30,7 @@ public record UserRequest(
         @Size(message = "email must be between 15 - 50 characters", min = 15, max = 50)
         String email,
 
+        @Schema(example = "Password.1")
         @NotBlank(message = "password is required")
         @Size(message = "password must be between 8 - 30 characters", min = 8, max = 30)
         String password,

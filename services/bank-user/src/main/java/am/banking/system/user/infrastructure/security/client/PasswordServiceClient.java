@@ -8,6 +8,8 @@ import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -41,14 +43,22 @@ public class PasswordServiceClient implements IPasswordServiceClient {
     public Mono<String> hashPassword(String password) {
         return jwtTokenServiceClient.generateSystemToken()
                 .flatMap(token -> {
-                    log.info("Custom Log:: Generated system token: {}", token);
-                    return webClient.post()
+                    log.info("Custom Log:: Generating System Token: {}", token);
+                    return  webClient.post()
                             .uri("/api/security/web/hash-password")
                             .header(AUTHORIZATION, "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .bodyValue(new PasswordHashingRequest(password))
                             .retrieve()
+                            .onStatus(status -> status == HttpStatus.FORBIDDEN,
+                                    response -> response.bodyToMono(String.class)
+                                            .flatMap(error -> {
+                                                log.error("Custom Log:: Forbidden error response body: {}", error);
+
+                                                return Mono.error(new RuntimeException("Forbidden error response body: " + error));
+                                            }))
                             .bodyToMono(String.class)
-                            .doOnError(error -> log.error("Custom Log:: unable to hash password: {}", error.getMessage(), error));
+                            .doOnError(error -> log.error("Custom Log:: Unable to hash password: {}", error.getMessage(), error));
                 });
     }
 

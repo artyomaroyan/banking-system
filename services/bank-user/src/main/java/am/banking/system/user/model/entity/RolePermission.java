@@ -11,11 +11,11 @@ import org.springframework.data.relational.core.mapping.Table;
  * Date: 11.06.25
  * Time: 15:53:31
  */
-@Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "role_permission")
 public class RolePermission {
     private Integer roleId;
     private Integer permissionId;
