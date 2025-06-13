@@ -1,0 +1,31 @@
+//    @Bean
+//    protected ReactiveJwtAuthenticationConverter jwtAuthenticationConverter() {
+//        ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
+//        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+//            List<String> authorities = jwt.getClaimAsStringList("authorities");
+//            if (authorities == null || authorities.isEmpty()) {
+//                return Flux.empty();
+//            }
+//            return Flux.fromIterable(authorities.stream()
+//                    .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
+//                    .map(SimpleGrantedAuthority::new)
+//                    .toList());
+//        });
+//        return converter;
+//    }
+
+------------------------------------------------------------------------------------------------------------------------
+
+                            .permitAll()
+                        .pathMatchers("/api/security/web/hash-password")
+                                .authenticated()
+//                            .access((mono, _) -> mono
+//                                    .map(auth -> auth
+//                                            .getAuthorities().stream()
+//                                            .anyMatch(grantedAuthority ->
+//                                                    grantedAuthority.getAuthority().equals("ROLE_SYSTEM") ||
+//                                                    grantedAuthority.getAuthority().equals("DO_INTERNAL_TASKS")))
+//                                    .map(AuthorizationDecision::new))
+
+------------------------------------------------------------------------------------------------------------------------
+
