@@ -49,7 +49,7 @@ public class UserTokenValidator implements IUserTokenValidator {
 
     @Override
     public String extractUsername(final String token, final TokenType type) {
-        final Key key = tokenSigningKeyManager.retriveSigningCredentials(type).key();
+        final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
         return tokenClaimsExtractor.extractAllClaims(token, key).getSubject();
     }
 
@@ -77,7 +77,7 @@ public class UserTokenValidator implements IUserTokenValidator {
         }
 
         try {
-            final Key key = tokenSigningKeyManager.retriveSigningCredentials(type).key();
+            final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
             tokenClaimsExtractor.extractAllClaims(token, key);
             log.info(LogConstants.TOKEN_VALIDATION_SUCCESS);
             return true;

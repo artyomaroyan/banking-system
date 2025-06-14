@@ -86,6 +86,6 @@ public class UserTokenService implements IUserTokenService {
 
     private Date calculateExpirationDate(final TokenType type) {
         var issuedAt = new Date();
-        return new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
+        return new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
     }
 }

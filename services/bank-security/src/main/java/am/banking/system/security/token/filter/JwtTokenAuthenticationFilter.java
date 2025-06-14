@@ -1,4 +1,4 @@
-package am.banking.system.security.token.authentication;
+package am.banking.system.security.token.filter;
 
 import am.banking.system.security.token.validator.TokenClaimsExtractor;
 import am.banking.system.security.token.validator.abstraction.IJwtTokenValidator;
@@ -26,7 +26,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  */
 @Service
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     private final IJwtTokenValidator jwtTokenValidator;
     private final TokenClaimsExtractor tokenClaimsExtractor;
 

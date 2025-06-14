@@ -35,7 +35,7 @@ public class TokenSigningKeyManager {
                         strategy -> strategy));
     }
 
-    public SigningCredentials<? extends Key> retriveSigningCredentials(TokenType type) {
+    public SigningCredentials<? extends Key> getSigningCredentials(TokenType type) {
         SigningKeyProviderStrategy<? extends Key> strategy = signingKeyProvider.get(type);
         if (strategy == null) {
             throw new IllegalArgumentException("No SigningKeyProviderStrategy found for type " + type);
@@ -43,7 +43,7 @@ public class TokenSigningKeyManager {
         return strategy.signingCredentials();
     }
 
-    public Long retrieveTokenExpiration(TokenType type) {
+    public Long getTokenExpiration(TokenType type) {
         return switch (type) {
             case JSON_WEB_TOKEN -> jwtSigningKeyProvider.getTokenExpiration();
             case PASSWORD_RESET -> passwordRecoveryKeyProvider.getTokenExpiration();

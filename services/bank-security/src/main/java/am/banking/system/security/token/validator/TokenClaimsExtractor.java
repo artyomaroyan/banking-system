@@ -1,7 +1,7 @@
 package am.banking.system.security.token.validator;
 
 import am.banking.system.common.enums.PermissionEnum;
-import am.banking.system.security.token.key.provider.JwtTokenKeyProvider;
+import am.banking.system.security.token.strategy.KeyProviderStrategy;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class TokenClaimsExtractor {
-    private final JwtTokenKeyProvider jwtTokenKeyProvider;
+    private final KeyProviderStrategy jwtTokenKeyProvider;
 
     public Claims extractAllClaims(final String token, final Key signingKey) {
         JwtParserBuilder parserBuilder = Jwts.parser();
