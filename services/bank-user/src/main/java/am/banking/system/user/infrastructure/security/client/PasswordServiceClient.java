@@ -54,7 +54,6 @@ public class PasswordServiceClient implements IPasswordServiceClient {
                                     response -> response.bodyToMono(String.class)
                                             .flatMap(error -> {
                                                 log.error("Custom Log:: Forbidden error response body: {}", error);
-
                                                 return Mono.error(new RuntimeException("Forbidden error response body: " + error));
                                             }))
                             .bodyToMono(String.class)

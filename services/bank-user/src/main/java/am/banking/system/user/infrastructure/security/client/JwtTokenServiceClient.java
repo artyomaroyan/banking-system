@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-
 /**
  * Author: Artyom Aroyan
  * Date: 02.05.25
@@ -56,15 +54,26 @@ public class JwtTokenServiceClient implements IJwtTokenServiceClient {
     public Mono<String> generateSystemToken() {
         return webClient.post()
                 .uri("/api/v1/secure/local/system-token")
-                .headers(headers -> headers.set("X-Internal-Secret", secretProperties.secret()))
+                .headers(header -> header.set("X-Internal-Secret", secretProperties.secret()))
                 .retrieve()
-                .onStatus(status -> status == FORBIDDEN,
-                        response -> response.bodyToMono(String.class)
-                                .flatMap(error -> {
-                                    log.error("Custom Log:: Forbidden error response body: {}", error);
-                                    return Mono.error(new RuntimeException("Forbidden: " + error));
-                                }))
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .onErrorResume(e -> {
+                    log.error("Error generating system token: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("Failed to generate system token"));
+                });
+
+
+//        return webClient.post()
+//                .uri("/api/v1/secure/local/system-token")
+//                .headers(headers -> headers.set("X-Internal-Secret", secretProperties.secret()))
+//                .retrieve()
+//                .onStatus(status -> status == FORBIDDEN,
+//                        response -> response.bodyToMono(String.class)
+//                                .flatMap(error -> {
+//                                    log.error("Custom Log:: Forbidden error response body: {}", error);
+//                                    return Mono.error(new RuntimeException("Forbidden: " + error));
+//                                }))
+//                .bodyToMono(String.class);
     }
 
     @Retry(name = "securityService")

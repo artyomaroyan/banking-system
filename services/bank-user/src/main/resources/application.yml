@@ -8,7 +8,10 @@ spring:
 logging:
   level:
     org.springframework.r2dbc: info
-    org.springframework.web: trace
-    org.springframework.security: trace
-    am.banking.system.security: debug
-    am.banking.system.user: debug
+    org.springframework.web: info
+    am.banking.system.security: info
+    am.banking.system.user: info
+    org.springframework.web.client: info
+    org.springframework.web.reactive: info
+    org.springframework.security: info
+    org.springframework.security.web: info
