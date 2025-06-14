@@ -29,3 +29,22 @@
 
 ------------------------------------------------------------------------------------------------------------------------
 
+//        String authHeader = exchange.getRequest().getHeaders().getFirst(AUTHORIZATION);
+//        if (authHeader ==  null || !authHeader.startsWith("Bearer ")) {
+//            return chain.filter(exchange);
+//        }
+//
+//            String token = authHeader.substring(7);
+//            return jwtTokenValidator.validateInternalToken(token)
+//                    .flatMap(jwt -> {
+//                        log.info("Authenticating service: {}",  jwt.getSubject());
+//                        log.info("Authorities: {}", (Object) jwt.getClaim("authorities"));
+//                        return chain.filter(exchange);
+//                    })
+//                    .onErrorResume(error -> {
+//                        log.error("Authentication failed: {}", error.getMessage());
+//                        exchange.getResponse().setStatusCode(UNAUTHORIZED);
+//                        return exchange.getResponse().setComplete();
+//                    });
+
+------------------------------------------------------------------------------------------------------------------------

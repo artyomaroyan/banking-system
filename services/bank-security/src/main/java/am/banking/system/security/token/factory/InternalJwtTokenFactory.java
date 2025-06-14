@@ -26,9 +26,9 @@ public class InternalJwtTokenFactory implements TokenGenerationStrategy {
     @Override
     public String generateSystemToken() {
         var type = TokenType.INTERNAL_JWT_TOKEN;
-        var credentials = tokenSigningKeyManager.retriveSigningCredentials(type);
+        var credentials = tokenSigningKeyManager.getSigningCredentials(type);
         var issuedAt = new Date();
-        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
+        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
 
         var builder = Jwts.builder()
                 .subject(JwtTokenFactory.class.getSimpleName())

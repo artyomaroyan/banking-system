@@ -10,5 +10,11 @@ spring:
 
 logging:
   level:
-    org.springframework.security: debug
-    org.springframework.web.reactive.function.client.ExchangeFunctions: debug
+    org.springframework.r2dbc: info
+    org.springframework.web: info
+    am.banking.system.security: info
+    am.banking.system.user: info
+    org.springframework.web.client: info
+    org.springframework.web.reactive: info
+    org.springframework.security: info
+    org.springframework.security.web: info

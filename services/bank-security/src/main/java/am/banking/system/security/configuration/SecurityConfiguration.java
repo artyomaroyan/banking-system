@@ -1,5 +1,7 @@
 package am.banking.system.security.configuration;
 
+import am.banking.system.security.token.filter.InternalTokenAuthenticationFilter;
+import am.banking.system.security.token.validator.abstraction.IJwtTokenValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +10,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -33,6 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableReactiveMethodSecurity
 public class SecurityConfiguration {
+    private final IJwtTokenValidator jwtTokenValidator;
 
     private static final String[] PUBLIC_URLS = {
             "/webjars/**",
@@ -77,6 +81,7 @@ public class SecurityConfiguration {
                         .anyExchange()
                             .authenticated()
                 )
+                .addFilterAt(new InternalTokenAuthenticationFilter(jwtTokenValidator), SecurityWebFiltersOrder.AUTHENTICATION)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())));
@@ -88,10 +93,11 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8080", "http://localhost:8888", "http://localhost:8761",
-                "http://localhost:9090", "http://localhost:8989", "http://localhost:8040", "http://localhost:8090"
+                "http://localhost:9090", "http://localhost:8989", "http://localhost:8040",
+                "http://localhost:8090", "/.well-known/jwks.json", "/api/security/web/hash-password"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("authorization", "content-type", "x-auth-token", "Bearer ", "X-Internal-Secret"));
+        configuration.setAllowedHeaders(List.of("authorization", "content-type", "x-auth-token", "Bearer", "X-Internal-Secret"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

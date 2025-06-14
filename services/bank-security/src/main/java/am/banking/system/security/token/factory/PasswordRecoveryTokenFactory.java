@@ -25,9 +25,9 @@ public class PasswordRecoveryTokenFactory implements TokenGenerationStrategy {
     public String generateToken(Map<String, Object> claims, String subject) {
         // todo: add more claims
         var type = TokenType.PASSWORD_RESET;
-        var credentials = tokenSigningKeyManager.retriveSigningCredentials(type);
+        var credentials = tokenSigningKeyManager.getSigningCredentials(type);
         var issuedAt = new Date();
-        var expiresAt = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
+        var expiresAt = new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
 
         var builder = Jwts.builder()
                 .claims(claims)

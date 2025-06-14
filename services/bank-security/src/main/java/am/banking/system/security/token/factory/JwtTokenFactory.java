@@ -27,9 +27,9 @@ public class JwtTokenFactory implements TokenGenerationStrategy {
     @Override
     public String generateToken(Map<String, Object> claims, String subject) {
         var type = TokenType.JSON_WEB_TOKEN;
-        var credentials = tokenSigningKeyManager.retriveSigningCredentials(type);
+        var credentials = tokenSigningKeyManager.getSigningCredentials(type);
         var issuedAt = new Date();
-        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.retrieveTokenExpiration(type));
+        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
 
         var builder = Jwts.builder()
 //                .header()
