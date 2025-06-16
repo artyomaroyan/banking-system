@@ -7,11 +7,16 @@ spring:
 
 logging:
   level:
+    root: info
+    org.springframework.web.reactive.function.client: info
+    reactor.netty.http.client: info
     org.springframework.r2dbc: info
+    org.springframework.data.r2dbc.core: info
+    io.r2dbc.postgresql.QUERY: info
     org.springframework.web: info
     am.banking.system.security: info
     am.banking.system.user: info
     org.springframework.web.client: info
     org.springframework.web.reactive: info
-    org.springframework.security: info
+    org.springframework.security: debug
     org.springframework.security.web: info

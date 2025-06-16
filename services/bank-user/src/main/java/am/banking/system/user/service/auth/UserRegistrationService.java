@@ -44,19 +44,24 @@ public class UserRegistrationService {
                     }
 
                     return userFactory.createUser(request)
+                            .doOnSubscribe(_ -> log.info("Subscribing to create user"))
                             .flatMap(userRepository::save)
+                            .doOnNext(user -> log.info("Created user: {}", user))
                             .flatMap(savedUser -> {
                                 UserDto userDto = genericMapper.map(savedUser, UserDto.class);
+                                log.info("Mapped user: {}", userDto);
 
                                 return userTokenServiceClient.generateEmailVerificationToken(userDto)
                                         .flatMap(verificationToken -> emailSendingService.sendVerificationEmail(
                                                 userDto.email(),
                                                 userDto.username(),
-                                                verificationToken.token())
+                                                verificationToken.token()
+                                                )
                                                 .then(jwtTokenServiceClient.generateJwtToken(userDto))
                                                 .doOnNext(token -> log.info("Generated token: {}", token))
-                                                .thenReturn(Result.success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email.")));
-                            });
+                                                .then(Mono.just(Result.<String>success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."))));
+                            })
+                            .doOnError(error -> log.error("Error in registration chain: ", error));
                 });
     }
 }

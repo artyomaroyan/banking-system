@@ -11,14 +11,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static am.banking.system.common.enums.PermissionEnum.*;
 import static am.banking.system.common.enums.RoleEnum.*;
@@ -31,22 +31,19 @@ import static am.banking.system.common.enums.RoleEnum.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@DependsOn("flywayInitializer")
 class RolePermissionInitializer {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final RolePermissionLinkService rolePermissionLinkService;
 
     @Bean
+    @Order(1)
     public CommandLineRunner initializePermissionsAndRoles() {
         return _ -> initializePermissions()
                 .then(initializeRoles())
+                .doOnSuccess(_ -> log.info("Roles & Permissions initialized successfully"))
                 .doOnError(e -> log.error("Failed to initialize permissions and roles", e))
-                .onErrorResume(e -> {
-                    log.warn("Role/Permission initialization skipped due to error: {}", e.getMessage());
-                 return Mono.empty();
-                })
-                .subscribe();
+                .block();
     }
 
     private Mono<Void> initializePermissions() {
@@ -108,22 +105,67 @@ class RolePermissionInitializer {
                     RoleEnum roleName = entry.getKey();
                     Set<PermissionEnum> permissionEnums = entry.getValue();
 
-                    return Flux.fromIterable(permissionEnums)
-                            .flatMap(permissionRepository::findByPermissionEnum)
-                            .collect(Collectors.toSet())
-
-                            .flatMap(permissions ->
-                                    roleRepository.findByRoleName(roleName)
-                                    .switchIfEmpty(roleRepository.save(new Role(roleName)))
-
-                                    .flatMap(role -> {
-                                        Mono<Role> savedRole = role.getId() == null ?
-                                                roleRepository.save(role) :
-                                                Mono.just(role);
-                                        return savedRole.flatMap(r ->
-                                                rolePermissionLinkService.savePermissionsForRole(r, permissions));
-                                            }));
+                    return roleRepository.findByRoleName(roleName)
+                            .switchIfEmpty(Mono.defer(() -> {
+                                log.info("Creating new role: {}", roleName);
+                                return roleRepository.save(new Role(roleName));
+                            }))
+                            .flatMap(role ->
+                                    Flux.fromIterable(permissionEnums)
+                                            .flatMap(permissionRepository::findByPermissionEnum)
+                                            .collectList()
+                                            .flatMap(permissions ->
+                                                    permissions.isEmpty()
+                                                            ? Mono.fromRunnable(() ->
+                                                            log.warn("No permissions found for role: {}", roleName))
+                                                            : rolePermissionLinkService.savePermissionsForRole(role, new HashSet<>(permissions))
+                                            )
+                            );
                 })
                 .then();
+//        return Flux.fromIterable(rolePermission.entrySet())
+//                .flatMap(entry -> {
+//                    RoleEnum roleName = entry.getKey();
+//                    Set<PermissionEnum> permissionEnums = entry.getValue();
+//
+//                    // first ensure the role exists
+//                    return roleRepository.findByRoleName(roleName)
+//                            .switchIfEmpty(Mono.defer(() -> {
+//                                log.info("Creating new role: {}", roleName);
+//                                return roleRepository.save(new Role(roleName));
+//                            }))
+//
+//                            .flatMap(role ->
+//                                // then find all permissions
+//                                 Flux.fromIterable(permissionEnums)
+//                                        .flatMap(permissionRepository::findByPermissionEnum)
+//                                        .collectList()
+//                                        .flatMap(permissions -> {
+//                                            if (permissions.isEmpty()) {
+//                                                log.warn("No permissions found for role: {}", roleName);
+//                                                return Mono.empty();
+//                                            }
+//                                            return rolePermissionLinkService.savePermissionsForRole(role, new HashSet<>(permissions));
+//                                        });
+//                            );
+//                })
+//                .then();
+//                    return Flux.fromIterable(permissionEnums)
+//                            .flatMap(permissionRepository::findByPermissionEnum)
+//                            .collect(Collectors.toSet())
+//
+//                            .flatMap(permissions ->
+//                                    roleRepository.findByRoleName(roleName)
+//                                    .switchIfEmpty(roleRepository.save(new Role(roleName)))
+//
+//                                    .flatMap(role -> {
+//                                        Mono<Role> savedRole = role.getId() == null ?
+//                                                roleRepository.save(role) :
+//                                                Mono.just(role);
+//                                        return savedRole.flatMap(r ->
+//                                                rolePermissionLinkService.savePermissionsForRole(r, permissions));
+//                                            }));
+//                })
+//                .then();
     }
 }

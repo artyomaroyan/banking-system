@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serial;
@@ -24,5 +25,6 @@ import java.io.Serializable;
 public class Role extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+    @Column("role_name")
     private RoleEnum roleName;
 }

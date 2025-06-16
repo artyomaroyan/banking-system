@@ -15,8 +15,8 @@ import java.util.Map;
  * Date: 12.05.25
  * Time: 23:10:17
  */
-@RestControllerAdvice(name = "userGlobalExceptionHandler")
-public class GlobalExceptionHandler {
+@RestControllerAdvice
+public class UserExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
