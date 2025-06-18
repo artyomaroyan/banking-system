@@ -12,6 +12,6 @@ import java.util.Set;
  * Time: 15:57:31
  */
 @Validated
-public record UserDto(@NotNull Long userId, @NotBlank String username, @NotBlank String password,
+public record UserDto(@NotNull Integer userId, @NotBlank String username, @NotBlank String password,
                       @NotBlank String email, @NotBlank Set<String> roles, @NotBlank Set<String> permissions) {
 }
