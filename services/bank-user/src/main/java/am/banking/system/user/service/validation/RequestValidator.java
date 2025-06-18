@@ -44,8 +44,7 @@ public class RequestValidator implements RequestValidation {
                 .collectList();
     }
 
-    @Override
-    public Mono<ValidationResult> isValidUsername(String username) {
+    private Mono<ValidationResult> isValidUsername(String username) {
         return userRepository.existsByUsername(username)
                 .map(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
@@ -57,8 +56,7 @@ public class RequestValidator implements RequestValidation {
                 });
     }
 
-    @Override
-    public Mono<ValidationResult> isValidPassword(String password) {
+    private Mono<ValidationResult> isValidPassword(String password) {
         if (password.length() < 8 || password.length() > 20) {
             String message = "Password must be between 8 and 20 characters";
             log.error(message);
@@ -72,8 +70,7 @@ public class RequestValidator implements RequestValidation {
         return Mono.just(ValidationResult.valid());
     }
 
-    @Override
-    public Mono<ValidationResult> isValidEmail(String email) {
+    private Mono<ValidationResult> isValidEmail(String email) {
         return userRepository.existsByEmail(email)
                 .map(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
@@ -90,8 +87,7 @@ public class RequestValidator implements RequestValidation {
                 });
     }
 
-    @Override
-    public Mono<ValidationResult> isValidPhoneNumber(String number) {
+    private Mono<ValidationResult> isValidPhoneNumber(String number) {
         if (number.length() < 9 || number.length() > 12) {
             String message = "Phone number must be between 9 and 12 characters";
             log.error(message);

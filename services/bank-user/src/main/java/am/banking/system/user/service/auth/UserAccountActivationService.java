@@ -4,7 +4,7 @@ import am.banking.system.common.reponse.Result;
 import am.banking.system.user.exception.InvalidUserTokenException;
 import am.banking.system.user.exception.UserAccountActivationException;
 import am.banking.system.user.infrastructure.security.abstraction.IUserTokenServiceClient;
-import am.banking.system.user.service.core.UserService;
+import am.banking.system.user.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

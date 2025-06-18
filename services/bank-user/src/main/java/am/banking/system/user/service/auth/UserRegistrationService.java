@@ -6,9 +6,8 @@ import am.banking.system.common.reponse.Result;
 import am.banking.system.user.infrastructure.security.abstraction.IJwtTokenServiceClient;
 import am.banking.system.user.infrastructure.security.abstraction.IUserTokenServiceClient;
 import am.banking.system.user.model.dto.UserRequest;
-import am.banking.system.user.model.mapper.UserFactory;
-import am.banking.system.user.model.repository.UserRepository;
-import am.banking.system.user.service.EmailSendingService;
+import am.banking.system.user.service.notification.EmailSendingService;
+import am.banking.system.user.service.user.factory.UserFactory;
 import am.banking.system.user.service.validation.RequestValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,40 +27,50 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class UserRegistrationService {
     private final UserFactory userFactory;
     private final GenericMapper genericMapper;
-    private final UserRepository userRepository;
     private final RequestValidation requestValidation;
     private final EmailSendingService emailSendingService;
     private final IJwtTokenServiceClient jwtTokenServiceClient;
     private final IUserTokenServiceClient userTokenServiceClient;
 
     public Mono<Result<String>> register(UserRequest request) {
+        log.info("Initiating user registration for email: {}", request.email());
+
         return requestValidation.validateRequest(request)
+                .doOnNext(errors -> {
+                    if (!errors.isEmpty()) {
+                        log.warn("Validation errors occurred during registration: {}", errors);
+                    } else {
+                        log.info("Validation passed for: {}", request.email());
+                    }
+                })
                 .flatMap(errors -> {
                     if (!errors.isEmpty()) {
                         String message = String.join(" ", errors);
-                        log.error("Validation failed: {}", message);
                         return Mono.just(Result.error(message, BAD_REQUEST.value()));
                     }
 
                     return userFactory.createUser(request)
-                            .doOnSubscribe(_ -> log.info("Subscribing to create user"))
-                            .flatMap(userRepository::save)
-                            .doOnNext(user -> log.info("Created user: {}", user))
+                            .doOnSubscribe(_ -> log.info("Subscribing to create user process"))
+                            .doOnNext(user -> log.info("User created: {}", user))
                             .flatMap(savedUser -> {
-                                UserDto userDto = genericMapper.map(savedUser, UserDto.class);
-                                log.info("Mapped user: {}", userDto);
+                                var userDto = genericMapper.map(savedUser, UserDto.class);
+                                log.info("Mapped user to DTO: {}", userDto);
 
                                 return userTokenServiceClient.generateEmailVerificationToken(userDto)
-                                        .flatMap(verificationToken -> emailSendingService.sendVerificationEmail(
-                                                userDto.email(),
-                                                userDto.username(),
-                                                verificationToken.token()
+                                        .doOnNext(token -> log.info("Generated email verification token: {}", token.token()))
+                                        .flatMap(token -> emailSendingService
+                                                .sendVerificationEmail(
+                                                        userDto.email(),
+                                                        userDto.username(),
+                                                        token.token()
                                                 )
+                                                .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
                                                 .then(jwtTokenServiceClient.generateJwtToken(userDto))
-                                                .doOnNext(token -> log.info("Generated token: {}", token))
-                                                .then(Mono.just(Result.<String>success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."))));
+                                                .doOnNext(jwt -> log.info("Generated jwt token: {}", jwt))
+                                        )
+                                        .thenReturn(Result.success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
                             })
-                            .doOnError(error -> log.error("Error in registration chain: ", error));
+                            .doOnError(error -> log.error("Registration failed: {}", error.getMessage(), error));
                 });
     }
 }

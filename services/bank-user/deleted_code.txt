@@ -294,3 +294,130 @@ WHERE r.role_name = 'ADMIN'
                             'VIEW_AUDIT_LOGS'
     )
 ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+------------------------------------------------------------------------------------------------------------------------
+
+//        return Flux.fromIterable(rolePermission.entrySet())
+//                .flatMap(entry -> {
+//                    RoleEnum roleName = entry.getKey();
+//                    Set<PermissionEnum> permissionEnums = entry.getValue();
+//
+//                    // first ensure the role exists
+//                    return roleRepository.findByRoleName(roleName)
+//                            .switchIfEmpty(Mono.defer(() -> {
+//                                log.info("Creating new role: {}", roleName);
+//                                return roleRepository.save(new Role(roleName));
+//                            }))
+//
+//                            .flatMap(role ->
+//                                // then find all permissions
+//                                 Flux.fromIterable(permissionEnums)
+//                                        .flatMap(permissionRepository::findByPermissionEnum)
+//                                        .collectList()
+//                                        .flatMap(permissions -> {
+//                                            if (permissions.isEmpty()) {
+//                                                log.warn("No permissions found for role: {}", roleName);
+//                                                return Mono.empty();
+//                                            }
+//                                            return rolePermissionLinkService.savePermissionsForRole(role, new HashSet<>(permissions));
+//                                        });
+//                            );
+//                })
+//                .then();
+//                    return Flux.fromIterable(permissionEnums)
+//                            .flatMap(permissionRepository::findByPermissionEnum)
+//                            .collect(Collectors.toSet())
+//
+//                            .flatMap(permissions ->
+//                                    roleRepository.findByRoleName(roleName)
+//                                    .switchIfEmpty(roleRepository.save(new Role(roleName)))
+//
+//                                    .flatMap(role -> {
+//                                        Mono<Role> savedRole = role.getId() == null ?
+//                                                roleRepository.save(role) :
+//                                                Mono.just(role);
+//                                        return savedRole.flatMap(r ->
+//                                                rolePermissionLinkService.savePermissionsForRole(r, permissions));
+//                                            }));
+//                })
+//                .then();
+
+------------------------------------------------------------------------------------------------------------------------
+
+//    public Mono<User> createUser(UserRequest request) {
+//        return Mono.zip(securityServiceClient.hashPassword(request.password())
+//                        .doOnNext(pwd -> log.info("Hashed password: {}", pwd)),
+//                        roleService.getDefaultRole())
+//                .switchIfEmpty(Mono.error(new RuntimeException("Default role not found")))
+//                .doOnNext(role -> log.info("Default role: {}", role))
+//                .map(tuple -> {
+//                    String password = tuple.getT1();
+//                    return new User(
+//                            request.username(),
+//                            request.firstName(),
+//                            request.lastName(),
+//                            request.email(),
+//                            password,
+//                            request.phone(),
+//                            request.age(),
+//                            PENDING,
+//                            roleService.getDefaultRole()
+//                    );
+//                });
+//    }
+
+------------------------------------------------------------------------------------------------------------------------
+
+    public Mono<User> createUser(UserRequest request) {
+        return Mono.zip(
+                        securityServiceClient.hashPassword(request.password())
+                                .doOnNext(pwd -> log.info("Hashed password: {}", pwd)),
+                        roleService.getDefaultRole()
+                                .switchIfEmpty(Mono.error(new RuntimeException("Default role not found")))
+                )
+                .flatMap(tuple -> {
+                    String password = tuple.getT1();
+
+                    return Mono.just(new User(
+                            request.username(),
+                            request.firstName(),
+                            request.lastName(),
+                            request.email(),
+                            password,
+                            request.phone(),
+                            request.age(),
+                            PENDING
+                    ));
+                });
+    }
+
+------------------------------------------------------------------------------------------------------------------------
+
+            return requestValidation.validateRequest(request)
+                    .flatMap(errors -> {
+                        if (!errors.isEmpty()) {
+                            String message = String.join(" ", errors);
+                            log.error("Validation failed: {}", message);
+                            return Mono.just(Result.error(message, BAD_REQUEST.value()));
+                        }
+
+                        return userFactory.createUser(request)
+                                .doOnSubscribe(_ -> log.info("Subscribing to create user"))
+                                .flatMap(userRepository::save)
+                                .doOnNext(user -> log.info("Created user: {}", user))
+                                .flatMap(savedUser -> {
+                                    UserDto userDto = genericMapper.map(savedUser, UserDto.class);
+                                    log.info("Mapped user: {}", userDto);
+
+                                    return userTokenServiceClient.generateEmailVerificationToken(userDto)
+                                            .flatMap(verificationToken -> emailSendingService.sendVerificationEmail(
+                                                    userDto.email(),
+                                                    userDto.username(),
+                                                    verificationToken.token()
+                                                    )
+                                                    .then(jwtTokenServiceClient.generateJwtToken(userDto))
+                                                    .doOnNext(token -> log.info("Generated token: {}", token))
+                                                    .then(Mono.just(Result.<String>success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."))));
+                                })
+                                .doOnError(error -> log.error("Error in registration chain: ", error));
+                    });

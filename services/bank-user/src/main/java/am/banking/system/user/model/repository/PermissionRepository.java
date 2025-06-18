@@ -1,8 +1,10 @@
 package am.banking.system.user.model.repository;
 
 import am.banking.system.common.enums.PermissionEnum;
+import am.banking.system.common.enums.RoleEnum;
 import am.banking.system.user.model.entity.Permission;
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -24,4 +26,12 @@ WHERE rp.role_id = :roleId
 
     @Query("SELECT * FROM user_db.usr.permission WHERE permission_name = :permissionName")
     Mono<Permission> findByPermissionEnum(PermissionEnum permissionName);
+
+    @Query("""
+SELECT p.* FROM user_db.usr.permission p
+JOIN user_db.usr.role_permission rp on p.id = rp.permission_id
+JOIN user_db.usr.role r on rp.role_id = r.id
+WHERE r.role_name = :roleName
+""")
+    Flux<Permission> findPermissionByRole(@Param("roleName") RoleEnum roleName);
 }

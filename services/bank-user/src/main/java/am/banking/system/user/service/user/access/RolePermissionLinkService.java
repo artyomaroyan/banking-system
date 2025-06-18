@@ -1,4 +1,4 @@
-package am.banking.system.user.service.permission;
+package am.banking.system.user.service.user.access;
 
 import am.banking.system.user.model.entity.Permission;
 import am.banking.system.user.model.entity.Role;
@@ -25,13 +25,17 @@ public class RolePermissionLinkService {
         return Flux.fromIterable(permissions)
                 .flatMap(permission ->
                         rolePermissionRepository.existsByRoleIdAndPermissionId(role.getId(), permission.getId())
-                                .flatMap(exists -> {
-                                    if (Boolean.FALSE.equals(exists)) {
-                                        return rolePermissionRepository.save(
-                                                new RolePermission(role.getId(), permission.getId()));
-                                    }
-                                    return  Mono.empty();
-                                }))
+                                .filter(exists -> !exists)
+                                .flatMap(_ -> rolePermissionRepository.save(new RolePermission(
+                                        role.getId(), permission.getId()))))
+                .then();
+    }
+
+    public Mono<Void> assignPermissionsToRole(Integer roleId, Set<Permission> permissions) {
+        return Flux.fromIterable(permissions)
+                .flatMap(permission -> rolePermissionRepository.save(
+                        new RolePermission(roleId, permission.getId())
+                ))
                 .then();
     }
 }

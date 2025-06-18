@@ -1,4 +1,4 @@
-package am.banking.system.user.service;
+package am.banking.system.user.service.notification;
 
 import am.banking.system.user.infrastructure.notification.abstraction.INotificationServiceClient;
 import lombok.RequiredArgsConstructor;

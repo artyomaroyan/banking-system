@@ -1,4 +1,4 @@
-package am.banking.system.user.service.core;
+package am.banking.system.user.service.user;
 
 import am.banking.system.common.mapper.GenericMapper;
 import am.banking.system.common.reponse.Result;
