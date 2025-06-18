@@ -21,14 +21,14 @@ public class UserPrincipal implements UserDetails, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Long userId;
+    private final Integer userId;
     private final String username;
     private final String password;
     private final String email;
     private final Set<String> roles;
     private final Set<String> permissions;
 
-    public UserPrincipal(Long userId, String username, String password, String email, Set<String> roles, Set<String> permissions) {
+    public UserPrincipal(Integer userId, String username, String password, String email, Set<String> roles, Set<String> permissions) {
         this.userId = userId;
         this.username = username;
         this.password = password;

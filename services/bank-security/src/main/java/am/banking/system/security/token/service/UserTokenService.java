@@ -75,12 +75,13 @@ public class UserTokenService implements IUserTokenService {
     }
 
     private Mono<Void> saveUserToken(final UserPrincipal principal, final String token, final TokenPurpose purpose, final Date expiration) {
-        UserToken userToken = new UserToken();
-        userToken.setToken(token);
-        userToken.setExpirationDate(expiration);
-        userToken.setTokenPurpose(purpose);
-        userToken.setTokenState(PENDING);
-        userToken.setUserId(principal.getUserId());
+        UserToken userToken = UserToken.builder()
+                .token(token)
+                .expirationDate(expiration)
+                .tokenPurpose(purpose)
+                .tokenState(PENDING)
+                .userId(principal.getUserId())
+                .build();
         return userTokenRepository.save(userToken).then();
     }
 

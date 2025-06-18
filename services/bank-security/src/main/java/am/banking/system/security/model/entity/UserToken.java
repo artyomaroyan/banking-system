@@ -4,9 +4,9 @@ import am.banking.system.common.entity.BaseEntity;
 import am.banking.system.security.model.enums.TokenPurpose;
 import am.banking.system.security.model.enums.TokenState;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serial;
@@ -18,18 +18,17 @@ import java.util.Date;
  * Date: 16.04.25
  * Time: 23:15:05
  */
+@Table
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-@Table(name = "user_token")
 public class UserToken extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private Long userId;
-    private String token;
-    private Date expirationDate;
-    private TokenState tokenState;
-    private TokenPurpose tokenPurpose;
+    private final Integer userId;
+    private final String token;
+    private final Date expirationDate;
+    private final TokenState tokenState;
+    private final TokenPurpose tokenPurpose;
 }
