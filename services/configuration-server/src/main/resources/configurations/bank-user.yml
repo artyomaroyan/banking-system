@@ -40,7 +40,8 @@ resilience4j:
     instances:
       securityService:
         max-attempts: 3
-        wait-duration: 500ms
+        wait-duration:
+          seconds: 1
 
       notificationService:
         max-attempts: 3
@@ -55,8 +56,10 @@ resilience4j:
     instances:
       securityService:
         failure-rate-threshold: 50
-        wait-duration-in-open-state: 5s
-        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          seconds: 10
 
       notificationService:
         register-health-indicator: true
