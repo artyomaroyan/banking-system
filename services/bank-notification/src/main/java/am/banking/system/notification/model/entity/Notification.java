@@ -5,11 +5,11 @@ import am.banking.system.notification.kafka.dto.EmailVerification;
 import am.banking.system.notification.kafka.dto.PasswordReset;
 import am.banking.system.notification.kafka.dto.WelcomeEmail;
 import am.banking.system.notification.model.enums.EmailType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -21,10 +21,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class Notification extends BaseEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class Notification extends BaseEntity {
     private final EmailType emailType;
     private final LocalDateTime notificationDate;
     private final EmailVerification emailVerification;
