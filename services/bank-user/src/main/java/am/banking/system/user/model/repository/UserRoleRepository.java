@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * Time: 00:25:41
  */
 @Repository
-public interface UserRoleRepository extends ReactiveCrudRepository<UserRole, Integer> {
+public interface UserRoleRepository extends ReactiveCrudRepository<UserRole, Integer>, UserRoleCustomRepository {
 }

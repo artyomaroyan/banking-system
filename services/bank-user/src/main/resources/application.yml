@@ -5,6 +5,10 @@ spring:
   application:
     name: bank-user
 
+  r2dbc:
+    properties:
+      show-sql: true
+
 logging:
   level:
     root: info
@@ -20,3 +24,5 @@ logging:
     org.springframework.web.reactive: info
     org.springframework.security: debug
     org.springframework.security.web: info
+    org.springframework.data.r2dbc: debug
+    io.r2dbc.spi: debug

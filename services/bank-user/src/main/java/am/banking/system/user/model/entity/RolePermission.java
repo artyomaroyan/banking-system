@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
@@ -15,8 +16,10 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "role_permission")
+@Table(name = "user_db.usr.role_permission")
 public class RolePermission {
+    @Column("role_id")
     private Integer roleId;
+    @Column("permission_id")
     private Integer permissionId;
 }

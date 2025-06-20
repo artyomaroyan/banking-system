@@ -1,5 +1,6 @@
 package am.banking.system.user.infrastructure.security.abstraction;
 
+import am.banking.system.common.dto.security.PasswordHashingResponse;
 import reactor.core.publisher.Mono;
 
 /**
@@ -8,6 +9,6 @@ import reactor.core.publisher.Mono;
  * Time: 00:21:22
  */
 public interface IPasswordServiceClient {
-    Mono<String> hashPassword(String password);
+    Mono<PasswordHashingResponse> hashPassword(String password);
     Mono<Boolean> validatePassword(String rawPassword, String hashedPassword);
 }

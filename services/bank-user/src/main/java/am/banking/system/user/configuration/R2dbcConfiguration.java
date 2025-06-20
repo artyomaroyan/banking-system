@@ -14,13 +14,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 import java.util.List;
 
 import static io.r2dbc.spi.ConnectionFactoryOptions.*;
-import static io.r2dbc.spi.ConnectionFactoryOptions.DATABASE;
-import static io.r2dbc.spi.ConnectionFactoryOptions.PASSWORD;
-import static io.r2dbc.spi.ConnectionFactoryOptions.USER;
 
 /**
  * Author: Artyom Aroyan
@@ -28,6 +26,7 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.USER;
  * Time: 15:08:41
  */
 @Configuration
+@EnableR2dbcRepositories
 public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
 
     @Bean

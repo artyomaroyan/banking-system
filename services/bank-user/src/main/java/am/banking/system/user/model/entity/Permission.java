@@ -4,10 +4,8 @@ import am.banking.system.common.entity.BaseEntity;
 import am.banking.system.common.enums.PermissionEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Author: Artyom Aroyan
@@ -16,9 +14,8 @@ import java.io.Serializable;
  */
 @Getter
 @AllArgsConstructor
-@Table(name = "permission")
-public class Permission extends BaseEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+@Table(name = "user_db.usr.permission")
+public class Permission extends BaseEntity {
+    @Column("permission_name")
     private final PermissionEnum permissionName;
 }

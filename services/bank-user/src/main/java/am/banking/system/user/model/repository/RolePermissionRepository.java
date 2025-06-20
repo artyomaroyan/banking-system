@@ -11,6 +11,6 @@ import reactor.core.publisher.Mono;
  * Time: 15:56:21
  */
 @Repository
-public interface RolePermissionRepository extends ReactiveCrudRepository<RolePermission, Integer> {
+public interface RolePermissionRepository extends ReactiveCrudRepository<RolePermission, Integer>, RolePermissionCustomRepository {
     Mono<Boolean> existsByRoleIdAndPermissionId(Integer roleId, Integer permissionId);
 }

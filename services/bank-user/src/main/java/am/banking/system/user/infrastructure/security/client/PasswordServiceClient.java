@@ -1,6 +1,7 @@
 package am.banking.system.user.infrastructure.security.client;
 
 import am.banking.system.common.dto.security.PasswordHashingRequest;
+import am.banking.system.common.dto.security.PasswordHashingResponse;
 import am.banking.system.common.dto.security.PasswordValidatorRequest;
 import am.banking.system.user.infrastructure.security.abstraction.IPasswordServiceClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -8,13 +9,15 @@ import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
  * Author: Artyom Aroyan
@@ -40,24 +43,33 @@ public class PasswordServiceClient implements IPasswordServiceClient {
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
     @Override
-    public Mono<String> hashPassword(String password) {
+    public Mono<PasswordHashingResponse> hashPassword(String password) {
         return jwtTokenServiceClient.generateSystemToken()
                 .flatMap(token -> {
-                    log.info("Custom Log:: Generating System Token: {}", token);
-                    return  webClient.post()
+                    log.info("Generating System Token: {}", token);
+                    return webClient.post()
                             .uri("/api/security/web/hash-password")
                             .header(AUTHORIZATION, "Bearer " + token)
-                            .contentType(MediaType.APPLICATION_JSON)
+                            .contentType(APPLICATION_JSON)
                             .bodyValue(new PasswordHashingRequest(password))
-                            .retrieve()
-                            .onStatus(status -> status == HttpStatus.FORBIDDEN,
-                                    response -> response.bodyToMono(String.class)
+                            .exchangeToMono(response -> {
+                                HttpStatusCode status = response.statusCode();
+
+                                if (status.is2xxSuccessful()) {
+                                    return response.bodyToMono(PasswordHashingResponse.class)
+                                            .doOnNext(body -> log.info("Password hashing response: {}", body.hashedPassword()))
+                                            .switchIfEmpty(Mono.error(new RuntimeException("Password hash returned empty body")));
+                                } else {
+                                    return response.bodyToMono(PasswordHashingResponse.class)
+                                            .switchIfEmpty(Mono.error(new RuntimeException("Password hash returned empty body")))
                                             .flatMap(error -> {
-                                                log.error("Custom Log:: Forbidden error response body: {}", error);
-                                                return Mono.error(new RuntimeException("Forbidden error response body: " + error));
-                                            }))
-                            .bodyToMono(String.class)
-                            .doOnError(error -> log.error("Custom Log:: Unable to hash password: {}", error.getMessage(), error));
+                                                log.error("Password hashing failed - status: {}, body: {}", status.value(), error);
+                                                return  Mono.error(new RuntimeException("Password hashing failed with status: " + status.value() + " - " + error));
+                                            });
+                                }
+                            })
+                            .timeout(Duration.ofSeconds(5))
+                            .doOnError(error -> log.error("Password hashing failed: {}", error.getMessage(), error));
                 });
     }
 

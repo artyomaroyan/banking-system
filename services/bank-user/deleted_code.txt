@@ -421,3 +421,71 @@ ON CONFLICT (role_id, permission_id) DO NOTHING;
                                 })
                                 .doOnError(error -> log.error("Error in registration chain: ", error));
                     });
+
+------------------------------------------------------------------------------------------------------------------------
+
+                    //        return jwtTokenServiceClient.generateSystemToken()
+                    //                .flatMap(token -> {
+                    //                    log.info("Custom Log:: Generating System Token: {}", token);
+                    //                    return  webClient.post()
+                    //                            .uri("/api/security/web/hash-password")
+                    //                            .header(AUTHORIZATION, "Bearer " + token)
+                    //                            .contentType(MediaType.APPLICATION_JSON)
+                    //                            .bodyValue(new PasswordHashingRequest(password))
+                    //                            .retrieve()
+                    //                            .onStatus(status -> status == HttpStatus.FORBIDDEN,
+                    //                                    response -> response.bodyToMono(String.class)
+                    //                                            .flatMap(error -> {
+                    //                                                log.error("Custom Log:: Forbidden error response body: {}", error);
+                    //                                                return Mono.error(new RuntimeException("Forbidden error response body: " + error));
+                    //                                            }))
+                    //                            .bodyToMono(String.class)
+                    //                            .doOnError(error -> log.error("Custom Log:: Unable to hash password: {}", error.getMessage(), error));
+                    //                });
+
+------------------------------------------------------------------------------------------------------------------------
+
+                    return userFactory.createUser(request)
+                            .doOnSubscribe(_ -> log.info("Subscribing to create user process"))
+                            .doOnNext(user -> log.info("User created: {}", user))
+                            .flatMap(savedUser -> {
+                                var userDto = genericMapper.map(savedUser, UserDto.class);
+                                log.info("Mapped user to DTO: {}", userDto);
+
+                                return userTokenServiceClient.generateEmailVerificationToken(userDto)
+                                        .doOnNext(token -> log.info("Generated email verification token: {}", token.token()))
+                                        .flatMap(token -> emailSendingService
+                                                .sendVerificationEmail(
+                                                        userDto.email(),
+                                                        userDto.username(),
+                                                        token.token()
+                                                )
+                                                .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
+                                                .then(jwtTokenServiceClient.generateJwtToken(userDto))
+                                                .doOnNext(jwt -> log.info("Generated jwt token: {}", jwt))
+                                        )
+                                        .thenReturn(Result.successMessage("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
+                            })
+                            .doOnError(error -> log.error("Registration failed: {}", error.getMessage(), error));
+                });
+
+------------------------------------------------------------------------------------------------------------------------
+
+//    @Query("""
+//            SELECT r.role_name AS value
+//            FROM user_db.usr.user_role ur
+//            JOIN user_db.usr.role r ON ur.role_id = r.id
+//            WHERE ur.user_id = :userId
+//            """)
+//    Flux<String> findRolesByUserId(@Param("userId") Integer userId);
+
+    @Query("""
+SELECT p.permission_name AS value
+FROM user_db.usr.role r
+JOIN user_db.usr.role_permission rp ON r.id = rp.role_id
+JOIN user_db.usr.permission p ON rp.permission_id = p.id
+WHERE r.role_name = :roleName
+""")
+    Flux<String> findRolePermissionsByRoleName(@Param("roleName") String roleName);
+
+------------------------------------------------------------------------------------------------------------------------

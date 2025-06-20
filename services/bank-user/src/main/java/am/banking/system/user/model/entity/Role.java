@@ -4,10 +4,8 @@ import am.banking.system.common.entity.BaseEntity;
 import am.banking.system.common.enums.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Author: Artyom Aroyan
@@ -16,9 +14,8 @@ import java.io.Serializable;
  */
 @Getter
 @AllArgsConstructor
-@Table(name = "role")
-public class Role extends BaseEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+@Table(name = "user_db.usr.role")
+public class Role extends BaseEntity {
+    @Column("role_name")
     private final RoleEnum roleName;
 }
