@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -18,10 +16,7 @@ import java.math.BigDecimal;
 @Table
 @Getter
 @AllArgsConstructor
-public class Account extends BaseEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class Account extends BaseEntity {
     private final Integer accountOwnerId;
     private final String accountNumber;
     private final String accountOwnerUsername;
