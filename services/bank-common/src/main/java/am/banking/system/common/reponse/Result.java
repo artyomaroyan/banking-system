@@ -22,6 +22,10 @@ public record Result<T> (T data, boolean success, String message, Integer errorC
         return success(null, message);
     }
 
+    public static Result<String> successMessage(String message) {
+        return success(message);
+    }
+
     public static <T> Result<T> error(String message, Integer errorCode) {
         return Result.<T>builder()
                 .data(null)

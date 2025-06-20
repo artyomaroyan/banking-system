@@ -1,14 +1,13 @@
 package am.banking.system.common.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Column;
 
 import java.time.LocalDateTime;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
 
 /**
  * Author: Artyom Aroyan
@@ -16,12 +15,15 @@ import static jakarta.persistence.GenerationType.IDENTITY;
  * Time: 01:48:49
  */
 @Getter
-@MappedSuperclass
+@Setter
 public abstract class BaseEntity {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @Column("id")
     private Integer id;
+    @CreatedDate
+    @Column("created_at")
     private LocalDateTime createdAt;
-    @Setter
+    @LastModifiedDate
+    @Column("updated_at")
     private LocalDateTime updatedAt;
 }
