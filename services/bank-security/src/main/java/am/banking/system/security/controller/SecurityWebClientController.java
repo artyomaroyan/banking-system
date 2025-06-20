@@ -41,8 +41,8 @@ public class SecurityWebClientController {
 
     @PostMapping("/hash-password")
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
-    public ResponseEntity<String> hashPassword(@Valid @RequestBody PasswordHashingRequest request) {
-        return ResponseEntity.ok(argon2Hashing.encode(request.password()));
+    public ResponseEntity<PasswordHashingResponse> hashPassword(@Valid @RequestBody PasswordHashingRequest request) {
+        return ResponseEntity.ok(new PasswordHashingResponse(argon2Hashing.encode(request.password())));
     }
 
     @PostMapping("/validate-password")

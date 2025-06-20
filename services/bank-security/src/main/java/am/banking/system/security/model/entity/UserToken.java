@@ -6,11 +6,8 @@ import am.banking.system.security.model.enums.TokenState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -22,10 +19,7 @@ import java.util.Date;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserToken extends BaseEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class UserToken extends BaseEntity {
     private final Integer userId;
     private final String token;
     private final Date expirationDate;
