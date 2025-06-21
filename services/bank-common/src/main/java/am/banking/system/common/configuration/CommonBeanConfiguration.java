@@ -1,8 +1,8 @@
 package am.banking.system.common.configuration;
 
-import am.banking.system.common.tls.WebClientFactory;
-import am.banking.system.common.tls.configuration.InternalSecretProperties;
-import am.banking.system.common.tls.configuration.SecurityTLSProperties;
+import am.banking.system.common.infrastructure.tls.WebClientFactory;
+import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
+import am.banking.system.common.infrastructure.tls.configuration.SecurityTLSProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
