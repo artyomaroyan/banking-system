@@ -2,13 +2,13 @@ package am.banking.system.security.api.controller;
 
 import am.banking.system.common.shared.dto.security.*;
 import am.banking.system.common.shared.dto.user.UserDto;
-import am.banking.system.security.api.dto.UserPrincipal;
-import am.banking.system.security.application.port.in.IAuthorizationService;
+import am.banking.system.security.api.shared.UserPrincipal;
+import am.banking.system.security.application.port.in.AuthorizationServiceUseCase;
 import am.banking.system.security.infrastructure.password.Argon2Hashing;
-import am.banking.system.security.application.port.in.IJwtTokenService;
-import am.banking.system.security.application.port.in.IUserTokenService;
-import am.banking.system.security.application.validator.IJwtTokenValidator;
-import am.banking.system.security.application.validator.IUserTokenValidator;
+import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
+import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
+import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
+import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +33,11 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/security/web")
 public class SecurityWebClientController {
     private final Argon2Hashing argon2Hashing;
-    private final IJwtTokenService jwtTokenService;
-    private final IUserTokenService userTokenService;
-    private final IJwtTokenValidator jwtTokenValidator;
-    private final IUserTokenValidator userTokenValidator;
-    private final IAuthorizationService authorizationService;
+    private final JwtTokenServiceUseCase jwtTokenService;
+    private final UserTokenServiceUseCase userTokenService;
+    private final JwtTokenValidatorUseCase jwtTokenValidator;
+    private final UserTokenValidatorUseCase userTokenValidator;
+    private final AuthorizationServiceUseCase authorizationService;
 
     @PostMapping("/hash-password")
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")

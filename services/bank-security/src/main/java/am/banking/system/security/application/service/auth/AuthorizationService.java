@@ -1,9 +1,9 @@
-package am.banking.system.security.application.service;
+package am.banking.system.security.application.service.auth;
 
 import am.banking.system.common.shared.enums.PermissionEnum;
-import am.banking.system.security.application.port.in.IAuthorizationService;
+import am.banking.system.security.application.port.in.AuthorizationServiceUseCase;
 import am.banking.system.security.application.validator.TokenClaimsExtractor;
-import am.banking.system.security.application.validator.IJwtTokenValidator;
+import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ import java.util.Set;
  */
 @Component
 @RequiredArgsConstructor
-public class AuthorizationService implements IAuthorizationService {
-    private final IJwtTokenValidator jwtTokenValidator;
+public class AuthorizationService implements AuthorizationServiceUseCase {
+    private final JwtTokenValidatorUseCase jwtTokenValidator;
     private final TokenClaimsExtractor tokenClaimsExtractor;
 
     @Override

@@ -1,7 +1,7 @@
-package am.banking.system.security.application.strategy;
+package am.banking.system.security.application.token.strategy;
 
 import am.banking.system.security.domain.enums.TokenType;
-import am.banking.system.security.api.dto.SigningCredentials;
+import am.banking.system.security.api.shared.SigningCredentials;
 
 import java.security.Key;
 

@@ -1,6 +1,6 @@
 package am.banking.system.security.util;
 
-import am.banking.system.security.application.port.in.IUserTokenService;
+import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.time.Duration;
 @Component
 @RequiredArgsConstructor
 public class TokenScheduler {
-    private final IUserTokenService userTokenService;
+    private final UserTokenServiceUseCase userTokenService;
 
     @PostConstruct
     public void init() {

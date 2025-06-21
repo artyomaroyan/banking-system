@@ -1,7 +1,7 @@
 package am.banking.system.security.application.validator;
 
 import am.banking.system.common.shared.enums.PermissionEnum;
-import am.banking.system.security.application.strategy.KeyProviderStrategy;
+import am.banking.system.security.application.token.strategy.KeyProviderStrategy;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;

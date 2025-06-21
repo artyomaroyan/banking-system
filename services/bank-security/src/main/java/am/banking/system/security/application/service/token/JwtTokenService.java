@@ -1,10 +1,10 @@
-package am.banking.system.security.application.service;
+package am.banking.system.security.application.service.token;
 
-import am.banking.system.security.api.dto.UserPrincipal;
+import am.banking.system.security.api.shared.UserPrincipal;
+import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
+import am.banking.system.security.application.port.in.TokenServiceUseCase;
 import am.banking.system.security.infrastructure.token.claims.TokenClaimsMapper;
 import am.banking.system.security.infrastructure.token.claims.TokenClaimsService;
-import am.banking.system.security.application.port.in.IJwtTokenService;
-import am.banking.system.security.application.port.in.ITokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,8 @@ import static am.banking.system.security.domain.enums.TokenType.JSON_WEB_TOKEN;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JwtTokenService implements IJwtTokenService {
-    private final ITokenService tokenService;
+public class JwtTokenService implements JwtTokenServiceUseCase {
+    private final TokenServiceUseCase tokenService;
     private final TokenClaimsMapper tokenClaimsMapper;
     private final TokenClaimsService tokenClaimsService;
 

@@ -2,7 +2,7 @@ package am.banking.system.security.infrastructure.webclient.configuration;
 
 import am.banking.system.common.infrastructure.tls.WebClientFactory;
 import am.banking.system.common.infrastructure.tls.configuration.SecurityTLSProperties;
-import am.banking.system.security.application.port.in.IJwtTokenService;
+import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class SecurityWebClientConfiguration {
     private final SecurityTLSProperties tlsProperties;
-    private final IJwtTokenService iJwtTokenService;
+    private final JwtTokenServiceUseCase iJwtTokenService;
 
     @Bean(name = "internalWebClient")
     public WebClient internalWebClient() {

@@ -1,7 +1,7 @@
 package am.banking.system.security.api.controller;
 
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.security.application.port.in.IJwtTokenService;
+import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/secure/local")
 public class InternalTokenController {
-    private final IJwtTokenService jwtTokenService;
+    private final JwtTokenServiceUseCase jwtTokenService;
     private final InternalSecretProperties internalSecretProperties;
 
     @PostMapping("/system-token")

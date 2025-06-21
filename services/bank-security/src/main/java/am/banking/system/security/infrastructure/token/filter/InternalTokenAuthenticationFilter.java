@@ -1,6 +1,6 @@
 package am.banking.system.security.infrastructure.token.filter;
 
-import am.banking.system.security.application.validator.IJwtTokenValidator;
+import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @Service
 @RequiredArgsConstructor
 public class InternalTokenAuthenticationFilter implements WebFilter {
-    private final IJwtTokenValidator jwtTokenValidator;
+    private final JwtTokenValidatorUseCase jwtTokenValidator;
 
     @NonNull
     @Override

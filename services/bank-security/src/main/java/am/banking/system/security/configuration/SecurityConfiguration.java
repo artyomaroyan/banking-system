@@ -1,7 +1,7 @@
 package am.banking.system.security.configuration;
 
 import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;
-import am.banking.system.security.application.validator.IJwtTokenValidator;
+import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableReactiveMethodSecurity
 public class SecurityConfiguration {
-    private final IJwtTokenValidator jwtTokenValidator;
+    private final JwtTokenValidatorUseCase jwtTokenValidator;
 
     private static final String[] PUBLIC_URLS = {
             "/webjars/**",

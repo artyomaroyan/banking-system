@@ -1,4 +1,4 @@
-package am.banking.system.security.api.dto;
+package am.banking.system.security.api.shared;
 
 import am.banking.system.common.shared.enums.AccountState;
 import lombok.Getter;

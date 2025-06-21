@@ -1,6 +1,6 @@
 package am.banking.system.security.infrastructure.token.claims;
 
-import am.banking.system.security.api.dto.UserPrincipal;
+import am.banking.system.security.api.shared.UserPrincipal;
 import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenState;
 import org.springframework.stereotype.Service;

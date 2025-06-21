@@ -1,7 +1,7 @@
-package am.banking.system.security.application.factory;
+package am.banking.system.security.application.token.factory;
 
 import am.banking.system.security.domain.enums.TokenType;
-import am.banking.system.security.application.strategy.TokenGenerationStrategy;
+import am.banking.system.security.application.token.strategy.TokenGenerationStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

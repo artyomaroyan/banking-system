@@ -1,12 +1,12 @@
-package am.banking.system.security.application.service;
+package am.banking.system.security.application.service.user;
 
-import am.banking.system.security.api.dto.UserPrincipal;
+import am.banking.system.security.api.shared.UserPrincipal;
+import am.banking.system.security.application.port.in.TokenServiceUseCase;
+import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
 import am.banking.system.security.domain.model.UserToken;
 import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.domain.repository.UserTokenRepository;
-import am.banking.system.security.application.port.in.ITokenService;
-import am.banking.system.security.application.port.in.IUserTokenService;
 import am.banking.system.security.infrastructure.token.claims.TokenClaimsMapper;
 import am.banking.system.security.infrastructure.token.claims.TokenClaimsService;
 import am.banking.system.security.infrastructure.token.key.TokenSigningKeyManager;
@@ -30,8 +30,8 @@ import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
  */
 @Service
 @RequiredArgsConstructor
-public class UserTokenService implements IUserTokenService {
-    private final ITokenService tokenService;
+public class UserTokenService implements UserTokenServiceUseCase {
+    private final TokenServiceUseCase tokenService;
     private final TokenClaimsMapper tokenClaimsMapper;
     private final TokenClaimsService tokenClaimsService;
     private final UserTokenRepository userTokenRepository;

@@ -1,5 +1,6 @@
 package am.banking.system.security.application.validator;
 
+import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import am.banking.system.security.domain.model.UserToken;
 import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenType;
@@ -31,7 +32,7 @@ import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserTokenValidator implements IUserTokenValidator {
+public class UserTokenValidator implements UserTokenValidatorUseCase {
     private final TokenClaimsExtractor tokenClaimsExtractor;
     private final UserTokenRepository userTokenRepository;
     private final TokenSigningKeyManager tokenSigningKeyManager;

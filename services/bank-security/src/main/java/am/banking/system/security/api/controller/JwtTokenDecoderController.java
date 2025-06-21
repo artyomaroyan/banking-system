@@ -1,6 +1,6 @@
 package am.banking.system.security.api.controller;
 
-import am.banking.system.security.application.strategy.KeyProviderStrategy;
+import am.banking.system.security.application.token.strategy.KeyProviderStrategy;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;

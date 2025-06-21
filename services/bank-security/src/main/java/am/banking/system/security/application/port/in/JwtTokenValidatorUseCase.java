@@ -1,4 +1,4 @@
-package am.banking.system.security.application.validator;
+package am.banking.system.security.application.port.in;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 import reactor.core.publisher.Mono;
@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
  * Date: 23.04.25
  * Time: 00:17:52
  */
-public interface IJwtTokenValidator {
+public interface JwtTokenValidatorUseCase {
     boolean isValidToken(String token, String username);
     String extractUsername(final String token);
     Mono<Jwt> validateInternalToken(String token);

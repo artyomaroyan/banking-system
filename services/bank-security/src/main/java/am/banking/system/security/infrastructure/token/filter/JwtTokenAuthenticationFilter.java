@@ -1,7 +1,7 @@
 package am.banking.system.security.infrastructure.token.filter;
 
 import am.banking.system.security.application.validator.TokenClaimsExtractor;
-import am.banking.system.security.application.validator.IJwtTokenValidator;
+import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Service
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
-    private final IJwtTokenValidator jwtTokenValidator;
+    private final JwtTokenValidatorUseCase jwtTokenValidator;
     private final TokenClaimsExtractor tokenClaimsExtractor;
 
     @Override

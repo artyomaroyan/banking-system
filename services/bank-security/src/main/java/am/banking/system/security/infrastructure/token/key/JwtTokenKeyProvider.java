@@ -1,7 +1,7 @@
 package am.banking.system.security.infrastructure.token.key;
 
 import am.banking.system.security.infrastructure.token.configuration.JwtTokenProperties;
-import am.banking.system.security.application.strategy.KeyProviderStrategy;
+import am.banking.system.security.application.token.strategy.KeyProviderStrategy;
 
 import java.security.Key;
 import java.security.KeyStore;

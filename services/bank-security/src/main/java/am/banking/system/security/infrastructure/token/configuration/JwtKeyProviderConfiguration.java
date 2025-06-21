@@ -2,7 +2,7 @@ package am.banking.system.security.infrastructure.token.configuration;
 
 import am.banking.system.security.infrastructure.token.key.ECKeyStoreManager;
 import am.banking.system.security.infrastructure.token.key.JwtTokenKeyProvider;
-import am.banking.system.security.application.strategy.KeyProviderStrategy;
+import am.banking.system.security.application.token.strategy.KeyProviderStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -1,4 +1,4 @@
-package am.banking.system.security.application.strategy;
+package am.banking.system.security.application.token.strategy;
 
 import am.banking.system.security.domain.enums.TokenType;
 

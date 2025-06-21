@@ -9,7 +9,7 @@ import java.util.Map;
  * Date: 23.04.25
  * Time: 00:08:49
  */
-public interface ITokenService {
+public interface TokenServiceUseCase {
     String createToken(Map<String, Object> claims, String subject, TokenType type);
     String createSystemToken(TokenType type);
 }

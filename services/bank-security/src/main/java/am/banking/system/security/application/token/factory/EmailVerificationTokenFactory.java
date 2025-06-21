@@ -1,8 +1,8 @@
-package am.banking.system.security.application.factory;
+package am.banking.system.security.application.token.factory;
 
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.infrastructure.token.key.TokenSigningKeyManager;
-import am.banking.system.security.application.strategy.TokenGenerationStrategy;
+import am.banking.system.security.application.token.strategy.TokenGenerationStrategy;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,17 +14,17 @@ import java.util.UUID;
 /**
  * Author: Artyom Aroyan
  * Date: 19.04.25
- * Time: 01:48:26
+ * Time: 01:44:03
  */
 @Component
 @RequiredArgsConstructor
-public class PasswordRecoveryTokenFactory implements TokenGenerationStrategy {
+public class EmailVerificationTokenFactory implements TokenGenerationStrategy {
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
     @Override
     public String generateToken(Map<String, Object> claims, String subject) {
         // todo: add more claims
-        var type = TokenType.PASSWORD_RESET;
+        var type = TokenType.EMAIL_VERIFICATION;
         var credentials = tokenSigningKeyManager.getSigningCredentials(type);
         var issuedAt = new Date();
         var expiresAt = new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
@@ -43,6 +43,6 @@ public class PasswordRecoveryTokenFactory implements TokenGenerationStrategy {
 
     @Override
     public TokenType getSupportedTokenType() {
-        return TokenType.PASSWORD_RESET;
+        return TokenType.EMAIL_VERIFICATION;
     }
 }

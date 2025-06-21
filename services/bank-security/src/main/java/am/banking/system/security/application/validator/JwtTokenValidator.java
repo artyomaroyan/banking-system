@@ -1,6 +1,7 @@
 package am.banking.system.security.application.validator;
 
-import am.banking.system.security.application.strategy.KeyProviderStrategy;
+import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
+import am.banking.system.security.application.token.strategy.KeyProviderStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -20,7 +21,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtTokenValidator implements IJwtTokenValidator {
+public class JwtTokenValidator implements JwtTokenValidatorUseCase {
     private final ReactiveJwtDecoder jwtDecoder;
     private final KeyProviderStrategy jwtTokenKeyProvider;
     private final TokenClaimsExtractor tokenClaimsExtractor;

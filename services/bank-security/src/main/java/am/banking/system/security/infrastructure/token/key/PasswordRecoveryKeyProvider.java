@@ -2,9 +2,9 @@ package am.banking.system.security.infrastructure.token.key;
 
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.infrastructure.token.configuration.UserTokenProperties;
-import am.banking.system.security.api.dto.HmacSigningCredentials;
-import am.banking.system.security.api.dto.SigningCredentials;
-import am.banking.system.security.application.strategy.SigningKeyProviderStrategy;
+import am.banking.system.security.api.shared.HmacSigningCredentials;
+import am.banking.system.security.api.shared.SigningCredentials;
+import am.banking.system.security.application.token.strategy.SigningKeyProviderStrategy;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

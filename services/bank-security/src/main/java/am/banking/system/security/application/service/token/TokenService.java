@@ -1,10 +1,10 @@
-package am.banking.system.security.application.service;
+package am.banking.system.security.application.service.token;
 
 import am.banking.system.common.shared.exception.security.StrategyNotFoundException;
+import am.banking.system.security.application.port.in.TokenServiceUseCase;
 import am.banking.system.security.domain.enums.TokenType;
-import am.banking.system.security.application.port.in.ITokenService;
-import am.banking.system.security.application.factory.TokenStrategyFactory;
-import am.banking.system.security.application.strategy.TokenGenerationStrategy;
+import am.banking.system.security.application.token.factory.TokenStrategyFactory;
+import am.banking.system.security.application.token.strategy.TokenGenerationStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-class TokenService implements ITokenService {
+public class TokenService implements TokenServiceUseCase {
     private final TokenStrategyFactory tokenStrategyFactory;
 
     @Override

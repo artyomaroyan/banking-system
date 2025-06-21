@@ -1,4 +1,4 @@
-package am.banking.system.security.api.dto;
+package am.banking.system.security.api.shared;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
