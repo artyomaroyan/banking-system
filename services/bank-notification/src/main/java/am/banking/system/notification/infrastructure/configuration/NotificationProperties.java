@@ -1,4 +1,4 @@
-package am.banking.system.notification.email.configuration;
+package am.banking.system.notification.infrastructure.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

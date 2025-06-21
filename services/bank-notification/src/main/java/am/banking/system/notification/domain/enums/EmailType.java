@@ -1,4 +1,4 @@
-package am.banking.system.notification.model.enums;
+package am.banking.system.notification.domain.enums;
 
 /**
  * Author: Artyom Aroyan

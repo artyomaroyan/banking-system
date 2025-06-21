@@ -1,10 +1,10 @@
-package am.banking.system.notification.model.entity;
+package am.banking.system.notification.domain.entity;
 
-import am.banking.system.common.entity.BaseEntity;
-import am.banking.system.notification.kafka.dto.EmailVerification;
-import am.banking.system.notification.kafka.dto.PasswordReset;
-import am.banking.system.notification.kafka.dto.WelcomeEmail;
-import am.banking.system.notification.model.enums.EmailType;
+import am.banking.system.common.shared.model.BaseEntity;
+import am.banking.system.notification.domain.enums.EmailType;
+import am.banking.system.notification.infrastructure.kafka.dto.EmailVerification;
+import am.banking.system.notification.infrastructure.kafka.dto.PasswordReset;
+import am.banking.system.notification.infrastructure.kafka.dto.WelcomeEmail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

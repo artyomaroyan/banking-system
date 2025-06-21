@@ -1,11 +1,11 @@
-package am.banking.system.notification.kafka;
+package am.banking.system.notification.infrastructure.kafka;
 
-import am.banking.system.notification.email.service.EmailService;
-import am.banking.system.notification.kafka.dto.EmailVerification;
-import am.banking.system.notification.kafka.dto.PasswordReset;
-import am.banking.system.notification.kafka.dto.WelcomeEmail;
-import am.banking.system.notification.model.entity.Notification;
-import am.banking.system.notification.model.repository.NotificationRepository;
+import am.banking.system.notification.application.service.EmailService;
+import am.banking.system.notification.infrastructure.kafka.dto.EmailVerification;
+import am.banking.system.notification.infrastructure.kafka.dto.PasswordReset;
+import am.banking.system.notification.infrastructure.kafka.dto.WelcomeEmail;
+import am.banking.system.notification.domain.entity.Notification;
+import am.banking.system.notification.domain.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static am.banking.system.notification.model.enums.EmailType.*;
+import static am.banking.system.notification.domain.enums.EmailType.*;
 
 /**
  * Author: Artyom Aroyan

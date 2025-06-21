@@ -1,6 +1,6 @@
-package am.banking.system.notification.model.repository;
+package am.banking.system.notification.domain.repository;
 
-import am.banking.system.notification.model.entity.Notification;
+import am.banking.system.notification.domain.entity.Notification;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 

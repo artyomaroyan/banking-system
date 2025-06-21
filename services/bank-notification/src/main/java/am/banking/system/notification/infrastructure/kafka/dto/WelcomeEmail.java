@@ -1,4 +1,4 @@
-package am.banking.system.notification.kafka.dto;
+package am.banking.system.notification.infrastructure.kafka.dto;
 
 import java.io.Serial;
 import java.io.Serializable;

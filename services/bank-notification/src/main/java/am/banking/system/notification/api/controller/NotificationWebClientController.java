@@ -1,6 +1,6 @@
-package am.banking.system.notification.email.controller;
+package am.banking.system.notification.api.controller;
 
-import am.banking.system.notification.email.service.EmailService;
+import am.banking.system.notification.application.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

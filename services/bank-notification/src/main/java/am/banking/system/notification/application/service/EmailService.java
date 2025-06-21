@@ -1,6 +1,6 @@
-package am.banking.system.notification.email.service;
+package am.banking.system.notification.application.service;
 
-import am.banking.system.notification.model.enums.EmailType;
+import am.banking.system.notification.domain.enums.EmailType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import static am.banking.system.notification.email.enums.EmailTemplate.*;
-import static am.banking.system.notification.email.enums.EmailTemplate.EMAIL_VERIFICATION;
-import static am.banking.system.notification.model.enums.EmailType.PASSWORD_RECOVERY;
+import static am.banking.system.notification.domain.enums.EmailTemplate.*;
+import static am.banking.system.notification.domain.enums.EmailTemplate.EMAIL_VERIFICATION;
+import static am.banking.system.notification.domain.enums.EmailType.PASSWORD_RECOVERY;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED;
 

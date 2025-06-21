@@ -1,4 +1,4 @@
-package am.banking.system.notification.email.enums;
+package am.banking.system.notification.domain.enums;
 
 import lombok.Getter;
 
