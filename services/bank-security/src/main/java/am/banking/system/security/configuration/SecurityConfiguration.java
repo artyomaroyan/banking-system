@@ -1,7 +1,7 @@
 package am.banking.system.security.configuration;
 
-import am.banking.system.security.token.filter.InternalTokenAuthenticationFilter;
-import am.banking.system.security.token.validator.abstraction.IJwtTokenValidator;
+import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;
+import am.banking.system.security.application.validator.IJwtTokenValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

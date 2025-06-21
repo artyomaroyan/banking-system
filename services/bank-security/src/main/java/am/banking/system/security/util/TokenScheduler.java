@@ -1,6 +1,6 @@
 package am.banking.system.security.util;
 
-import am.banking.system.security.token.service.abstraction.IUserTokenService;
+import am.banking.system.security.application.port.in.IUserTokenService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
