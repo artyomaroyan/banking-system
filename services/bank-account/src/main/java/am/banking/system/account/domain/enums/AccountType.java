@@ -1,4 +1,4 @@
-package am.banking.system.account.model.enums;
+package am.banking.system.account.domain.enums;
 
 /**
  * Author: Artyom Aroyan

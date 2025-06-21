@@ -1,6 +1,6 @@
-package am.banking.system.account.model.dto;
+package am.banking.system.account.api.dto;
 
-import am.banking.system.account.model.enums.AccountType;
+import am.banking.system.account.domain.enums.AccountType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

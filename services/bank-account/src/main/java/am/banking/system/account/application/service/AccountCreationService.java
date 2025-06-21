@@ -1,11 +1,11 @@
-package am.banking.system.account.service;
+package am.banking.system.account.application.service;
 
-import am.banking.system.account.model.dto.AccountRequest;
-import am.banking.system.account.model.dto.AccountResponse;
-import am.banking.system.account.model.entity.Account;
-import am.banking.system.account.model.repository.AccountRepository;
-import am.banking.system.common.dto.user.UserRegistrationEvent;
-import am.banking.system.common.mapper.GenericMapper;
+import am.banking.system.account.api.dto.AccountRequest;
+import am.banking.system.account.api.dto.AccountResponse;
+import am.banking.system.account.domain.entity.Account;
+import am.banking.system.account.domain.repository.AccountRepository;
+import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
+import am.banking.system.common.util.GenericMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static am.banking.system.account.model.enums.AccountType.CURRENT_ACCOUNT;
+import static am.banking.system.account.domain.enums.AccountType.CURRENT_ACCOUNT;
 
 /**
  * Author: Artyom Aroyan

@@ -1,6 +1,6 @@
-package am.banking.system.account.model.dto;
+package am.banking.system.account.api.dto;
 
-import am.banking.system.account.model.enums.AccountType;
+import am.banking.system.account.domain.enums.AccountType;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
 

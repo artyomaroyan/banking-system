@@ -1,7 +1,7 @@
-package am.banking.system.account.service;
+package am.banking.system.account.application.service;
 
-import am.banking.system.account.model.dto.AccountResponse;
-import am.banking.system.common.dto.user.UserRegistrationEvent;
+import am.banking.system.account.api.dto.AccountResponse;
+import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
 import reactor.core.publisher.Mono;
 
 /**

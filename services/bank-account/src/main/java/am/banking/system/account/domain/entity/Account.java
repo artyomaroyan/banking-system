@@ -1,7 +1,7 @@
-package am.banking.system.account.model.entity;
+package am.banking.system.account.domain.entity;
 
-import am.banking.system.account.model.enums.AccountType;
-import am.banking.system.common.entity.BaseEntity;
+import am.banking.system.account.domain.enums.AccountType;
+import am.banking.system.common.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.relational.core.mapping.Table;

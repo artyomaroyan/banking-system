@@ -1,6 +1,6 @@
-package am.banking.system.account.model.repository;
+package am.banking.system.account.domain.repository;
 
-import am.banking.system.account.model.entity.Account;
+import am.banking.system.account.domain.entity.Account;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
