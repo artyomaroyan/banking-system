@@ -1,9 +1,9 @@
 package am.banking.system.user.mapper.reactive;
 
-import am.banking.system.common.dto.user.UserDto;
-import am.banking.system.user.model.entity.User;
-import am.banking.system.user.model.repository.RolePermissionRepository;
-import am.banking.system.user.model.repository.UserRoleRepository;
+import am.banking.system.common.shared.dto.user.UserDto;
+import am.banking.system.user.domain.entity.User;
+import am.banking.system.user.domain.repository.RolePermissionRepository;
+import am.banking.system.user.domain.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;

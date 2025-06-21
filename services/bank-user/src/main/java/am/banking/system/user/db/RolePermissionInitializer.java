@@ -1,12 +1,12 @@
 package am.banking.system.user.db;
 
-import am.banking.system.common.enums.PermissionEnum;
-import am.banking.system.common.enums.RoleEnum;
-import am.banking.system.user.model.entity.Permission;
-import am.banking.system.user.model.entity.Role;
-import am.banking.system.user.model.repository.PermissionRepository;
-import am.banking.system.user.model.repository.RoleRepository;
-import am.banking.system.user.service.user.access.RolePermissionLinkService;
+import am.banking.system.common.shared.enums.PermissionEnum;
+import am.banking.system.common.shared.enums.RoleEnum;
+import am.banking.system.user.domain.entity.Permission;
+import am.banking.system.user.domain.entity.Role;
+import am.banking.system.user.domain.repository.PermissionRepository;
+import am.banking.system.user.domain.repository.RoleRepository;
+import am.banking.system.user.application.service.user.access.RolePermissionLinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static am.banking.system.common.enums.PermissionEnum.*;
-import static am.banking.system.common.enums.RoleEnum.*;
+import static am.banking.system.common.shared.enums.PermissionEnum.*;
+import static am.banking.system.common.shared.enums.RoleEnum.*;
 
 /**
  * Author: Artyom Aroyan

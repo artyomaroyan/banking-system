@@ -1,6 +1,6 @@
 package am.banking.system.user.infrastructure.repository.implementation;
 
-import am.banking.system.user.model.repository.UserRoleCustomRepository;
+import am.banking.system.user.domain.repository.UserRoleCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;

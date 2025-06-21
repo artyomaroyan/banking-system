@@ -1,9 +1,9 @@
 package am.banking.system.user.configuration;
 
-import am.banking.system.user.converter.PermissionEnumReadConverter;
-import am.banking.system.user.converter.PermissionEnumWriteConverter;
-import am.banking.system.user.converter.RoleEnumReadConverter;
-import am.banking.system.user.converter.RoleEnumWriteConverter;
+import am.banking.system.user.domain.converter.PermissionEnumReadConverter;
+import am.banking.system.user.domain.converter.PermissionEnumWriteConverter;
+import am.banking.system.user.domain.converter.RoleEnumReadConverter;
+import am.banking.system.user.domain.converter.RoleEnumWriteConverter;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
