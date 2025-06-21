@@ -3,8 +3,9 @@ package am.banking.system.user.application.service.auth;
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.common.shared.exception.user.InvalidUserTokenException;
 import am.banking.system.common.shared.exception.user.UserAccountActivationException;
-import am.banking.system.user.infrastructure.client.security.IUserTokenServiceClient;
-import am.banking.system.user.application.service.user.IUserService;
+import am.banking.system.user.application.port.in.ActivateUserAccountUseCase;
+import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
+import am.banking.system.user.application.port.in.ManageUserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,9 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserAccountActivationService implements IUserAccountActivationService {
-    private final IUserService userService;
-    private final IUserTokenServiceClient userTokenServiceClient;
+public class UserAccountActivationService implements ActivateUserAccountUseCase {
+    private final ManageUserUseCase userService;
+    private final UserTokenServiceClientPort userTokenServiceClient;
 
     @Override
     public Mono<Result<String>> activateAccount(String activationToken, String username) {

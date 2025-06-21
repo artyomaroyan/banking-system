@@ -6,7 +6,7 @@ import am.banking.system.user.domain.entity.Permission;
 import am.banking.system.user.domain.entity.Role;
 import am.banking.system.user.domain.repository.PermissionRepository;
 import am.banking.system.user.domain.repository.RoleRepository;
-import am.banking.system.user.application.service.user.access.RolePermissionLinkService;
+import am.banking.system.user.domain.service.access.RolePermissionLinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

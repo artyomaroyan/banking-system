@@ -2,8 +2,8 @@ package am.banking.system.user.api.controller;
 
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.application.service.auth.IUserAccountActivationService;
-import am.banking.system.user.application.service.auth.IUserRegistrationService;
+import am.banking.system.user.application.port.in.ActivateUserAccountUseCase;
+import am.banking.system.user.application.port.in.RegisterUserUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +24,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user/account")
 public class UserAccountController {
-    private final IUserRegistrationService userRegistrationService;
-    private final IUserAccountActivationService userAccountActivationService;
+    private final RegisterUserUseCase userRegistrationService;
+    private final ActivateUserAccountUseCase userAccountActivationService;
 
     @PostMapping("/register")
     Mono<ResponseEntity<Result<String>>> register(@Valid @RequestBody UserRequest request) {

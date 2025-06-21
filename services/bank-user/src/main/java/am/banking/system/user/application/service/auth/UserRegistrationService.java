@@ -3,12 +3,13 @@ package am.banking.system.user.application.service.auth;
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.common.shared.response.Result;
-import am.banking.system.user.infrastructure.client.security.IJwtTokenServiceClient;
-import am.banking.system.user.infrastructure.client.security.IUserTokenServiceClient;
-import am.banking.system.user.mapper.reactive.UserDtoMapper;
+import am.banking.system.user.application.port.in.RegisterUserUseCase;
+import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
+import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
+import am.banking.system.user.application.mapper.UserDtoMapper;
 import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.application.service.notification.EmailSendingService;
-import am.banking.system.user.application.service.user.factory.UserFactory;
+import am.banking.system.user.infrastructure.adapter.out.notification.EmailSendingService;
+import am.banking.system.user.application.factory.UserFactory;
 import am.banking.system.user.application.service.validation.RequestValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +27,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserRegistrationService implements IUserRegistrationService {
+public class UserRegistrationService implements RegisterUserUseCase {
     private final UserFactory userFactory;
     private final UserDtoMapper userReactiveMapper;
     private final RequestValidation requestValidation;
     private final EmailSendingService emailSendingService;
-    private final IJwtTokenServiceClient jwtTokenServiceClient;
-    private final IUserTokenServiceClient userTokenServiceClient;
+    private final JwtTokenServiceClientPort jwtTokenServiceClient;
+    private final UserTokenServiceClientPort userTokenServiceClient;
 
     @Override
     public Mono<Result<String>> register(UserRequest request) {
