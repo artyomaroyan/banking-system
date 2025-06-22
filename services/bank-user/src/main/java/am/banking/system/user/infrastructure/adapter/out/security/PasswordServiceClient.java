@@ -3,6 +3,7 @@ package am.banking.system.user.infrastructure.adapter.out.security;
 import am.banking.system.common.shared.dto.security.PasswordHashingRequest;
 import am.banking.system.common.shared.dto.security.PasswordHashingResponse;
 import am.banking.system.common.shared.dto.security.PasswordValidatorRequest;
+import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import am.banking.system.user.application.port.out.PasswordServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -28,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Service
 public class PasswordServiceClient implements PasswordServiceClientPort {
     private final WebClient webClient;
-    private final JwtTokenServiceClient jwtTokenServiceClient;
+    private final JwtTokenServiceClientPort jwtTokenServiceClient;
 
     public PasswordServiceClient(@Qualifier("securedWebClient") WebClient webClient, JwtTokenServiceClient jwtTokenServiceClient) {
         this.webClient = webClient;
@@ -48,7 +49,7 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
                 .flatMap(token -> {
                     log.info("Generating System Token: {}", token);
                     return webClient.post()
-                            .uri("/api/security/web/hash-password")
+                            .uri("/api/internal/security/hash-password")
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(APPLICATION_JSON)
                             .bodyValue(new PasswordHashingRequest(password))
@@ -78,7 +79,7 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
     @Override
     public Mono<Boolean> validatePassword(String rawPassword, String hashedPassword) {
         return webClient.post()
-                .uri("/api/security/web/validate-password")
+                .uri("/api/internal/security/validate-password")
                 .bodyValue(new PasswordValidatorRequest(rawPassword, hashedPassword))
                 .retrieve()
                 .bodyToMono(Boolean.class)

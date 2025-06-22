@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -41,7 +42,7 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     @Override
     public Mono<TokenResponse> generateJwtToken(@Valid UserDto user) {
         return webClient.post()
-                .uri("/api/security/web/generate-jwt-token")
+                .uri("/api/internal/security/generate-jwt-token")
                 .bodyValue(user)
                 .retrieve()
                 .bodyToMono(TokenResponse.class)
@@ -52,28 +53,19 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     @CircuitBreaker(name = "securityService")
     @Override
     public Mono<String> generateSystemToken() {
-        return webClient.post()
+        return webClient.get()
                 .uri("/api/v1/secure/local/system-token")
                 .headers(header -> header.set("X-Internal-Secret", secretProperties.secret()))
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, response -> {
+                    log.error("Failed to get system token. Status: {}", response.statusCode());
+                    return response.bodyToMono(String.class)
+                            .defaultIfEmpty("No error body")
+                            .flatMap(body -> Mono.error(new RuntimeException("System token request failed" + body)));
+                })
                 .bodyToMono(String.class)
-                .onErrorResume(e -> {
-                    log.error("Error generating system token: {}", e.getMessage());
-                    return Mono.error(new RuntimeException("Failed to generate system token"));
-                });
-
-
-//        return webClient.post()
-//                .uri("/api/v1/secure/local/system-token")
-//                .headers(headers -> headers.set("X-Internal-Secret", secretProperties.secret()))
-//                .retrieve()
-//                .onStatus(status -> status == FORBIDDEN,
-//                        response -> response.bodyToMono(String.class)
-//                                .flatMap(error -> {
-//                                    log.error("Custom Log:: Forbidden error response body: {}", error);
-//                                    return Mono.error(new RuntimeException("Forbidden: " + error));
-//                                }))
-//                .bodyToMono(String.class);
+                .doOnNext(token -> log.info("System token received: {}", token))
+                .switchIfEmpty(Mono.error(new IllegalStateException("System token generation returned empty")));
     }
 
     @Retry(name = "securityService")
@@ -81,7 +73,7 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     @Override
     public Mono<Boolean> validateJwtToken(String token, String username) {
         return webClient.post()
-                .uri("/api/security/web/validate-jwt-token")
+                .uri("/api/internal/security/validate-jwt-token")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
                 .bodyToMono(Boolean.class)

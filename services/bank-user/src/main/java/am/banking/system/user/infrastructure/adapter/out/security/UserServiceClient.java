@@ -36,7 +36,7 @@ public class UserServiceClient implements SecurityServiceClientPort {
     @Override
     public Mono<Boolean> authorizeUser(String token, PermissionEnum permission) {
         return webClient.post()
-                .uri("/api/security/web/authorize")
+                .uri("/api/internal/security/authorize")
                 .bodyValue(new AuthorizationRequest(token, permission))
                 .retrieve()
                 .bodyToMono(Boolean.class)

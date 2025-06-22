@@ -58,7 +58,9 @@ public class UserRegistrationService implements RegisterUserUseCase {
                             .doOnNext(user ->  log.info("Created user: {}", user))
                             .flatMap(user -> userReactiveMapper.map(user)
                                     .doOnNext(dto -> log.info("Mapped User to DTO: {}", dto))
+                                    .doOnNext(dto -> log.info("About to generate verification token for: {}", dto.email()))
                                     .zipWhen(this::generateVerificationToken)
+                                    .doOnNext(tuple -> log.info("Zipped DTO and Token: {}",  tuple.getT2().token()))
                                     .flatMap(this::sendVerificationEmailAndGenerateJwt)
                             )
                             .doOnError(error -> log.error("Error while creating user: {}", error.getMessage(), error));
