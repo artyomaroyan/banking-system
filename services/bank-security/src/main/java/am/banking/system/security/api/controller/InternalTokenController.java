@@ -24,7 +24,7 @@ public class InternalTokenController {
     private final JwtTokenServiceUseCase jwtTokenService;
     private final InternalSecretProperties internalSecretProperties;
 
-    @PostMapping("/system-token")
+    @GetMapping("/system-token")
     public Mono<ResponseEntity<String>> generateSystemToken(ServerHttpRequest request) {
         String secret = request.getHeaders().getFirst("X-Internal-Secret");
         if (!internalSecretProperties.secret().equals(secret)) {

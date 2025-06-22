@@ -55,7 +55,16 @@ public class SecurityConfiguration {
             "/api/v1/user/account/register/**",
             "/api/v1/user/account/activate/**",
             "/api/v1/secure/local/system-token",
-            "/api/security/web/hash-password",
+            "/api/internal/security/hash-password",
+            "/api/internal/security/validate-password",
+            "/api/internal/security/generate-jwt-token",
+            "/api/internal/security/validate-jwt-token",
+            "/api/internal/security/generate-email-verification-token",
+            "/api/internal/security/validate-email-verification-token",
+            "/api/internal/security/generate-password-recovery-token",
+            "/api/internal/security/validate-password-recovery-token",
+            "/api/internal/security/invalidate-used-token",
+            "/api/internal/security/authorize",
             "/.well-known/jwks.json",
             "/swagger-ui/**",
             "/v3/api-docs/**"
@@ -76,7 +85,7 @@ public class SecurityConfiguration {
                                 "/.well-known/jwks.json"
                         )
                             .permitAll()
-                        .pathMatchers("/api/security/web/hash-password")
+                        .pathMatchers("/api/security/web/hash-password", "/api/internal/security/generate-email-verification-token")
                                 .hasAnyAuthority("ROLE_SYSTEM", "DO_INTERNAL_TASKS")
                         .anyExchange()
                             .authenticated()
@@ -94,7 +103,12 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8080", "http://localhost:8888", "http://localhost:8761",
                 "http://localhost:9090", "http://localhost:8989", "http://localhost:8040",
-                "http://localhost:8090", "/.well-known/jwks.json", "/api/security/web/hash-password"
+                "http://localhost:8090", "/.well-known/jwks.json", "/api/security/web/hash-password",
+                "/api/internal/security/validate-password", "/api/internal/security/generate-jwt-token",
+                "/api/internal/security/validate-jwt-token", "/api/internal/security/generate-email-verification-token",
+                "/api/internal/security/validate-email-verification-token", "/api/internal/security/generate-password-recovery-token",
+                "/api/internal/security/validate-password-recovery-token", "/api/internal/security/invalidate-used-token",
+                "/api/internal/security/authorize"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("authorization", "content-type", "x-auth-token", "Bearer", "X-Internal-Secret"));
