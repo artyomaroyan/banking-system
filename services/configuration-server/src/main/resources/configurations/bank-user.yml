@@ -57,6 +57,8 @@ resilience4j:
       securityService:
         failure-rate-threshold: 50
         minimum-number-of-calls: 5
+        sliding-window-type: count_based
+        sliding-window-size: 10
         automatic-transition-from-open-to-half-open-enabled: true
         wait-duration-in-open-state:
           seconds: 10
