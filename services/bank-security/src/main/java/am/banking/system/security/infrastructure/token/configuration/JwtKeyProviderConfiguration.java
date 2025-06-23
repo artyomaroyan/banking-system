@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class JwtKeyProviderConfiguration {
-
     @Bean
     public KeyProviderStrategy jwtKeyProviderStrategy(JwtTokenProperties properties, ECKeyStoreManager manager) {
         return JwtTokenKeyProvider.fromProperties(properties, manager);

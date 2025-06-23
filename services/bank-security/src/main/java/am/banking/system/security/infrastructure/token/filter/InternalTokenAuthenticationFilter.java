@@ -10,6 +10,8 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -24,9 +26,19 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class InternalTokenAuthenticationFilter implements WebFilter {
     private final JwtTokenValidatorUseCase jwtTokenValidator;
 
+    private static final Set<String> EXCLUDED_PATHS = Set.of(
+            "/api/v1/secure/local/system-token"
+    );
+
     @NonNull
     @Override
     public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
+        String path = exchange.getRequest().getPath().value();
+        if (EXCLUDED_PATHS.contains(path)) {
+            log.debug("Bypassing InternalTokenAuthenticationFilter for path: {}", path);
+            return chain.filter(exchange);
+        }
+
         return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(AUTHORIZATION))
                 .filter(header -> header.startsWith("Bearer "))
                 .flatMap(header -> {

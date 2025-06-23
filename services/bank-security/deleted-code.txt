@@ -48,3 +48,31 @@
 //                    });
 
 ------------------------------------------------------------------------------------------------------------------------
+
+return Mono.just(token)
+                .flatMap(t -> jwtDecoder.decode(t)
+                        .doOnNext(jwt -> {
+                            log.info("Internal token successfully decoded: {}", jwt);
+                            log.info("Token claims: {}", jwt.getClaims());
+                            log.info("Token headers: {}", jwt.getHeaders());
+                        }))
+                .doOnSuccess(jwt -> log.debug("Valid JWT for subject {}", jwt.getSubject()))
+                .doOnError(error -> log.error("JWT validation failed",  error))
+                .onErrorMap(error -> new OAuth2AuthenticationException(
+                        new OAuth2Error("invalid_token", error.getMessage(), null),
+                        "JWT validation failed"));
+
+------------------------------------------------------------------------------------------------------------------------
+
+return exchange ->
+                Mono.just(exchange.getRequest().getPath().value())
+                        .flatMap(path -> {
+                            for (String ignore : CSRF_IGNORE) {
+                                if (path.matches(ignore.replace("**", ""))) {
+                                    return ServerWebExchangeMatcher.MatchResult.notMatch();
+                                }
+                            }
+                            return ServerWebExchangeMatcher.MatchResult.match();
+                        });
+
+------------------------------------------------------------------------------------------------------------------------

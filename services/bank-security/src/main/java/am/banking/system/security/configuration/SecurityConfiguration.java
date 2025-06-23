@@ -1,7 +1,10 @@
 package am.banking.system.security.configuration;
 
+import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
 import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;
 import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
+import am.banking.system.security.infrastructure.token.filter.InternalTokenSecretFilter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,13 +20,17 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher;
+import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Author: Artyom Aroyan
@@ -71,7 +78,7 @@ public class SecurityConfiguration {
     };
 
     @Bean
-    protected SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+    protected SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, MeterRegistry meterRegistry, InternalSecretProperties internalSecretProperties) {
         http
                 .csrf(csrf -> csrf.requireCsrfProtectionMatcher(customCsrfMatcher()))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -90,6 +97,7 @@ public class SecurityConfiguration {
                         .anyExchange()
                             .authenticated()
                 )
+                .addFilterBefore(new InternalTokenSecretFilter(meterRegistry, internalSecretProperties), SecurityWebFiltersOrder.AUTHENTICATION)
                 .addFilterAt(new InternalTokenAuthenticationFilter(jwtTokenValidator), SecurityWebFiltersOrder.AUTHENTICATION)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
@@ -120,16 +128,16 @@ public class SecurityConfiguration {
     }
 
     private ServerWebExchangeMatcher customCsrfMatcher() {
-        return exchange ->
-                Mono.just(exchange.getRequest().getPath().value())
-                        .flatMap(path -> {
-                            for (String ignore : CSRF_IGNORE) {
-                                if (path.matches(ignore.replace("**", ""))) {
-                                    return ServerWebExchangeMatcher.MatchResult.notMatch();
-                                }
-                            }
-                            return ServerWebExchangeMatcher.MatchResult.match();
-                        });
+        List<ServerWebExchangeMatcher> matchers = Arrays.stream(CSRF_IGNORE)
+                .map(PathPatternParserServerWebExchangeMatcher::new)
+                .collect(Collectors.toList());
+
+        OrServerWebExchangeMatcher customMatcher = new OrServerWebExchangeMatcher(matchers);
+
+        return exchanger -> customMatcher.matches(exchanger)
+                .flatMap(result -> result.isMatch() ?
+                        ServerWebExchangeMatcher.MatchResult.notMatch() :
+                        ServerWebExchangeMatcher.MatchResult.match());
     }
 
     private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverter() {

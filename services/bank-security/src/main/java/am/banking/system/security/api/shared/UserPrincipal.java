@@ -6,8 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -16,11 +14,7 @@ import java.util.*;
  * Time: 00:35:43
  */
 @Getter
-public class UserPrincipal implements UserDetails, Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class UserPrincipal implements UserDetails {
     private final Integer userId;
     private final String username;
     private final String password;

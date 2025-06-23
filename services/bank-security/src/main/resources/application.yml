@@ -23,3 +23,4 @@ logging:
     org.springframework.web.reactive: info
     org.springframework.security: debug
     org.springframework.security.web: info
+    org.springframework.web.reactive.function.client.ExchangeFunctions: trace

@@ -39,18 +39,27 @@ public class JwtTokenValidator implements JwtTokenValidatorUseCase {
 
     @Override
     public Mono<Jwt> validateInternalToken(String token) {
-        return Mono.just(token)
-                .flatMap(t -> jwtDecoder.decode(t)
-                        .doOnNext(jwt -> {
-                            log.info("Internal token successfully decoded: {}", jwt);
-                            log.info("Token claims: {}", jwt.getClaims());
-                            log.info("Token headers: {}", jwt.getHeaders());
-                        }))
-                .doOnSuccess(jwt -> log.debug("Valid JWT for subject {}", jwt.getSubject()))
-                .doOnError(error -> log.error("JWT validation failed",  error))
+        return jwtDecoder.decode(token)
+                .doOnNext(jwt -> {
+                    log.info("Internal token successfully decoded: {}", jwt);
+                    log.info("Token claims: {}", jwt.getClaims());
+                    log.info("Token headers: {}", jwt.getHeaders());
+                })
+                .switchIfEmpty(Mono.error(new OAuth2AuthenticationException(
+                        new OAuth2Error("invalid_token", "Decoded JWT is empty", null),
+                        "JWT validation failed"
+                )))
+                .doOnSuccess(jwt -> {
+                    if (jwt != null) {
+                        log.debug("Valid JWT for subject: {}", jwt.getSubject());
+                    } else  {
+                        log.warn("JWT decode returned null");
+                    }
+                })
+                .doOnError(error -> log.error("JWT validation failed", error))
                 .onErrorMap(error -> new OAuth2AuthenticationException(
-                        new OAuth2Error("invalid_token", error.getMessage(), null),
-                        "JWT validation failed"));
+                        new OAuth2Error("invalid_token", error.getMessage(), null), "JWT validation failed"
+                ));
     }
 
     private boolean isTokenExpired(final String token) {

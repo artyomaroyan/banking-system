@@ -52,7 +52,7 @@ public class InternalTokenSecretFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        log.debug("Custom Log:: Intercepted {} request to: {}", method, path);
+        log.debug("InternalTokenSecretFilter active on path: {}, method: {}", path, method);
         meterRegistry.counter("authentication.requests", "path", path).increment();
 
         if ("/api/v1/secure/local/system-token".equalsIgnoreCase(path) &&
