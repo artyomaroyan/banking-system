@@ -3,6 +3,7 @@ package am.banking.system.user.infrastructure.adapter.out.security;
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.security.TokenValidatorRequest;
 import am.banking.system.common.shared.dto.user.UserDto;
+import am.banking.system.common.shared.exception.security.EmptyTokenException;
 import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -46,34 +47,31 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     @Override
     public Mono<TokenResponse> generateEmailVerificationToken(UserDto user) {
         return jwtTokenServiceClient.generateSystemToken()
-                .switchIfEmpty(Mono.error(new IllegalStateException("System token generation returned empty")))
-                .flatMap(token -> {
-                    log.info("Generate system token: {}", token);
+                .switchIfEmpty(Mono.error(new EmptyTokenException("System token generation returned empty")))
+                .flatMap(token ->
+                        webClient.post()
+                        .uri("/api/internal/security/generate-email-verification-token")
+                        .header(AUTHORIZATION, "Bearer " + token)
+                        .contentType(APPLICATION_JSON)
+                        .bodyValue(TokenResponse.class)
+                        .exchangeToMono(response -> {
+                            HttpStatusCode statusCode = response.statusCode();
 
-                    return webClient.post()
-                            .uri("/api/internal/security/generate-email-verification-token")
-                            .header(AUTHORIZATION, "Bearer " + token)
-                            .contentType(APPLICATION_JSON)
-                            .bodyValue(TokenResponse.class)
-                            .exchangeToMono(response -> {
-                                HttpStatusCode statusCode = response.statusCode();
-
-                                if (statusCode.is2xxSuccessful()) {
-                                    return response.bodyToMono(TokenResponse.class)
-                                            .doOnNext(body -> log.info("Email verification response: {}", body.token()))
-                                            .switchIfEmpty(Mono.error(new RuntimeException("Email verification returned empty body")));
-                                } else {
-                                    return response.bodyToMono(TokenResponse.class)
-                                            .switchIfEmpty(Mono.error(new RuntimeException("Email verification returned empty body")))
-                                            .flatMap(error -> {
-                                                log.error("Email verification token generation failed - status: {}, body: {}", statusCode.value(), error);
-                                                return Mono.error(new RuntimeException("Email verification token generation failed - " + error));
-                                            });
-                                }
-                            })
-                            .timeout(Duration.ofSeconds(10))
-                            .doOnError(error -> log.error("Email verification token generation failed: {}",  error.getMessage(), error));
-                });
+                            if (statusCode.is2xxSuccessful()) {
+                                return response.bodyToMono(TokenResponse.class)
+                                        .doOnNext(body -> log.info("Email verification response: {}", body.token()))
+                                        .switchIfEmpty(Mono.error(new EmptyTokenException("Email verification returned empty body")));
+                            } else {
+                                return response.bodyToMono(TokenResponse.class)
+                                        .switchIfEmpty(Mono.error(new EmptyTokenException("Email verification returned empty body")))
+                                        .flatMap(error -> {
+                                            log.error("Email verification token generation failed - status: {}, body: {}", statusCode.value(), error);
+                                            return Mono.error(new EmptyTokenException("Email verification token generation failed - " + error));
+                                        });
+                            }
+                        })
+                        .timeout(Duration.ofSeconds(10))
+                        .doOnError(error -> log.error("Email verification token generation failed: {}",  error.getMessage(), error)));
     }
 
     @Retry(name = "securityService")

@@ -4,6 +4,9 @@ import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.security.TokenValidatorRequest;
 import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
+import am.banking.system.common.shared.exception.security.EmptyTokenException;
+import am.banking.system.common.shared.exception.security.TimeoutException;
+import am.banking.system.common.shared.exception.security.TokenGenerationException;
 import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -15,6 +18,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 /**
  * Author: Artyom Aroyan
@@ -53,19 +58,29 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     @CircuitBreaker(name = "securityService")
     @Override
     public Mono<String> generateSystemToken() {
+        log.info("Custom Log:: Sending request with internal secret: {}", secretProperties.secret());
         return webClient.get()
                 .uri("/api/v1/secure/local/system-token")
                 .headers(header -> header.set("X-Internal-Secret", secretProperties.secret()))
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response -> {
                     log.error("Failed to get system token. Status: {}", response.statusCode());
+
                     return response.bodyToMono(String.class)
                             .defaultIfEmpty("No error body")
-                            .flatMap(body -> Mono.error(new RuntimeException("System token request failed" + body)));
+                            .flatMap(body -> Mono.error(new TokenGenerationException(
+                                    "System token request failed: " + response.statusCode() + " - " +  body)));
                 })
                 .bodyToMono(String.class)
-                .doOnNext(token -> log.info("System token received: {}", token))
-                .switchIfEmpty(Mono.error(new IllegalStateException("System token generation returned empty")));
+                .doOnNext(token -> {
+                    if (token == null || token.isEmpty() || token.trim().isBlank()) {
+                        log.error("Received empty system token");
+                        throw new EmptyTokenException("Received empty system token");
+                    }
+                    log.info("Received System token: {}", token);
+                })
+                .timeout(Duration.ofSeconds(10),
+                        Mono.error(new TimeoutException("System token generation timed out")));
     }
 
     @Retry(name = "securityService")

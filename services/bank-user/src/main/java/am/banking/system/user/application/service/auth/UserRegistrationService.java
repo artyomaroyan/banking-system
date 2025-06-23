@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * Author: Artyom Aroyan
@@ -62,6 +63,10 @@ public class UserRegistrationService implements RegisterUserUseCase {
                                     .zipWhen(this::generateVerificationToken)
                                     .doOnNext(tuple -> log.info("Zipped DTO and Token: {}",  tuple.getT2().token()))
                                     .flatMap(this::sendVerificationEmailAndGenerateJwt)
+                                    .onErrorResume(error -> {
+                                        log.error("Error during token generation or email sending: {}", error.getMessage(), error);
+                                        return Mono.just(Result.error("Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
+                                    })
                             )
                             .doOnError(error -> log.error("Error while creating user: {}", error.getMessage(), error));
                 });

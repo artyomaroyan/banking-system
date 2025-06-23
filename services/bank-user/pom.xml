@@ -136,7 +136,7 @@
             <version>9.22.3</version>
         </dependency>
 
-        <!-- do not delete -->
+        <!-- MacOS DnsServerAddressStreamProviders error resolver do not delete -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>

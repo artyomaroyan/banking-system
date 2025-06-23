@@ -489,3 +489,67 @@ WHERE r.role_name = :roleName
     Flux<String> findRolePermissionsByRoleName(@Param("roleName") String roleName);
 
 ------------------------------------------------------------------------------------------------------------------------
+
+        return webClient.get()
+                .uri("/api/v1/secure/local/system-token")
+                .headers(header -> header.set("X-Internal-Secret", secretProperties.secret()))
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, response -> {
+                    log.error("Failed to get system token. Status: {}", response.statusCode());
+                    return response.bodyToMono(String.class)
+                            .defaultIfEmpty("No error body")
+                            .flatMap(body -> Mono.error(new TokenGenerationException("System token request failed" + body)));
+                })
+                .bodyToMono(String.class)
+                .doOnNext(token -> log.info("System token received: {}", token))
+                .switchIfEmpty(Mono.error(new EmptyTokenException("System token generation returned empty")));
+
+------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public Mono<Result<String>> register(UserRequest request) {
+        log.info("Initiating user registration for email: {}", request.email());
+
+        return requestValidation.validateRequest(request)
+                .doOnNext(errors -> {
+                    if (!errors.isEmpty()) {
+                        log.warn("Validation errors occurred during registration: {}", errors);
+                    } else {
+                        log.info("Validation passed for: {}", request.email());
+                    }
+                })
+                .flatMap(errors -> {
+                    if (!errors.isEmpty()) {
+                        String message = String.join(" ", errors);
+                        return Mono.just(Result.error(message, BAD_REQUEST.value()));
+                    }
+
+                    return userFactory.createUser(request)
+                            .doOnSubscribe(_ -> log.info("Subscribing to create user process"))
+                            .doOnNext(user ->  log.info("Created user: {}", user))
+                            .flatMap(user -> userReactiveMapper.map(user)
+                                    .doOnNext(dto -> log.info("Mapped User to DTO: {}", dto))
+                                    .doOnNext(dto -> log.info("About to generate verification token for: {}", dto.email()))
+                                    .zipWhen(this::generateVerificationToken)
+                                    .doOnNext(tuple -> log.info("Zipped DTO and Token: {}",  tuple.getT2().token()))
+                                    .flatMap(this::sendVerificationEmailAndGenerateJwt)
+                            )
+                            .doOnError(error -> log.error("Error while creating user: {}", error.getMessage(), error));
+                });
+    }
+
+------------------------------------------------------------------------------------------------------------------------
+
+    @GetMapping("/system-token")
+    public Mono<ResponseEntity<String>> generateSystemToken(ServerHttpRequest request) {
+        String secret = request.getHeaders().getFirst("X-Internal-Secret");
+        if (!internalSecretProperties.secret().equals(secret)) {
+            log.warn("Custom Log:: Invalid internal secret from {}", request.getRemoteAddress());
+            return Mono.just(ResponseEntity.status(FORBIDDEN).body("Invalid internal secret"));
+        }
+        return Mono.fromSupplier(jwtTokenService::generateSystemToken)
+                .doOnNext(token -> log.info("Internal token generated: {}", token))
+                .map(ResponseEntity::ok);
+    }
+
+------------------------------------------------------------------------------------------------------------------------
