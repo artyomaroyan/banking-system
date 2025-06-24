@@ -5,7 +5,6 @@ import am.banking.system.common.shared.enums.PermissionEnum;
 import am.banking.system.user.application.port.out.SecurityServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -24,11 +23,6 @@ public class UserServiceClient implements SecurityServiceClientPort {
 
     public UserServiceClient(@Qualifier("securedWebClient") WebClient webClient) {
         this.webClient = webClient;
-    }
-
-    @PostConstruct
-    void logWebClientType() {
-        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")

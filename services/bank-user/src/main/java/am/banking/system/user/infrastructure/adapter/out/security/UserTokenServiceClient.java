@@ -8,7 +8,6 @@ import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
@@ -35,11 +34,6 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     public UserTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient, JwtTokenServiceClientPort jwtTokenServiceClient) {
         this.webClient = webClient;
         this.jwtTokenServiceClient = jwtTokenServiceClient;
-    }
-
-    @PostConstruct
-    void logWebClientType() {
-        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")

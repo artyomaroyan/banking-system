@@ -10,7 +10,6 @@ import am.banking.system.common.shared.exception.security.TokenGenerationExcepti
 import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,11 +34,6 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     public JwtTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient, InternalSecretProperties secretProperties) {
         this.webClient = webClient;
         this.secretProperties = secretProperties;
-    }
-
-    @PostConstruct
-    void logWebClientType() {
-        log.info("Custom Log:: Logging WebClient type: {}", webClient.getClass().getSimpleName());
     }
 
     @Retry(name = "securityService")
