@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -39,11 +40,18 @@ public class JwtTokenValidator implements JwtTokenValidatorUseCase {
 
     @Override
     public Mono<Jwt> validateInternalToken(String token) {
+        log.info("Validating token: {}", token);
         return jwtDecoder.decode(token)
                 .doOnNext(jwt -> {
                     log.info("Internal token successfully decoded: {}", jwt);
                     log.info("Token claims: {}", jwt.getClaims());
                     log.info("Token headers: {}", jwt.getHeaders());
+                })
+                .doOnError(error -> {
+                    log.error("Detailed validation error: {}", error.getMessage(), error);
+                    if (error instanceof JwtException jwtException) {
+                        log.error("JWT error details: {}", jwtException.getMessage());
+                    }
                 })
                 .switchIfEmpty(Mono.error(new OAuth2AuthenticationException(
                         new OAuth2Error("invalid_token", "Decoded JWT is empty", null),

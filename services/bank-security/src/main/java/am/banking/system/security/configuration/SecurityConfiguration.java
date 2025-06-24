@@ -1,8 +1,8 @@
 package am.banking.system.security.configuration;
 
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;
 import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
+import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;
 import am.banking.system.security.infrastructure.token.filter.InternalTokenSecretFilter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;

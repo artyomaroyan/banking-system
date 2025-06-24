@@ -1,8 +1,8 @@
 package am.banking.system.security.application.token.factory;
 
+import am.banking.system.security.application.token.strategy.TokenGenerationStrategy;
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.infrastructure.token.key.TokenSigningKeyManager;
-import am.banking.system.security.application.token.strategy.TokenGenerationStrategy;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +39,6 @@ public class InternalJwtTokenFactory implements TokenGenerationStrategy {
                 .and()
                 .claim("authorities", List.of("ROLE_SYSTEM", "DO_INTERNAL_TASKS"))
                 .id(UUID.randomUUID().toString());
-        log.info("Custom Log:: Generated system token from token factory class: {}", credentials.sign(builder).compact());
-        log.info("Custom Log:: Expiration: {}", expiration);
         return credentials.sign(builder).compact();
     }
 

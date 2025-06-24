@@ -76,3 +76,74 @@ return exchange ->
                         });
 
 ------------------------------------------------------------------------------------------------------------------------
+
+//    @GetMapping(value = "/jwks.json", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public Mono<ResponseEntity<Map<String, Object>>> getJwkSet() {
+//        ECPublicKey ecPublicKey = (ECPublicKey) keyProviderStrategy.getPublicKey();
+//
+//        ECKey ecKey = new ECKey.Builder(Curve.P_256, ecPublicKey)
+//                .keyUse(KeyUse.SIGNATURE)
+//                .algorithm(JWSAlgorithm.ES256)
+//                .keyID(keyProviderStrategy.getKeyId())
+//                .build();
+//
+//        JWKSet jwkSet = new JWKSet(ecKey);
+//        Map<String, Object> jwkJson = jwkSet.toJSONObject();
+//        log.info("JWK JSON: {}", jwkJson);
+//
+//        return Mono.just(ResponseEntity.ok(jwkJson));
+//    }
+
+------------------------------------------------------------------------------------------------------------------------
+
+        var type = TokenType.INTERNAL_JWT_TOKEN;
+        var credentials = tokenSigningKeyManager.getSigningCredentials(type);
+        var issuedAt = new Date();
+        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
+
+        var builder = Jwts.builder()
+                .subject(JwtTokenFactory.class.getSimpleName())
+                .issuer("bank-security service")
+                .issuedAt(issuedAt)
+                .expiration(expiration)
+                .audience().add("Internal communication Token")
+                .and()
+                .claim("authorities", List.of("ROLE_SYSTEM", "DO_INTERNAL_TASKS"))
+                .id(UUID.randomUUID().toString())
+                .header().keyId(keyProviderStrategy.getKeyId());
+        return credentials.sign((JwtBuilder) builder).compact();
+
+------------------------------------------------------------------------------------------------------------------------
+
+        ECPrivateKey privateKey = (ECPrivateKey) keyProviderStrategy.getPrivateKey();
+        String keyId = keyProviderStrategy.getKeyId();
+
+        Instant now = Instant.now();
+        Instant expiry = now.plusSeconds(600);
+
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .subject(JwtTokenFactory.class.getSimpleName())
+                .issuer("bank-security service")
+                .issueTime(Date.from(now))
+                .expirationTime(Date.from(expiry))
+                .audience("Internal communication Token")
+                .claim("authorities", List.of("ROLE_SYSTEM", "DO_INTERNAL_TASKS"))
+                .jwtID(UUID.randomUUID().toString())
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(
+                new JWSHeader.Builder(JWSAlgorithm.ES256)
+                        .keyID(keyId)
+                        .type(JOSEObjectType.JWT)
+                        .build(),
+                claims
+        );
+
+        try {
+            signedJWT.sign(new ECDSASigner(privateKey));
+        } catch (JOSEException ex) {
+            throw new IllegalStateException("Failed to sign JWT", ex);
+        }
+        return signedJWT.serialize();
+
+------------------------------------------------------------------------------------------------------------------------

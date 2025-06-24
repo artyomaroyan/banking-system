@@ -3,7 +3,6 @@ package am.banking.system.security.api.controller;
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
 import am.banking.system.common.shared.exception.security.EmptyTokenException;
 import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +26,9 @@ public class InternalTokenController {
     private final JwtTokenServiceUseCase jwtTokenService;
     private final InternalSecretProperties internalSecretProperties;
 
-    @PostConstruct
-    public void init() {
-        log.info("InternalTokenController is active");
-    }
-
     @GetMapping("/system-token")
     public Mono<ResponseEntity<String>> generateSystemToken(ServerHttpRequest request) {
         String secret = request.getHeaders().getFirst("X-Internal-Secret");
-        log.info("Custom Log:: Received internal secret: {}", secret);
-        log.info("Custom Log:: Expected internal secret: {}", internalSecretProperties.secret());
 
         if (!internalSecretProperties.secret().equals(secret)) {
             log.warn("Invalid internal secret from {}", request.getRemoteAddress());
