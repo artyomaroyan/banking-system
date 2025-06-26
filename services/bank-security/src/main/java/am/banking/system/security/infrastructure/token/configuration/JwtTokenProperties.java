@@ -16,7 +16,7 @@ import java.util.Objects;
  * Time: 01:32:11
  */
 @Validated
-@ConfigurationProperties(prefix = "security.token.jwt.keystore")
+@ConfigurationProperties(prefix = "spring.application.token.jwt.keystore")
 public record JwtTokenProperties(
         @NotBlank String path,
         @NotBlank String alias,

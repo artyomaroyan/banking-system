@@ -147,3 +147,47 @@ return exchange ->
         return signedJWT.serialize();
 
 ------------------------------------------------------------------------------------------------------------------------
+
+#spring:
+#  r2dbc:
+#    url: r2dbc:postgresql://localhost:5432/security_db
+#    username: security_owner
+#    password: security_owner
+#
+#  flyway:
+#    enabled: true
+#    url: jdbc:postgresql://localhost:5432/security_db
+#    user: security_owner
+#    password: security_owner
+#    locations: classpath:db/migration
+#    driver-class-name: org.postgresql.Driver
+#    schemas: security
+#    default-schema: security
+#
+#security:
+#  service:
+#    url: http://localhost:8989
+#
+#  argon2:
+#    memory: 65536 # Use 64 MB of memory
+#    iterations: 3 # Run 3 iterations
+#    parallelism: 2 # Use 2 threads
+#    hashLength: 64 # Generate a 64 byte (512 bit) hash
+#    salt: ${ARGON2_SALT_FOR_BANK}
+#    secretKey: ${ARGON2_SECRET_KEY_FOR_BANK}
+#  token:
+#    jwt:
+#      keystore:
+#        path: /Users/artyom_aroyan/.keys/.bankapp/JWT/keystore.p12
+#        alias: ${BANK_KEYSTORE_ALIAS}
+#        password: ${BANK_KEYSTORE_PASSWORD}
+#        expiration: 720 # expiration in minutes
+#    access:
+#      password-recovery:
+#        secret: ${PASSWORD_RESET_TOKEN_SECRET_FOR_BANK}
+#        expiration: 3 # expiration in minutes
+#      email-verification:
+#        secret: ${EMAIL_VERIFICATION_TOKEN_SECRET_FOR_BANK}
+#        expiration: 15 # expiration in minutes
+
+------------------------------------------------------------------------------------------------------------------------

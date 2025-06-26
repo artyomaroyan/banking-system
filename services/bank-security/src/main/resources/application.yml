@@ -2,7 +2,7 @@
 spring:
   config:
     import: optional:configserver:http://localhost:8888
-    location: classpath:/configurations/bank-common.yml
+    additional-location: classpath:/configurations/bank-common.yml
   application:
     name: bank-security
   main:
@@ -10,17 +10,41 @@ spring:
 
 logging:
   level:
+    web: info
     root: info
-    org.springframework.web.reactive.function.client: info
-    reactor.netty.http.client: info
-    org.springframework.r2dbc: info
-    org.springframework.data.r2dbc.core: info
-    io.r2dbc.postgresql.QUERY: info
-    org.springframework.web: info
-    am.banking.system.security: info
-    am.banking.system.user: info
-    org.springframework.web.client: info
-    org.springframework.web.reactive: info
-    org.springframework.security: debug
-    org.springframework.security.web: info
-    org.springframework.web.reactive.function.client.ExchangeFunctions: trace
+    sql: debug
+    org:
+      springframework:
+        web:
+          client: info
+          reactive:
+            function:
+              client:
+                ExchangeFunction: trace
+              _: info
+            _: info
+          _: info
+        _: info
+        security:
+          core: debug
+          web: debug
+        data:
+          r2dbc:
+            core: debug
+          _: debug
+        r2dbc: debug
+    reactor:
+      netty:
+        http:
+          server: debug
+          client: debug
+    io:
+      r2dbc:
+        postgresql:
+          QUERY: debug
+        spi: debug
+    am:
+      banking:
+        system:
+          user: debug
+          security: debug

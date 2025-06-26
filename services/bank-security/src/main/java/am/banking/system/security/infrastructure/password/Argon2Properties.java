@@ -15,7 +15,7 @@ import java.util.Objects;
  * Time: 23:31:36
  */
 @Validated
-@ConfigurationProperties("security.argon2")
+@ConfigurationProperties("spring.application.argon2")
 public record Argon2Properties(
         @Positive int memory,
         @Positive int iterations,
