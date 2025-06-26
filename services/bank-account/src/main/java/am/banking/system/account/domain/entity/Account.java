@@ -4,6 +4,7 @@ import am.banking.system.account.domain.enums.AccountType;
 import am.banking.system.common.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
@@ -13,15 +14,22 @@ import java.math.BigDecimal;
  * Date: 01.06.25
  * Time: 14:37:27
  */
-@Table
 @Getter
 @AllArgsConstructor
+@Table("account_db.account.account")
 public class Account extends BaseEntity {
+    @Column("account_owner_id")
     private final Integer accountOwnerId;
+    @Column("account_number")
     private final String accountNumber;
+    @Column("account_owner_username")
     private final String accountOwnerUsername;
+    @Column("account(owner_full_name")
     private final String accountOwnerFullName;
+    @Column("account_owner_email")
     private final String accountOwnerEmail;
+    @Column("balance")
     private final BigDecimal balance;
+    @Column("account_type")
     private final AccountType accountType;
 }
