@@ -87,9 +87,3 @@ springdoc:
     operationsSorter: method
     tagsSorter: alpha
     display-request-duration: true
-
-logging:
-  level:
-    org.springframework.web: info
-    org.springframework.security: info
-    org.springframework.cloud: info
