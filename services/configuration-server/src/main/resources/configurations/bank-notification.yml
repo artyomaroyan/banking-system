@@ -3,6 +3,16 @@ server:
   ssl:
     enabled: false
 
+webclient:
+  tls:
+    url: http://localhost:8989
+    key-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
+    key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+    trust-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
+    trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
+    trust-store-type: PKCS12
+
 notification:
   tls:
     base-url: http://localhost:8989
