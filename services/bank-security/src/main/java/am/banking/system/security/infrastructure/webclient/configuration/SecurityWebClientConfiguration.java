@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class SecurityWebClientConfiguration {
     private final SecurityTLSProperties tlsProperties;
-    private final JwtTokenServiceUseCase iJwtTokenService;
+    private final JwtTokenServiceUseCase jwtTokenServiceUseCase;
 
     @Bean(name = "internalWebClient")
     public WebClient internalWebClient() {
@@ -47,7 +47,7 @@ public class SecurityWebClientConfiguration {
     private ExchangeFilterFunction systemTokenPropagationFilter() {
         return ExchangeFilterFunction.ofRequestProcessor(request ->
                 Mono.just(ClientRequest.from(request)
-                        .header(AUTHORIZATION, "Bearer ", iJwtTokenService.generateSystemToken())
+                        .header(AUTHORIZATION, "Bearer " + jwtTokenServiceUseCase.generateSystemToken())
                         .build()));
     }
 }
