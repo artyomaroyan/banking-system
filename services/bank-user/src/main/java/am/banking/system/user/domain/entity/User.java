@@ -2,9 +2,9 @@ package am.banking.system.user.domain.entity;
 
 import am.banking.system.common.shared.model.BaseEntity;
 import am.banking.system.common.shared.enums.AccountState;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
@@ -16,20 +16,20 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @Table("user_db.usr.usr")
 public class User extends BaseEntity {
-    @Column(name = "username")
+    @Column("username")
     private final String username;
-    @Column(name = "first_name")
+    @Column("first_name")
     private final String firstName;
-    @Column(name = "last_name")
+    @Column("last_name")
     private final String lastName;
-    @Column(name = "email")
+    @Column("email")
     private final String email;
-    @Column(name = "password")
+    @Column("password")
     private final String password;
-    @Column(name = "phone")
+    @Column("phone")
     private final String phone;
-    @Column(name = "age")
+    @Column("age")
     private final Integer age;
-    @Column(name = "account_state")
+    @Column("account_state")
     private final AccountState accountState;
 }

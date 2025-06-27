@@ -12,18 +12,40 @@ spring:
 logging:
   level:
     root: info
-    org.springframework.web.reactive.function.client: info
-    reactor.netty.http.client: info
-    org.springframework.r2dbc: info
-    org.springframework.data.r2dbc.core: info
-    io.r2dbc.postgresql.QUERY: info
-    org.springframework.web: info
-    am.banking.system.security: info
-    am.banking.system.user: info
-    org.springframework.web.client: info
-    org.springframework.web.reactive: info
-    org.springframework.security: debug
-    org.springframework.security.web: info
-    org.springframework.data.r2dbc: debug
-    io.r2dbc.spi: debug
-    org.springframework.web.reactive.function.client.ExchangeFunctions: trace
+    web: info
+    sql: debug
+    org:
+      springframework:
+        web:
+          client: info
+          reactive:
+            function:
+              client:
+                ExchangeFunction: trace
+              _: info
+            _: info
+          _: info
+        _: info
+        security:
+          core: debug
+          web: debug
+        data:
+          r2dbc:
+            core: debug
+          _: debug
+        r2dbc: info
+    reactor:
+      netty:
+        http:
+          server: info
+          client: info
+    io:
+      r2dbc:
+        postgresql:
+          QUERY: debug
+        spi: debug
+    am:
+      banking:
+        system:
+          user: info
+          security: info

@@ -45,14 +45,14 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
                 .bodyValue(user)
                 .retrieve()
                 .bodyToMono(TokenResponse.class)
-                .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
+                .doOnError(error -> log.error("Unable to generate token: {}", error.getMessage(), error));
     }
 
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
     @Override
     public Mono<String> generateSystemToken() {
-        log.info("Custom Log:: Sending request with internal secret: {}", secretProperties.secret());
+        log.info("Sending user request with internal secret: {}", secretProperties.secret());
         return webClient.get()
                 .uri("/api/v1/secure/local/system-token")
                 .headers(header -> header.set("X-Internal-Secret", secretProperties.secret()))
@@ -86,6 +86,6 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
                 .bodyToMono(Boolean.class)
-                .doOnError(error -> log.error("Custom Log:: unable to validate token: {}", error.getMessage(), error));
+                .doOnError(error -> log.error("Unable to validate token: {}", error.getMessage(), error));
     }
 }

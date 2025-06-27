@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Service
 public class UserTokenServiceClient implements UserTokenServiceClientPort {
     private final WebClient webClient;
-    private final JwtTokenServiceClientPort  jwtTokenServiceClient;
+    private final JwtTokenServiceClientPort jwtTokenServiceClient;
 
     public UserTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient, JwtTokenServiceClientPort jwtTokenServiceClient) {
         this.webClient = webClient;
@@ -44,28 +44,30 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
                 .switchIfEmpty(Mono.error(new EmptyTokenException("System token generation returned empty")))
                 .flatMap(token ->
                         webClient.post()
-                        .uri("/api/internal/security/generate-email-verification-token")
-                        .header(AUTHORIZATION, "Bearer " + token)
-                        .contentType(APPLICATION_JSON)
-                        .bodyValue(TokenResponse.class)
-                        .exchangeToMono(response -> {
-                            HttpStatusCode statusCode = response.statusCode();
+                                .uri("/api/internal/security/generate-email-verification-token")
+                                .header(AUTHORIZATION, "Bearer " + token)
+                                .contentType(APPLICATION_JSON)
+                                .bodyValue(user)
+                                .exchangeToMono(response -> {
+                                    HttpStatusCode statusCode = response.statusCode();
 
-                            if (statusCode.is2xxSuccessful()) {
-                                return response.bodyToMono(TokenResponse.class)
-                                        .doOnNext(body -> log.info("Email verification response: {}", body.token()))
-                                        .switchIfEmpty(Mono.error(new EmptyTokenException("Email verification returned empty body")));
-                            } else {
-                                return response.bodyToMono(TokenResponse.class)
-                                        .switchIfEmpty(Mono.error(new EmptyTokenException("Email verification returned empty body")))
-                                        .flatMap(error -> {
-                                            log.error("Email verification token generation failed - status: {}, body: {}", statusCode.value(), error);
-                                            return Mono.error(new EmptyTokenException("Email verification token generation failed - " + error));
-                                        });
-                            }
-                        })
-                        .timeout(Duration.ofSeconds(10))
-                        .doOnError(error -> log.error("Email verification token generation failed: {}",  error.getMessage(), error)));
+                                    if (statusCode.is2xxSuccessful()) {
+                                        return response.bodyToMono(TokenResponse.class)
+                                                .doOnNext(body -> log.info("Email verification response: {}", body.token()))
+                                                .switchIfEmpty(Mono.error(new EmptyTokenException("Email verification returned empty body")));
+                                    } else {
+                                        return response.createException()
+                                                .flatMap(error -> {log.error(
+                                                        "Email verification token generation failed - status: {}, body: {}",
+                                                            statusCode.value(), error.getResponseBodyAsString());
+                                                    return Mono.error(new EmptyTokenException(
+                                                            "Email verification token generation failed - " + error.getMessage()));
+                                                });
+                                    }
+                                })
+                                .timeout(Duration.ofSeconds(10))
+                                .doOnError(error -> log.error(
+                                        "Email verification token generation failed: {}", error.getMessage(), error)));
     }
 
     @Retry(name = "securityService")
