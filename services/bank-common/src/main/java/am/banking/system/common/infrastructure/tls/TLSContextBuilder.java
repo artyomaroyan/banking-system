@@ -28,7 +28,6 @@ public class TLSContextBuilder {
 
     // even if class name is SslContext by default it creates TLS connection.
     public static SslContext buildSslContext(SecurityTLSProperties properties) {
-
         try {
             KeyStore keyStore = KeyStore.getInstance(properties.keyStoreType());
             try (InputStream ksStream = new FileInputStream(properties.keyStore())) {
