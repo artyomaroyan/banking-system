@@ -4,3 +4,55 @@ spring:
     import: optional:configserver:http://localhost:8888
   application:
     name: bank-notification
+
+logging:
+  level:
+    root: info
+    web: info
+    sql: debug
+    javax:
+      mail: debug
+    org:
+      springframework:
+        mail: debug
+        http:
+          client:
+            reactive: debug
+        kafka:
+          clients:
+            producer: debug
+            consumer: debug
+        web:
+          client: info
+          reactive:
+            function:
+              client:
+                ExchangeFunction: trace
+              _: info
+            _: info
+          _: info
+        _: info
+        security:
+          core: debug
+          web: debug
+        data:
+          r2dbc:
+            core: debug
+          _: debug
+        r2dbc: info
+    reactor:
+      netty:
+        http:
+          server: info
+          client: info
+        channel: debug
+    io:
+      r2dbc:
+        postgresql:
+          QUERY: debug
+        spi: debug
+    am:
+      banking:
+        system:
+          user: info
+          security: info

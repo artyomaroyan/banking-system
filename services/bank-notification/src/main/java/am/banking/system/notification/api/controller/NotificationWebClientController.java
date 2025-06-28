@@ -1,6 +1,10 @@
 package am.banking.system.notification.api.controller;
 
+import am.banking.system.notification.api.dto.EmailVerificationRequest;
+import am.banking.system.notification.api.dto.PasswordResetEmailRequest;
+import am.banking.system.notification.api.dto.WelcomeEmailRequest;
 import am.banking.system.notification.application.service.EmailService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,20 +28,20 @@ public class NotificationWebClientController {
     private final EmailService emailService;
 
     @PostMapping("/email-verification")
-    public ResponseEntity<Void> sendVerificationEmail(@RequestBody String email, @RequestBody String username, @RequestBody String link) {
-        emailService.sendVerificationEmail(email, username, link);
+    public ResponseEntity<Void> sendVerificationEmail(@Valid @RequestBody EmailVerificationRequest request) {
+        emailService.sendVerificationEmail(request.email(), request.username(), request.link());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password-reset")
-    public ResponseEntity<Void> sendPasswordResetEmail(@RequestBody String email, @RequestBody String username, @RequestBody String link) {
-        emailService.sendPasswordResetEmail(email, username, link);
+    public ResponseEntity<Void> sendPasswordResetEmail(@Valid @RequestBody PasswordResetEmailRequest request) {
+        emailService.sendPasswordResetEmail(request.email(), request.username(), request.link());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/welcome-email")
-    public ResponseEntity<Void> sendWelcomeEmail(@RequestBody String email, @RequestBody String username) {
-        emailService.sendWelcomeEmail(email, username);
+    public ResponseEntity<Void> sendWelcomeEmail(@Valid @RequestBody WelcomeEmailRequest request) {
+        emailService.sendWelcomeEmail(request.email(), request.username());
         return ResponseEntity.ok().build();
     }
 }
