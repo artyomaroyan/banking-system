@@ -1,3 +1,4 @@
+# bank-notification.yml from configuration-server service
 server:
   port: 8040
   ssl:
@@ -6,12 +7,16 @@ server:
 webclient:
   tls:
     url: http://localhost:8989
-    key-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
+    key-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
     key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
     key-store-type: PKCS12
-    trust-store: file:/Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
+    trust-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-truststore.p12
     trust-store-password: ${SECURITY_TRUSTSTORE_PASSWORD}
     trust-store-type: PKCS12
+
+internal:
+  system:
+    secret: ${X_INTERNAL_SECRET}
 
 notification:
   tls:
