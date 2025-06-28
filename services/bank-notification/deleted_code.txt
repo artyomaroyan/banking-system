@@ -1,0 +1,9 @@
+    @Bean(name = "notificationWebClient")
+    public WebClient notificationWebClient() {
+        return WebClient.builder()
+                .defaultHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .filter(errorResponseFilter())
+                .build();
+    }
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
