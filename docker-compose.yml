@@ -37,33 +37,33 @@ services:
     networks:
       microservices-net:
 
-  mongodb:
-    container_name: mongo_db
-    image: mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - microservices-net
-    volumes:
-      - mongo:/data
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: secret
-
-  mongo-express:
-    container_name: mongo_express
-    image: mongo-express
-    restart: always
-    ports:
-      - "8081:8081"
-    networks:
-      - microservices-net
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: secret
+#  mongodb:
+#    container_name: mongo_db
+#    image: mongo
+#    ports:
+#      - "27017:27017"
+#    networks:
+#      - microservices-net
+#    volumes:
+#      - mongo:/data
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: admin
+#      MONGO_INITDB_ROOT_PASSWORD: secret
+#
+#  mongo-express:
+#    container_name: mongo_express
+#    image: mongo-express
+#    restart: always
+#    ports:
+#      - "8081:8081"
+#    networks:
+#      - microservices-net
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+#      ME_CONFIG_MONGODB_SERVER: mongodb
+#      ME_CONFIG_BASICAUTH_USERNAME: admin
+#      ME_CONFIG_BASICAUTH_PASSWORD: secret
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
