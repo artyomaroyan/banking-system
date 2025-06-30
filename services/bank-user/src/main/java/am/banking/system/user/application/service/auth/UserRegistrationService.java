@@ -3,14 +3,14 @@ package am.banking.system.user.application.service.auth;
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.common.shared.response.Result;
+import am.banking.system.user.api.dto.UserRequest;
+import am.banking.system.user.application.factory.UserFactory;
+import am.banking.system.user.application.mapper.UserDtoMapper;
 import am.banking.system.user.application.port.in.RegisterUserUseCase;
 import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
-import am.banking.system.user.application.mapper.UserDtoMapper;
-import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.infrastructure.adapter.out.notification.EmailSendingService;
-import am.banking.system.user.application.factory.UserFactory;
 import am.banking.system.user.application.service.validation.RequestValidation;
+import am.banking.system.user.infrastructure.adapter.out.notification.NotificationServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,9 @@ public class UserRegistrationService implements RegisterUserUseCase {
     private final UserFactory userFactory;
     private final UserDtoMapper userReactiveMapper;
     private final RequestValidation requestValidation;
-    private final EmailSendingService emailSendingService;
     private final JwtTokenServiceClientPort jwtTokenServiceClient;
     private final UserTokenServiceClientPort userTokenServiceClient;
+    private final NotificationServiceClient notificationServiceClient;
 
     @Override
     public Mono<Result<String>> register(UserRequest request) {
@@ -80,7 +80,7 @@ public class UserRegistrationService implements RegisterUserUseCase {
         UserDto userDto = tuple.getT1();
         TokenResponse token = tuple.getT2();
 
-        return emailSendingService.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
+        return notificationServiceClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
                 .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
                 .then(jwtTokenServiceClient.generateJwtToken(userDto))
                 .doOnNext(jwt -> log.info("Generated JSON Web Token: {}", jwt))

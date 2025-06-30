@@ -10,5 +10,5 @@ import reactor.core.publisher.Mono;
 public interface NotificationServiceClientPort {
     Mono<Void> sendVerificationEmail(String email, String username, String link);
     Mono<Void> sendPasswordResetEmail(String email, String username, String link);
-    Mono<Void> sendWelcomeEmail(String email);
+    Mono<Void> sendWelcomeEmail(String email,  String username);
 }

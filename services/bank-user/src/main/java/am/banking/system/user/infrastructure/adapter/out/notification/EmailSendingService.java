@@ -15,8 +15,8 @@ import reactor.core.publisher.Mono;
 public final class EmailSendingService {
     private final NotificationServiceClientPort notificationServiceClient;
 
-    public Mono<Void> sendWelcomeEmail(String email) {
-        return notificationServiceClient.sendWelcomeEmail(email);
+    public Mono<Void> sendWelcomeEmail(String email, String username) {
+        return notificationServiceClient.sendWelcomeEmail(email, username);
     }
 
     public Mono<Void> sendVerificationEmail(String email, String username, String link) {

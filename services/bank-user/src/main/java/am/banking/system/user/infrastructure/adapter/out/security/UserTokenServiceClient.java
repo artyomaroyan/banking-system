@@ -53,7 +53,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
 
                                     if (statusCode.is2xxSuccessful()) {
                                         return response.bodyToMono(TokenResponse.class)
-                                                .doOnNext(body -> log.info("Email verification response: {}", body.token()))
+//                                                .doOnNext(body -> log.info("Email verification response: {}", body.token()))
                                                 .switchIfEmpty(Mono.error(new EmptyTokenException("Email verification returned empty body")));
                                     } else {
                                         return response.createException()

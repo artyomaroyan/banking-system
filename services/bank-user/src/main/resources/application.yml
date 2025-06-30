@@ -16,13 +16,17 @@ logging:
     sql: debug
     org:
       springframework:
+        http:
+          client:
+            reactive: trace
         web:
           client: info
           reactive:
             function:
               client:
                 ExchangeFunction: trace
-              _: info
+              server: trace
+              _: trace
             _: info
           _: info
         _: info
@@ -49,3 +53,4 @@ logging:
         system:
           user: info
           security: info
+          notification: debug
