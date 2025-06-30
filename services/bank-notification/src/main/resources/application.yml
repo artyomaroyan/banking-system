@@ -28,7 +28,8 @@ logging:
             function:
               client:
                 ExchangeFunction: trace
-              _: info
+              server: trace
+              _: trace
             _: info
           _: info
         _: info
@@ -56,3 +57,4 @@ logging:
         system:
           user: info
           security: info
+          notification: trace

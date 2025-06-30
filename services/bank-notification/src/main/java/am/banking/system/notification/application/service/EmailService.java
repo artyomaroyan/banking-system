@@ -1,5 +1,6 @@
 package am.banking.system.notification.application.service;
 
+import am.banking.system.common.shared.exception.notification.EmailSendingException;
 import am.banking.system.notification.domain.enums.EmailType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -7,16 +8,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import static am.banking.system.notification.domain.enums.EmailTemplate.*;
-import static am.banking.system.notification.domain.enums.EmailTemplate.EMAIL_VERIFICATION;
 import static am.banking.system.notification.domain.enums.EmailType.PASSWORD_RECOVERY;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED;
 
 /**
  * Author: Artyom Aroyan
@@ -35,14 +33,16 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
-    @Async
     public void sendVerificationEmail(String to, String username, String verificationLink) {
-        Context context = commonContext(username);
-        context.setVariable("verificationLink", verificationLink);
-        sendEmail(to, EMAIL_VERIFICATION.getSubject(), EMAIL_VERIFICATION.getTemplate(), context, EmailType.EMAIL_VERIFICATION);
+        try {
+            Context context = commonContext(username);
+            context.setVariable("verificationLink", verificationLink);
+            sendEmail(to, EMAIL_VERIFICATION.getSubject(), EMAIL_VERIFICATION.getTemplate(), context, EmailType.EMAIL_VERIFICATION);
+        } catch (EmailSendingException ex) {
+            throw new EmailSendingException("Filed to  send verification email" + ex.getMessage());
+        }
     }
 
-    @Async
     public void sendWelcomeEmail(String to, String username) {
         Context context = commonContext(username);
         context.setVariable("dashboardUrl", null);
@@ -58,22 +58,21 @@ public class EmailService {
         sendEmail(to, WELCOME_MESSAGE.getSubject(), WELCOME_MESSAGE.getTemplate(), context, EmailType.WELCOME_MESSAGE);
     }
 
-    @Async
     public void sendPasswordResetEmail(String to, String username, String resetUrl) {
-        Context context = commonContext(username);
-        context.setVariable("resetUrl", resetUrl);
-        sendEmail(to, PASSWORD_RESET.getSubject(), PASSWORD_RESET.getTemplate(), context, PASSWORD_RECOVERY);
+            Context context = commonContext(username);
+            context.setVariable("resetUrl", resetUrl);
+            sendEmail(to, PASSWORD_RESET.getSubject(), PASSWORD_RESET.getTemplate(), context, PASSWORD_RECOVERY);
     }
 
     private void sendEmail(String to, String subject, String templateName, Context context, EmailType type) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MULTIPART_MODE_MIXED_RELATED, UTF_8.name());
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, UTF_8.name());
+            String htmlContent = templateEngine.process(templateName, context);
+
             helper.setFrom(FROM_EMAIL);
             helper.setTo(to);
             helper.setSubject(subject);
-
-            String htmlContent = templateEngine.process(templateName, context);
             helper.setText(htmlContent, true);
 
             mailSender.send(mimeMessage);

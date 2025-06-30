@@ -12,7 +12,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
  * Time: 00:16:29
  */
 @Configuration
-@EnableConfigurationProperties(NotificationProperties.class)
+//@EnableConfigurationProperties(NotificationProperties.class)
 public class BeanConfiguration {
     @Bean
     protected JavaMailSender javaMailSender() {

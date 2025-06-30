@@ -2,12 +2,13 @@ package am.banking.system.notification.domain.entity;
 
 import am.banking.system.common.shared.model.BaseEntity;
 import am.banking.system.notification.domain.enums.EmailType;
-import am.banking.system.notification.infrastructure.kafka.dto.EmailVerification;
-import am.banking.system.notification.infrastructure.kafka.dto.PasswordReset;
-import am.banking.system.notification.infrastructure.kafka.dto.WelcomeEmail;
+import am.banking.system.common.shared.dto.notification.EmailVerification;
+import am.banking.system.common.shared.dto.notification.PasswordReset;
+import am.banking.system.common.shared.dto.notification.WelcomeEmail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
@@ -17,14 +18,19 @@ import java.time.LocalDateTime;
  * Date: 01.05.25
  * Time: 00:41:22
  */
-@Table
 @Getter
 @Builder
 @AllArgsConstructor
+@Table("notification_db.notification.notification")
 public class Notification extends BaseEntity {
+    @Column("email_type")
     private final EmailType emailType;
+    @Column("notification_date")
     private final LocalDateTime notificationDate;
-    private final EmailVerification emailVerification;
-    private final PasswordReset passwordReset;
-    private final WelcomeEmail welcomeEmail;
+    @Column("recipient_email")
+    private final String recipientEmail;
+    @Column("username")
+    private final String username;
+    @Column("verification_link")
+    private final String verificationLink;
 }

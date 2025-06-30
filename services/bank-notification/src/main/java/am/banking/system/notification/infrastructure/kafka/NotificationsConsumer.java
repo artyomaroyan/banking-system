@@ -1,9 +1,9 @@
 package am.banking.system.notification.infrastructure.kafka;
 
+import am.banking.system.common.shared.dto.notification.EmailVerification;
+import am.banking.system.common.shared.dto.notification.PasswordReset;
+import am.banking.system.common.shared.dto.notification.WelcomeEmail;
 import am.banking.system.notification.application.service.EmailService;
-import am.banking.system.notification.infrastructure.kafka.dto.EmailVerification;
-import am.banking.system.notification.infrastructure.kafka.dto.PasswordReset;
-import am.banking.system.notification.infrastructure.kafka.dto.WelcomeEmail;
 import am.banking.system.notification.domain.entity.Notification;
 import am.banking.system.notification.domain.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,34 +29,51 @@ public class NotificationsConsumer {
 
     @KafkaListener(topics = "email-verification", groupId = "notification-service-group")
     public void consumeEmailVerificationNotification(EmailVerification request) {
-        notificationRepository.save(
-                Notification.builder()
-                        .emailType(EMAIL_VERIFICATION)
-                        .notificationDate(LocalDateTime.now())
-                        .emailVerification(request)
-                        .build());
-        emailService.sendVerificationEmail(request.email(), request.username(), request.link());
+        log.info("Received kafka event for email verification : {}", request.email());
+
+        try {
+            emailService.sendVerificationEmail(request.email(), request.username(), request.link());
+
+            notificationRepository.save(
+                    Notification.builder()
+                            .emailType(EMAIL_VERIFICATION)
+                            .notificationDate(LocalDateTime.now())
+                            .recipientEmail(request.email())
+                            .username(request.username())
+                            .verificationLink(request.link())
+                            .build()
+            )
+                    .subscribe(saved -> log.info("Notification saved for email: {}", saved.getRecipientEmail()),
+                            error -> log.error("Error saving notification: {}", error.getMessage(), error));
+        } catch (Exception e) {
+            log.error("Error in consumeEmailVerificationNotification for {}: {}",  request.email(), e.getMessage(), e);
+        }
     }
 
     @KafkaListener(topics = "password-recovery", groupId = "notification-service-group")
     public void consumePasswordRecoveryNotification(PasswordReset request) {
         notificationRepository.save(
-                Notification.builder()
-                        .emailType(PASSWORD_RECOVERY)
-                        .notificationDate(LocalDateTime.now())
-                        .passwordReset(request)
-                        .build());
+                        Notification.builder()
+                                .emailType(PASSWORD_RECOVERY)
+                                .notificationDate(LocalDateTime.now())
+                                .recipientEmail(request.email())
+                                .username(request.username())
+                                .verificationLink(request.link())
+                                .build())
+                .subscribe();
         emailService.sendPasswordResetEmail(request.email(), request.username(), request.link());
     }
 
     @KafkaListener(topics = "welcome-email", groupId = "notification-service-group")
     public void consumeWelcomeEmailNotification(WelcomeEmail request) {
         notificationRepository.save(
-                Notification.builder()
-                        .emailType(WELCOME_MESSAGE)
-                        .notificationDate(LocalDateTime.now())
-                        .welcomeEmail(request)
-                        .build());
+                        Notification.builder()
+                                .emailType(WELCOME_MESSAGE)
+                                .notificationDate(LocalDateTime.now())
+                                .recipientEmail(request.email())
+                                .username(request.username())
+                                .build())
+                .subscribe();
         emailService.sendWelcomeEmail(request.email(), request.username());
     }
 }
