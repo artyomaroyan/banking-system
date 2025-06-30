@@ -1,6 +1,7 @@
 package am.banking.system.common.shared.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
@@ -13,5 +14,5 @@ import java.util.Set;
  */
 @Validated
 public record UserDto(@NotNull Integer userId, @NotBlank String username, @NotBlank String password,
-                      @NotBlank String email, @NotBlank Set<String> roles, @NotBlank Set<String> permissions) {
+                      @NotBlank String email, @NotEmpty Set<String> roles, @NotEmpty Set<String> permissions) {
 }
