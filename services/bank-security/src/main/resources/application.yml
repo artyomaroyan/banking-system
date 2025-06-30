@@ -48,3 +48,4 @@ logging:
         system:
           user: debug
           security: debug
+          notification: debug

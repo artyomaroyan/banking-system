@@ -73,7 +73,7 @@ public class SecurityWebClientController {
 
     @PostMapping("/generate-email-verification-token")
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
-    public Mono<ResponseEntity<TokenResponse>> generateEmailVerificationToken(@RequestBody UserDto userDto) {
+    public Mono<ResponseEntity<TokenResponse>> generateEmailVerificationToken(@Valid @RequestBody UserDto userDto) {
         UserPrincipal user = new UserPrincipal(
                 userDto.userId(),
                 userDto.username(),
@@ -93,7 +93,7 @@ public class SecurityWebClientController {
     }
 
     @PostMapping("/generate-password-recovery-token")
-    public Mono<ResponseEntity<TokenResponse>> generatePasswordRecoveryToken(@RequestBody UserDto userDto) {
+    public Mono<ResponseEntity<TokenResponse>> generatePasswordRecoveryToken(@Valid @RequestBody UserDto userDto) {
         UserPrincipal user = new UserPrincipal(
                 userDto.userId(),
                 userDto.username(),

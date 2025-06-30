@@ -72,13 +72,17 @@ public class SecurityConfiguration {
             "/api/internal/security/validate-password-recovery-token",
             "/api/internal/security/invalidate-used-token",
             "/api/internal/security/authorize",
+            "/api/notification/email-verification",
+            "/api/notification/password-reset",
+            "/api/notification/welcome-email",
             "/.well-known/jwks.json",
             "/swagger-ui/**",
             "/v3/api-docs/**"
     };
 
     @Bean
-    protected SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, MeterRegistry meterRegistry, InternalSecretProperties internalSecretProperties) {
+    protected SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, MeterRegistry registry,
+                                                            InternalSecretProperties properties) {
         http
                 .csrf(csrf -> csrf.requireCsrfProtectionMatcher(customCsrfMatcher()))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -97,7 +101,7 @@ public class SecurityConfiguration {
                         .anyExchange()
                             .authenticated()
                 )
-                .addFilterBefore(new InternalTokenSecretFilter(meterRegistry, internalSecretProperties), SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterBefore(new InternalTokenSecretFilter(registry, properties), SecurityWebFiltersOrder.AUTHENTICATION)
                 .addFilterAt(new InternalTokenAuthenticationFilter(jwtTokenValidator), SecurityWebFiltersOrder.AUTHENTICATION)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
@@ -116,7 +120,8 @@ public class SecurityConfiguration {
                 "/api/internal/security/validate-jwt-token", "/api/internal/security/generate-email-verification-token",
                 "/api/internal/security/validate-email-verification-token", "/api/internal/security/generate-password-recovery-token",
                 "/api/internal/security/validate-password-recovery-token", "/api/internal/security/invalidate-used-token",
-                "/api/internal/security/authorize"
+                "/api/internal/security/authorize", "/api/notification/email-verification",
+                "/api/notification/password-reset", "/api/notification/welcome-email"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("authorization", "content-type", "x-auth-token", "Bearer", "X-Internal-Secret"));
