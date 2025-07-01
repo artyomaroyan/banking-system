@@ -46,18 +46,20 @@ spring:
         spring.json.trusted.packages: '*'
         spring.json.type.mapping:
 
-  mail:
-    host: localhost
-    port: 1025
-    username: admin
-    password: secret
-    properties:
-      mail:
-        smtp:
-          trust: '*'
-        auth: true
-        starttls:
-          enabled: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: artyomaroyan.j@gmail.com
+#    password: bzcp kbmf haum wiog
+#    properties:
+#      mail:
+#        smtp:
+#          trust: '*'
+#        auth: true
+#        starttls:
+#          enable: true
+#          required: true
+#        connectiontimeout: 5000
+#        timeout: 3000
+#        writetimeout: 5000
+#    protocol: smtp
