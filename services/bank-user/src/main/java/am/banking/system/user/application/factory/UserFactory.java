@@ -1,6 +1,7 @@
 package am.banking.system.user.application.factory;
 
 import am.banking.system.user.application.port.in.UserFactoryUseCase;
+import am.banking.system.user.domain.entity.Role;
 import am.banking.system.user.infrastructure.adapter.out.security.PasswordServiceClient;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.domain.entity.User;
@@ -32,20 +33,27 @@ public class UserFactory implements UserFactoryUseCase {
     @Override
     public Mono<User> createUser(UserRequest request) {
         log.info("Creating user with username: {}", request.username());
-
-        return roleService.getDefaultRole()
-                .map(set -> set.iterator().next())
-                .doOnNext(role -> log.info("Retrieved default role: {}", role))
-                .doOnError(err -> log.error("Error fetching default role: {}", err.getMessage(), err))
-                .log("GET_ROLE")
-                .flatMap(defaultRole -> {
+        return Mono.zip(
+                        securityServiceClient.hashPassword(request.password())
+                                .doOnNext(pwd -> log.info("Hashed password: {}", pwd))
+                                .doOnError(err -> log.error("Error hashing password: {}", err.getMessage(), err))
+                                .log("HASH_PASSWORD"),
+                        roleService.getDefaultRole()
+                                .map(set -> set.iterator().next())
+                                .doOnNext(role -> log.info("Retrieved default role: {}", role.getRoleName()))
+                                .doOnError(err -> log.error("Error fetching default role: {}", err.getMessage(), err))
+                                .log("GET_ROLE")
+                )
+                .flatMap(tuple -> {
+                    String hashedPassword = tuple.getT1().hashedPassword();
+                    Role defaultRole = tuple.getT2();
 
                     User user = new User(
                             request.username(),
                             request.firstName(),
                             request.lastName(),
                             request.email(),
-                            request.password(),
+                            hashedPassword,
                             request.phone(),
                             request.age(),
                             PENDING
@@ -55,39 +63,33 @@ public class UserFactory implements UserFactoryUseCase {
                     return userRepository.save(user)
                             .doOnNext(saved -> log.info("User saved with ID: {}", saved.getId()))
                             .flatMap(savedUser -> {
-                                UserRole userRole = new UserRole(savedUser.getId(), defaultRole.getId());
+                                UserRole userRole =  new UserRole(savedUser.getId(), defaultRole.getId());
                                 return userRoleRepository.save(userRole)
-                                        .doOnNext(_ -> log.info("Linked user '{}' to role '{}'",
-                                                savedUser.getUsername(), defaultRole.getRoleName()))
+                                        .doOnNext(_ -> log.info(
+                                                "Linked user '{}' to role '{}'", savedUser.getUsername(), defaultRole.getRoleName()))
                                         .thenReturn(savedUser);
                             });
                 })
                 .doOnError(error -> log.error("Error during user creation: {}", error.getMessage(), error));
     }
 
+//    @Override
 //    public Mono<User> createUser(UserRequest request) {
 //        log.info("Creating user with username: {}", request.username());
-//        return Mono.zip(
-//                securityServiceClient.hashPassword(request.password())
-//                        .doOnNext(pwd -> log.info("Hashed password: {}", pwd))
-//                        .doOnError(err -> log.error("Error hashing password: {}", err.getMessage(), err))
-//                        .log("HASH_PASSWORD"),
-//                roleService.getDefaultRole()
-//                        .map(set -> set.iterator().next())
-//                        .doOnNext(role -> log.info("Retrieved default role: {}", role))
-//                        .doOnError(err -> log.error("Error fetching default role: {}", err.getMessage(), err))
-//                        .log("GET_ROLE")
-//        )
-//                .flatMap(tuple -> {
-//                    String hashedPassword = tuple.getT1().hashedPassword();
-//                    Role defaultRole = tuple.getT2();
+//
+//        return roleService.getDefaultRole()
+//                .map(set -> set.iterator().next())
+//                .doOnNext(role -> log.info("Retrieved default role: {}", role))
+//                .doOnError(err -> log.error("Error fetching default role: {}", err.getMessage(), err))
+//                .log("GET_ROLE")
+//                .flatMap(defaultRole -> {
 //
 //                    User user = new User(
 //                            request.username(),
 //                            request.firstName(),
 //                            request.lastName(),
 //                            request.email(),
-//                            hashedPassword,
+//                            request.password(),
 //                            request.phone(),
 //                            request.age(),
 //                            PENDING
@@ -97,9 +99,10 @@ public class UserFactory implements UserFactoryUseCase {
 //                    return userRepository.save(user)
 //                            .doOnNext(saved -> log.info("User saved with ID: {}", saved.getId()))
 //                            .flatMap(savedUser -> {
-//                                UserRole userRole =  new UserRole(savedUser.getId(), defaultRole.getId());
+//                                UserRole userRole = new UserRole(savedUser.getId(), defaultRole.getId());
 //                                return userRoleRepository.save(userRole)
-//                                        .doOnNext(_ -> log.info("Linked user '{}' to role '{}'", savedUser.getUsername(), defaultRole.getRoleName()))
+//                                        .doOnNext(_ -> log.info("Linked user '{}' to role '{}'",
+//                                                savedUser.getUsername(), defaultRole.getRoleName()))
 //                                        .thenReturn(savedUser);
 //                            });
 //                })
