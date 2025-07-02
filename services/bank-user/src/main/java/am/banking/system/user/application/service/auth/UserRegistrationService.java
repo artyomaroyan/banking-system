@@ -56,7 +56,7 @@ public class UserRegistrationService implements RegisterUserUseCase {
 
                     return userFactory.createUser(request)
                             .doOnSubscribe(_ -> log.info("Subscribing to create user process"))
-                            .doOnNext(user ->  log.info("Created user: {}", user))
+                            .doOnNext(user -> log.info("Created user: {}", user))
                             .flatMap(user -> userReactiveMapper.map(user)
                                     .doOnNext(dto -> log.info("Mapped User to DTO: {}", dto))
                                     .doOnNext(dto -> log.info("About to generate verification token for: {}", dto.email()))
@@ -64,7 +64,8 @@ public class UserRegistrationService implements RegisterUserUseCase {
                                     .flatMap(this::sendVerificationEmailAndGenerateJwt)
                                     .onErrorResume(error -> {
                                         log.error("Error during token generation or email sending: {}", error.getMessage(), error);
-                                        return Mono.just(Result.error("Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
+                                        return Mono.just(Result.error(
+                                                "Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
                                     })
                             )
                             .doOnError(error -> log.error("Error while creating user: {}", error.getMessage(), error));
@@ -84,6 +85,7 @@ public class UserRegistrationService implements RegisterUserUseCase {
                 .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
                 .then(jwtTokenServiceClient.generateJwtToken(userDto))
                 .doOnNext(jwt -> log.info("Generated JSON Web Token: {}", jwt))
-                .thenReturn(Result.successMessage("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
+                .thenReturn(Result.successMessage(
+                        "Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
     }
 }

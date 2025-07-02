@@ -52,14 +52,16 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
 
                                 if (status.is2xxSuccessful()) {
                                     return response.bodyToMono(PasswordHashingResponse.class)
-                                            .doOnNext(body -> log.info("Password hashing response: {}", body.hashedPassword()))
+                                            .doOnNext(body -> log.info(
+                                                    "Password hashing response: {}", body.hashedPassword()))
                                             .switchIfEmpty(Mono.error(new RuntimeException("Password hash returned empty body")));
                                 } else {
                                     return response.bodyToMono(PasswordHashingResponse.class)
                                             .switchIfEmpty(Mono.error(new RuntimeException("Password hash returned empty body")))
                                             .flatMap(error -> {
                                                 log.error("Password hashing failed - status: {}, body: {}", status.value(), error);
-                                                return  Mono.error(new RuntimeException("Password hashing failed with status: " + status.value() + " - " + error));
+                                                return  Mono.error(new RuntimeException(
+                                                        "Password hashing failed with status: " + status.value() + " - " + error));
                                             });
                                 }
                             })
