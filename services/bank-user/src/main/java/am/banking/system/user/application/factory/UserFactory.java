@@ -72,40 +72,4 @@ public class UserFactory implements UserFactoryUseCase {
                 })
                 .doOnError(error -> log.error("Error during user creation: {}", error.getMessage(), error));
     }
-
-//    @Override
-//    public Mono<User> createUser(UserRequest request) {
-//        log.info("Creating user with username: {}", request.username());
-//
-//        return roleService.getDefaultRole()
-//                .map(set -> set.iterator().next())
-//                .doOnNext(role -> log.info("Retrieved default role: {}", role))
-//                .doOnError(err -> log.error("Error fetching default role: {}", err.getMessage(), err))
-//                .log("GET_ROLE")
-//                .flatMap(defaultRole -> {
-//
-//                    User user = new User(
-//                            request.username(),
-//                            request.firstName(),
-//                            request.lastName(),
-//                            request.email(),
-//                            request.password(),
-//                            request.phone(),
-//                            request.age(),
-//                            PENDING
-//                    );
-//
-//                    log.info("Saving user: {}", user.getUsername());
-//                    return userRepository.save(user)
-//                            .doOnNext(saved -> log.info("User saved with ID: {}", saved.getId()))
-//                            .flatMap(savedUser -> {
-//                                UserRole userRole = new UserRole(savedUser.getId(), defaultRole.getId());
-//                                return userRoleRepository.save(userRole)
-//                                        .doOnNext(_ -> log.info("Linked user '{}' to role '{}'",
-//                                                savedUser.getUsername(), defaultRole.getRoleName()))
-//                                        .thenReturn(savedUser);
-//                            });
-//                })
-//                .doOnError(error -> log.error("Error during user creation: {}", error.getMessage(), error));
-//    }
 }

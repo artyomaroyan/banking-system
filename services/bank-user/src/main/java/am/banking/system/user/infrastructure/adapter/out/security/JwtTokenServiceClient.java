@@ -41,7 +41,7 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     @Override
     public Mono<TokenResponse> generateJwtToken(@Valid UserDto user) {
         return webClient.post()
-                .uri("/api/internal/security/generate-jwt-token")
+                .uri("/api/internal/security/jwt/generate")
                 .bodyValue(user)
                 .retrieve()
                 .bodyToMono(TokenResponse.class)
@@ -82,7 +82,7 @@ public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     @Override
     public Mono<Boolean> validateJwtToken(String token, String username) {
         return webClient.post()
-                .uri("/api/internal/security/validate-jwt-token")
+                .uri("/api/internal/security/jwt/validate")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
                 .bodyToMono(Boolean.class)

@@ -43,7 +43,7 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
                 .flatMap(token -> {
                     log.info("Generating System Token: {}", token);
                     return webClient.post()
-                            .uri("/api/internal/security/hash-password")
+                            .uri("/api/internal/security/password/hash")
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(APPLICATION_JSON)
                             .bodyValue(new PasswordHashingRequest(password))
@@ -75,7 +75,7 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
     @Override
     public Mono<Boolean> validatePassword(String rawPassword, String hashedPassword) {
         return webClient.post()
-                .uri("/api/internal/security/validate-password")
+                .uri("/api/internal/security/password/validate")
                 .bodyValue(new PasswordValidatorRequest(rawPassword, hashedPassword))
                 .retrieve()
                 .bodyToMono(Boolean.class)

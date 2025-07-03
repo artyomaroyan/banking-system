@@ -44,7 +44,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
                 .switchIfEmpty(Mono.error(new EmptyTokenException("System token generation returned empty")))
                 .flatMap(token ->
                         webClient.post()
-                                .uri("/api/internal/security/generate-email-verification-token")
+                                .uri("/api/internal/security/user-token/email/issue")
                                 .header(AUTHORIZATION, "Bearer " + token)
                                 .contentType(APPLICATION_JSON)
                                 .bodyValue(user)
@@ -75,7 +75,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     @Override
     public Mono<Boolean> validateEmailVerificationToken(String token, String username) {
         return webClient.post()
-                .uri("/api/internal/security/validate-email-verification-token")
+                .uri("/api/internal/security/user-token/email/validate")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
                 .bodyToMono(Boolean.class)
@@ -87,7 +87,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     @Override
     public Mono<TokenResponse> generatePasswordRecoveryToken(UserDto user) {
         return webClient.post()
-                .uri("/api/internal/security/generate-password-recovery-token")
+                .uri("/api/internal/security/user-token/password-reset/issue")
                 .bodyValue(user)
                 .retrieve()
                 .bodyToMono(TokenResponse.class)
@@ -99,7 +99,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     @Override
     public Mono<Boolean> validatePasswordRecoveryToken(String token, String username) {
         return webClient.post()
-                .uri("/api/internal/security/validate-password-recovery-token")
+                .uri("/api/internal/security/user-token/password-reset/validate")
                 .bodyValue(new TokenValidatorRequest(token, username))
                 .retrieve()
                 .bodyToMono(Boolean.class)
@@ -111,7 +111,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     @Override
     public Mono<Void> invalidateUsedToken(String token) {
         return webClient.post()
-                .uri("/api/internal/security/invalidate-used-token")
+                .uri("/api/internal/security/token/invalidate")
                 .bodyValue(new TokenResponse(token))
                 .retrieve()
                 .bodyToMono(Void.class)
