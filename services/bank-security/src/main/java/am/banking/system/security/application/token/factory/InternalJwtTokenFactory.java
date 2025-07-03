@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -27,15 +28,16 @@ public class InternalJwtTokenFactory implements TokenGenerationStrategy {
     public String generateSystemToken() {
         var type = TokenType.INTERNAL_JWT_TOKEN;
         var credentials = tokenSigningKeyManager.getSigningCredentials(type);
-        var issuedAt = new Date();
-        var expiration = new Date(issuedAt.getTime() + tokenSigningKeyManager.getTokenExpiration(type));
+
+        var now = Instant.now();
+        var expiration = now.plusMillis(tokenSigningKeyManager.getTokenExpiration(type));
 
         var builder = Jwts.builder()
-                .subject(JwtTokenFactory.class.getSimpleName())
+                .subject("Internal System Token")
                 .issuer("bank-security service")
-                .issuedAt(issuedAt)
-                .expiration(expiration)
-                .audience().add("Internal communication Token")
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiration))
+                .audience().add("internal-communication")
                 .and()
                 .claim("authorities", List.of("ROLE_SYSTEM", "DO_INTERNAL_TASKS"))
                 .id(UUID.randomUUID().toString());

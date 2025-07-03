@@ -191,3 +191,47 @@ return exchange ->
 #        expiration: 15 # expiration in minutes
 
 ------------------------------------------------------------------------------------------------------------------------
+
+        String secret = request.getHeaders().getFirst("X-Internal-Secret");
+
+        if (!internalSecretProperties.secret().equals(secret)) {
+            log.warn("Invalid internal secret from {}", request.getRemoteAddress());
+            return Mono.just(ResponseEntity.status(FORBIDDEN).body("Invalid internal secret"));
+        }
+        return Mono.fromSupplier(jwtTokenService::generateSystemToken)
+                .doOnNext(token -> {
+                    if (token == null || token.isEmpty() || token.trim().isBlank()) {
+                        log.error("Generated empty system token");
+                        throw new EmptyTokenException("Generated empty system token");
+                    }
+                    log.info("Generated internal system token: {}", token);
+                })
+                .map(ResponseEntity::ok)
+                .onErrorResume(error -> {
+                    log.error("Error during internal token generation: {}", error.getMessage(), error);
+                    return Mono.just(ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Failed to generate internal system token"));
+                });
+
+------------------------------------------------------------------------------------------------------------------------
+
+//        return Mono.justOrEmpty(request.getHeaders().getFirst("X-Internal-Secret"))
+//                .flatMap(secret -> {
+//                    if (!internalSecretValidator.isValid(secret)) {
+//                        log.warn("Invalid internal secret from {}", request.getRemoteAddress());
+//                        return Mono.just(ResponseEntity.status(FORBIDDEN).body("Invalid internal secret"));
+//                    }
+//
+//                    return jwtTokenService.generateSystemToken()
+//                            .map(ResponseEntity::ok)
+//                            .onErrorResume(error -> {
+//                                log.error("Token generation failed: {}", error.getMessage(), error);
+//                                return Mono.just(ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Failed to generate token"));
+//                            });
+//                })
+//
+//                .switchIfEmpty(Mono.defer(() -> {
+//                    log.warn("Missing X-Internal-Secret header from {}",  request.getRemoteAddress());
+//                    return Mono.just(ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Missing internal secret"));
+//                }));
+
+------------------------------------------------------------------------------------------------------------------------

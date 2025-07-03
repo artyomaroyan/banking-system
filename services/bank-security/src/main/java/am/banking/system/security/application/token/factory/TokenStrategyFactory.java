@@ -22,7 +22,7 @@ public class TokenStrategyFactory {
         this.strategy = strategy.stream().collect(Collectors.toMap(TokenGenerationStrategy::getSupportedTokenType, Function.identity()));
     }
 
-    public TokenGenerationStrategy getTokenGenerationStrategy(TokenType type) {
+    public TokenGenerationStrategy getStrategy(TokenType type) {
         return strategy.get(type);
     }
 }

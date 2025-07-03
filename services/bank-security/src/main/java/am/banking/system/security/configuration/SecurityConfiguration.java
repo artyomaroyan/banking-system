@@ -61,21 +61,25 @@ public class SecurityConfiguration {
     private static final String[] CSRF_IGNORE = {
             "/api/v1/user/account/register/**",
             "/api/v1/user/account/activate/**",
+            // internal security
             "/api/v1/secure/local/system-token",
-            "/api/internal/security/hash-password",
-            "/api/internal/security/validate-password",
-            "/api/internal/security/generate-jwt-token",
-            "/api/internal/security/validate-jwt-token",
-            "/api/internal/security/generate-email-verification-token",
-            "/api/internal/security/validate-email-verification-token",
-            "/api/internal/security/generate-password-recovery-token",
-            "/api/internal/security/validate-password-recovery-token",
-            "/api/internal/security/invalidate-used-token",
+            "/api/internal/security/system/token",
+            "/api/internal/security/jwt/generate",
+            "/api/internal/security/jwt/validate",
+            "/api/internal/security/password/hash",
+            "/api/internal/security/password/validate",
+            "/api/internal/security/user-token/email/issue",
+            "/api/internal/security/user-token/email/validate",
+            "/api/internal/security/user-token/password-reset/issue",
+            "/api/internal/security/user-token/password-reset/validate",
+            "/api/internal/security/token/invalidate",
             "/api/internal/security/authorize",
+            "/.well-known/jwks.json",
+            // notification
             "/api/notification/email-verification",
             "/api/notification/password-reset",
             "/api/notification/welcome-email",
-            "/.well-known/jwks.json",
+            // swagger
             "/swagger-ui/**",
             "/v3/api-docs/**"
     };
@@ -92,11 +96,13 @@ public class SecurityConfiguration {
                         .pathMatchers(
                                 "/api/v1/user/account/register/**",
                                 "/api/v1/user/account/activate/**",
+                                "/api/internal/security/system/token",
                                 "/api/v1/secure/local/system-token",
                                 "/.well-known/jwks.json"
                         )
                             .permitAll()
-                        .pathMatchers("/api/security/web/hash-password", "/api/internal/security/generate-email-verification-token")
+                        .pathMatchers("/api/internal/security/hash-password",
+                                "/api/internal/security/user-token/email/issue")
                                 .hasAnyAuthority("ROLE_SYSTEM", "DO_INTERNAL_TASKS")
                         .anyExchange()
                             .authenticated()
@@ -115,12 +121,22 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8080", "http://localhost:8888", "http://localhost:8761",
                 "http://localhost:9090", "http://localhost:8989", "http://localhost:8040",
-                "http://localhost:8090", "/.well-known/jwks.json", "/api/security/web/hash-password",
-                "/api/internal/security/validate-password", "/api/internal/security/generate-jwt-token",
-                "/api/internal/security/validate-jwt-token", "/api/internal/security/generate-email-verification-token",
-                "/api/internal/security/validate-email-verification-token", "/api/internal/security/generate-password-recovery-token",
-                "/api/internal/security/validate-password-recovery-token", "/api/internal/security/invalidate-used-token",
-                "/api/internal/security/authorize", "/api/notification/email-verification",
+                "http://localhost:8090", "/.well-known/jwks.json",
+                // internal security
+                "/api/v1/secure/local/system-token",
+                "/api/internal/security/system/token",
+                "/api/internal/security/jwt/generate",
+                "/api/internal/security/jwt/validate",
+                "/api/internal/security/password/hash",
+                "/api/internal/security/password/validate",
+                "/api/internal/security/user-token/email/issue",
+                "/api/internal/security/user-token/email/validate",
+                "/api/internal/security/user-token/password-reset/issue",
+                "/api/internal/security/user-token/password-reset/validate",
+                "/api/internal/security/token/invalidate",
+                "/api/internal/security/authorize",
+                // notification
+                "/api/notification/email-verification",
                 "/api/notification/password-reset", "/api/notification/welcome-email"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));

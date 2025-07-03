@@ -1,7 +1,7 @@
 package am.banking.system.security.application.service.token;
 
 import am.banking.system.common.shared.exception.security.StrategyNotFoundException;
-import am.banking.system.security.application.port.in.TokenServiceUseCase;
+import am.banking.system.security.application.port.in.TokenGenerationUseCase;
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.application.token.factory.TokenStrategyFactory;
 import am.banking.system.security.application.token.strategy.TokenGenerationStrategy;
@@ -18,19 +18,19 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class TokenService implements TokenServiceUseCase {
+public class TokenService implements TokenGenerationUseCase {
     private final TokenStrategyFactory tokenStrategyFactory;
 
     @Override
     public String createToken(Map<String, Object> claims, String subject, TokenType type) {
-        return Optional.ofNullable(tokenStrategyFactory.getTokenGenerationStrategy(type))
+        return Optional.ofNullable(tokenStrategyFactory.getStrategy(type))
                 .map(strategy -> strategy.generateToken(claims, subject))
                 .orElseThrow(() -> new StrategyNotFoundException("No strategy found for type " + type));
     }
 
     @Override
-    public String createSystemToken(TokenType type) {
-        return Optional.ofNullable(tokenStrategyFactory.getTokenGenerationStrategy(type))
+    public String generate(TokenType type) {
+        return Optional.ofNullable(tokenStrategyFactory.getStrategy(type))
                 .map(TokenGenerationStrategy::generateSystemToken)
                 .orElseThrow(() -> new StrategyNotFoundException("No strategy found for type " + type));
     }

@@ -1,7 +1,7 @@
 package am.banking.system.security.application.service.user;
 
 import am.banking.system.security.api.shared.UserPrincipal;
-import am.banking.system.security.application.port.in.TokenServiceUseCase;
+import am.banking.system.security.application.port.in.TokenGenerationUseCase;
 import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
 import am.banking.system.security.domain.model.UserToken;
 import am.banking.system.security.domain.enums.TokenPurpose;
@@ -31,7 +31,7 @@ import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
 @Service
 @RequiredArgsConstructor
 public class UserTokenService implements UserTokenServiceUseCase {
-    private final TokenServiceUseCase tokenService;
+    private final TokenGenerationUseCase tokenService;
     private final TokenClaimsMapper tokenClaimsMapper;
     private final TokenClaimsService tokenClaimsService;
     private final UserTokenRepository userTokenRepository;
@@ -52,7 +52,7 @@ public class UserTokenService implements UserTokenServiceUseCase {
         String sql = """
                 UPDATE security_db.security.user_token
                 SET token_state = 'FORCIBLY_EXPIRED'
-                WHERE token_state = 'PENDING' AND expiration_date < CURRENT_TIMESTAMP
+                WHERE token_state = 'PENDING' AND expires_at < CURRENT_TIMESTAMP
                 """;
 
         return r2dbcEntityTemplate
