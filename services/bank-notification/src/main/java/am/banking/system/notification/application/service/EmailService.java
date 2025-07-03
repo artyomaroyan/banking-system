@@ -39,29 +39,37 @@ public class EmailService {
             context.setVariable("verificationLink", verificationLink);
             sendEmail(to, EMAIL_VERIFICATION.getSubject(), EMAIL_VERIFICATION.getTemplate(), context, EmailType.EMAIL_VERIFICATION);
         } catch (EmailSendingException ex) {
-            throw new EmailSendingException("Filed to  send verification email" + ex.getMessage());
+            throw new EmailSendingException("Filed to send verification email" + ex.getMessage());
         }
     }
 
     public void sendWelcomeEmail(String to, String username) {
-        Context context = commonContext(username);
-        context.setVariable("dashboardUrl", null);
-        context.setVariable("tutorialUrl", "https://localhost:8080/tutorial");
-        context.setVariable("faqUrl", "https://localhost:8080/faq");
-        context.setVariable("videoTutorialsUrl", "https://localhost:8080/videoTutorials");
-        context.setVariable("appStoreUrl", "https://localhost:8080/appStore");
-        context.setVariable("playStoreUrl", "https://localhost:8080/playStore");
-        context.setVariable("supportEmail", "support@banking-system.com");
-        context.setVariable("twitterUrl", "https://twitter.com/banking-system");
-        context.setVariable("facebookUrl", "https://facebook.com/banking-system");
-        context.setVariable("instagramUrl", "https://instagram.com/banking-system");
-        sendEmail(to, WELCOME_MESSAGE.getSubject(), WELCOME_MESSAGE.getTemplate(), context, EmailType.WELCOME_MESSAGE);
+        try {
+            Context context = commonContext(username);
+            context.setVariable("dashboardUrl", "Replace with real dashboard if exists.");
+            context.setVariable("tutorialUrl", "https://localhost:8080/tutorial");
+            context.setVariable("faqUrl", "https://localhost:8080/faq");
+            context.setVariable("videoTutorialsUrl", "https://localhost:8080/videoTutorials");
+            context.setVariable("appStoreUrl", "https://localhost:8080/appStore");
+            context.setVariable("playStoreUrl", "https://localhost:8080/playStore");
+            context.setVariable("supportEmail", "support@banking-system.com");
+            context.setVariable("twitterUrl", "https://twitter.com/banking-system");
+            context.setVariable("facebookUrl", "https://facebook.com/banking-system");
+            context.setVariable("instagramUrl", "https://instagram.com/banking-system");
+            sendEmail(to, WELCOME_MESSAGE.getSubject(), WELCOME_MESSAGE.getTemplate(), context, EmailType.WELCOME_MESSAGE);
+        } catch (EmailSendingException ex) {
+            throw new EmailSendingException("Filed to send welcome email" + ex.getMessage());
+        }
     }
 
-    public void sendPasswordResetEmail(String to, String username, String resetUrl) {
+    public void sendPasswordResetEmail(String to, String username, String resetLink) {
+        try {
             Context context = commonContext(username);
-            context.setVariable("resetUrl", resetUrl);
+            context.setVariable("resetLink", resetLink);
             sendEmail(to, PASSWORD_RESET.getSubject(), PASSWORD_RESET.getTemplate(), context, PASSWORD_RECOVERY);
+        } catch (EmailSendingException ex) {
+            throw new EmailSendingException("Filed to send password reset email" + ex.getMessage());
+        }
     }
 
     private void sendEmail(String to, String subject, String templateName, Context context, EmailType type) {

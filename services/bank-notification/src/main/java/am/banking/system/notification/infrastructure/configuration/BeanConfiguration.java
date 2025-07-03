@@ -16,33 +16,24 @@ import java.util.Properties;
  */
 @Configuration
 @RequiredArgsConstructor
-//@EnableConfigurationProperties(EmailConfiguration.class)
+@EnableConfigurationProperties(MailConfiguration.class)
 public class BeanConfiguration {
-    private final EmailConfiguration mailConfiguration;
+    private final MailConfiguration mailConfiguration;
 
     @Bean
     protected JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailConfiguration.getHost());
-        mailSender.setPort(mailConfiguration.getPort());
-        mailSender.setUsername(mailConfiguration.getUsername());
-        mailSender.setPassword(mailConfiguration.getPassword());
+        mailSender.setHost(mailConfiguration.host());
+        mailSender.setPort(mailConfiguration.port());
+        mailSender.setUsername(mailConfiguration.username());
+        mailSender.setPassword(mailConfiguration.password());
 
         Properties properties = mailSender.getJavaMailProperties();
-        properties.put("mail.smtp.auth", mailConfiguration.isAuth());
-        properties.put("mail.smtp.starttls.enable", mailConfiguration.isEnable());
-        properties.put("mail.smtp.starttls.required", mailConfiguration.isRequire());
-        properties.put("mail.transport.protocol", mailConfiguration.getProtocol());
+        properties.put("mail.smtp.auth", mailConfiguration.auth());
+        properties.put("mail.smtp.starttls.enable", mailConfiguration.enable());
+        properties.put("mail.smtp.starttls.required", mailConfiguration.require());
+        properties.put("mail.transport.protocol", mailConfiguration.protocol());
         mailSender.setJavaMailProperties(properties);
         return mailSender;
-
-
-//        Properties properties = mailSender.getJavaMailProperties();
-//        properties.put("mail.smtp.auth", mailConfiguration.getProperties().getSmtp().isAuth());
-//        properties.put("mail.smtp.starttls.enable", mailConfiguration.getProperties().getSmtp().getStartTls().isEnable());
-//        properties.put("mail.smtp.starttls.required", mailConfiguration.getProperties().getSmtp().getStartTls().isRequire());
-//        properties.put("mail.transport.protocol", mailConfiguration.getProtocol());
-//        mailSender.setJavaMailProperties(properties);
-//        return mailSender;
     }
 }
