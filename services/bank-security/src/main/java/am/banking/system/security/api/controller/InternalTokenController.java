@@ -1,17 +1,13 @@
 package am.banking.system.security.api.controller;
 
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.common.shared.exception.security.EmptyTokenException;
-import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
+import am.banking.system.security.application.port.in.InternalTokenUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * Author: Artyom Aroyan
@@ -23,29 +19,16 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/secure/local")
 public class InternalTokenController {
-    private final JwtTokenServiceUseCase jwtTokenService;
-    private final InternalSecretProperties internalSecretProperties;
+    private final InternalTokenUseCase internalTokenService;
 
     @GetMapping("/system-token")
     public Mono<ResponseEntity<String>> generateSystemToken(ServerHttpRequest request) {
-        String secret = request.getHeaders().getFirst("X-Internal-Secret");
-
-        if (!internalSecretProperties.secret().equals(secret)) {
-            log.warn("Invalid internal secret from {}", request.getRemoteAddress());
-            return Mono.just(ResponseEntity.status(FORBIDDEN).body("Invalid internal secret"));
-        }
-        return Mono.fromSupplier(jwtTokenService::generateSystemToken)
-                .doOnNext(token -> {
-                    if (token == null || token.isEmpty() || token.trim().isBlank()) {
-                        log.error("Generated empty system token");
-                        throw new EmptyTokenException("Generated empty system token");
-                    }
-                    log.info("Generated internal system token: {}", token);
-                })
-                .map(ResponseEntity::ok)
-                .onErrorResume(error -> {
-                    log.error("Error during internal token generation: {}", error.getMessage(), error);
-                    return Mono.just(ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Failed to generate internal system token"));
-                });
+        return internalTokenService.generateToken(request)
+                .filter(response -> response != null && response.getBody() != null && !response.getBody().isBlank())
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.warn("System token response is empty");
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Empty system token"));
+                }));
     }
 }

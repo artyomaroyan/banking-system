@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import static am.banking.system.common.infrastructure.tls.WebClientFilter.errorResponseFilter;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -25,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class SecurityWebClientConfiguration {
     private final SecurityTLSProperties tlsProperties;
-    private final JwtTokenServiceUseCase jwtTokenServiceUseCase;
+    private final JwtTokenServiceUseCase jwtTokenService;
 
     @Bean(name = "internalWebClient")
     public WebClient internalWebClient() {
@@ -46,8 +45,9 @@ public class SecurityWebClientConfiguration {
 
     private ExchangeFilterFunction systemTokenPropagationFilter() {
         return ExchangeFilterFunction.ofRequestProcessor(request ->
-                Mono.just(ClientRequest.from(request)
-                        .header(AUTHORIZATION, "Bearer " + jwtTokenServiceUseCase.generateSystemToken())
-                        .build()));
+                jwtTokenService.generateSystemToken()
+                        .map(token -> ClientRequest.from(request)
+                                .header(AUTHORIZATION, "Bearer " + token)
+                                .build()));
     }
 }

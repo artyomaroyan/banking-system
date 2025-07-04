@@ -8,6 +8,7 @@ import am.banking.system.security.infrastructure.token.claims.TokenClaimsService
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import static am.banking.system.security.domain.enums.TokenType.INTERNAL_JWT_TOKEN;
 import static am.banking.system.security.domain.enums.TokenType.JSON_WEB_TOKEN;
@@ -33,12 +34,7 @@ public class JwtTokenService implements JwtTokenServiceUseCase {
     }
 
     @Override
-    public String generateSystemToken() {
-        return tokenGenerator.generate(INTERNAL_JWT_TOKEN);
-//        return Mono.fromSupplier(() -> tokenGenerator.generate(INTERNAL_JWT_TOKEN))
-//                .filter(token -> token != null && !token.trim().isBlank() && !token.isEmpty())
-//                .switchIfEmpty(Mono.error(new EmptyTokenException("Generated empty system token")))
-//                .doOnNext(token -> log.info("Generated internal system token: {}", token))
-//                .doOnError(error -> log.error("Error during system token generation", error));
+    public Mono<String> generateSystemToken() {
+        return Mono.fromSupplier(() -> tokenGenerator.generate(INTERNAL_JWT_TOKEN));
     }
 }
