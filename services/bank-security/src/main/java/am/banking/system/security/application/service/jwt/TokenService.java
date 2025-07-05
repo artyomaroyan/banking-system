@@ -1,4 +1,4 @@
-package am.banking.system.security.application.service.token;
+package am.banking.system.security.application.service.jwt;
 
 import am.banking.system.common.shared.exception.security.StrategyNotFoundException;
 import am.banking.system.security.application.port.in.TokenGenerationUseCase;

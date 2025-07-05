@@ -6,7 +6,6 @@ import lombok.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -21,29 +20,28 @@ public record Argon2Properties(
         @Positive int iterations,
         @Positive int parallelism,
         @Positive int hashLength,
-        @NotNull char[] salt,
-        @NotNull char[] secretKey) {
+        @Positive int saltLength,
+        @NotNull char[] pepper
+) {
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Argon2Properties(
-                int memory1, int iterations1, int parallelism1, int length, char[] salt1, char[] key
-        ))) return false;
-        return memory == memory1 &&
-                iterations == iterations1 &&
-                parallelism == parallelism1 &&
-                hashLength == length &&
-                Arrays.equals(salt, salt1) &&
-                Arrays.equals(secretKey, key);
+        // Recommended for Java 16+ records
+        // Uses pattern matching with instanceof (available since Java 16)
+        // Safe, clean, and avoids unnecessary casting
+        if (!(obj instanceof Argon2Properties other)) return false;
+        // Compare record fields directly (records are immutable, safe for value comparison)
+        return memory == other.memory() &&
+                iterations == other.iterations() &&
+                parallelism == other.parallelism() &&
+                hashLength == other.hashLength() &&
+                saltLength == other.saltLength();
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(memory, iterations, parallelism, hashLength);
-        result = 31 * result + Arrays.hashCode(salt);
-        result = 31 * result + Arrays.hashCode(secretKey);
-        return result;
+        return Objects.hash(memory, iterations, parallelism, hashLength, saltLength);
     }
 
     @NonNull
@@ -54,8 +52,8 @@ public record Argon2Properties(
                 ", iterations = " + iterations +
                 ", parallelism = " + parallelism +
                 ", hashLength = " + hashLength +
-                ", salt = [PROTECTED]" +
-                ", secretKey = [PROTECTED]" +
+                ", saltLength = " +  saltLength +
+                ", pepper = [PROTECTED]" +
                 "}";
     }
 }

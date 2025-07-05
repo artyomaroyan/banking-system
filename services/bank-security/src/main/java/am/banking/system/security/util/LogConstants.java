@@ -14,6 +14,4 @@ public class LogConstants {
     public static final String INVALID_TOKEN_SIGNATURE = "Invalid token signature, {}";
     public static final String UNSUPPORTED_TOKEN = "Unsupported token, {}";
     public static final String VALIDATION_FAILED = "Validation failed, unknown error, {}";
-    public static final String START_SCHEDULE = "Running scheduled task to update expired tokens...";
-    public static final String FINISH_SCHEDULE = "Finished scheduled task. {} tokens marked as FORCIBLY_EXPIRED";
 }

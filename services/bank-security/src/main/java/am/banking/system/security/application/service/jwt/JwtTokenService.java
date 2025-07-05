@@ -1,4 +1,4 @@
-package am.banking.system.security.application.service.token;
+package am.banking.system.security.application.service.jwt;
 
 import am.banking.system.security.api.shared.UserPrincipal;
 import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;

@@ -3,7 +3,7 @@ package am.banking.system.security.api.controller;
 import am.banking.system.common.shared.dto.security.PasswordHashingRequest;
 import am.banking.system.common.shared.dto.security.PasswordHashingResponse;
 import am.banking.system.common.shared.dto.security.PasswordValidatorRequest;
-import am.banking.system.security.infrastructure.password.Argon2Hashing;
+import am.banking.system.security.application.port.out.CustomPasswordEncoder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,19 +27,19 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @RequestMapping("/api/internal/security/password")
 public class PasswordController {
-    private final Argon2Hashing argon2Hashing;
+    private final CustomPasswordEncoder passwordEncoder;
 
     @PostMapping("/hash")
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public Mono<ResponseEntity<PasswordHashingResponse>> hash(@Valid @RequestBody PasswordHashingRequest request) {
-        return Mono.fromCallable(() -> argon2Hashing.encode(request.password()))
+        return Mono.fromCallable(() -> passwordEncoder.encode(request.rawPassword()))
                 .map(hashed -> ResponseEntity.ok(new PasswordHashingResponse(hashed)));
     }
 
     @PostMapping("/validate")
     public Mono<ResponseEntity<Boolean>> validate(@Valid @RequestBody PasswordValidatorRequest request) {
         return Mono.fromCallable(() ->
-                        argon2Hashing.matches(request.rawPassword(), request.hashedPassword()))
+                        passwordEncoder.matches(request.rawPassword(), request.hashedPassword()))
                 .map(ResponseEntity::ok);
     }
 }

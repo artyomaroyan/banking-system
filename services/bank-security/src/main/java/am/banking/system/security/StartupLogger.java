@@ -1,8 +1,9 @@
 package am.banking.system.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+//import org.springframework.core.env.Environment;
 
 /**
  * Author: Artyom Aroyan
@@ -11,12 +12,7 @@ import org.springframework.core.env.Environment;
  */
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class StartupLogger {
-
-    public StartupLogger(Environment environment) {
-        log.info("Password reset token loaded: {}",
-                environment.getProperty("spring.application.token.access.password-recovery.secret"));
-        log.info("Email verification token loaded: {}",
-                environment.getProperty("spring.application.token.access.email-verification.secret"));
-    }
+    // TODO: here you can check if your service or field is loaded correctly.
 }

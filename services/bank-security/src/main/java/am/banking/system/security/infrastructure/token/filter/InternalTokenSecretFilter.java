@@ -56,7 +56,7 @@ public class InternalTokenSecretFilter implements WebFilter {
         meterRegistry.counter("authentication.requests", "path", path).increment();
 
         if ("/api/v1/secure/local/system-token".equalsIgnoreCase(path) &&
-                HttpMethod.POST.matches(method)) {
+                HttpMethod.GET.matches(method)) {
             return validateInternalSecret(exchange, chain);
         }
         return chain.filter(exchange);
