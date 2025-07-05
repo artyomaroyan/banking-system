@@ -35,8 +35,8 @@ public class UserFactory implements UserFactoryUseCase {
         log.info("Creating user with username: {}", request.username());
         return Mono.zip(
                         securityServiceClient.hashPassword(request.password())
-                                .doOnNext(pwd -> log.info("Hashed password: {}", pwd))
-                                .doOnError(err -> log.error("Error hashing password: {}", err.getMessage(), err))
+                                .doOnNext(pwd -> log.info("Hashed rawPassword: {}", pwd))
+                                .doOnError(err -> log.error("Error hashing rawPassword: {}", err.getMessage(), err))
                                 .log("HASH_PASSWORD"),
                         roleService.getDefaultRole()
                                 .map(set -> set.iterator().next())
