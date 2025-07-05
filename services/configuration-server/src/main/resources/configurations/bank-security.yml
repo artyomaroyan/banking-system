@@ -42,9 +42,9 @@ spring:
       memory: 65536 # Use 64 MB of memory
       iterations: 3 # Run 3 iterations
       parallelism: 2 # Use 2 threads
-      hashLength: 64 # Generate a 64 byte (512 bit) hash
-      salt: ${ARGON2_SALT_FOR_BANK}
-      secretKey: ${ARGON2_SECRET_KEY_FOR_BANK}
+      hash-length: 64 # Generate a 64 byte (512 bit) hash
+      salt-length: 64
+      pepper: ${PASSWORD_PEPPER}
     token:
       jwt:
         keystore:
