@@ -28,8 +28,12 @@ public record SecurityTLSProperties(
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
+        // Traditional approach for mutable classes
+        // Ensures exact type match (no subclassing allowed)
         if (obj == null || getClass() != obj.getClass()) return false;
+        // Safe cast to the same class type
         SecurityTLSProperties that = (SecurityTLSProperties) obj;
+        // Compare all fields (including char[] arrays using Arrays.equals)
         return Objects.equals(this.url, that.url) &&
                 Objects.equals(this.keyStore, that.keyStore) &&
                 Arrays.equals(this.keyStorePassword, that.keyStorePassword) &&

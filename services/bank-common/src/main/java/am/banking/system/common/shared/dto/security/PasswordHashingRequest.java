@@ -7,5 +7,5 @@ import jakarta.validation.constraints.NotBlank;
  * Date: 12.05.25
  * Time: 03:43:23
  */
-public record PasswordHashingRequest(@NotBlank String password) {
+public record PasswordHashingRequest(@NotBlank String rawPassword) {
 }
