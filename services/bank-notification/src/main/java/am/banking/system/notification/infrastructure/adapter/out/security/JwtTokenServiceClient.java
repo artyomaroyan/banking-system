@@ -1,9 +1,9 @@
 package am.banking.system.notification.infrastructure.adapter.out.security;
 
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.common.shared.exception.security.EmptyTokenException;
+import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
 import am.banking.system.common.shared.exception.security.TimeoutException;
-import am.banking.system.common.shared.exception.security.TokenGenerationException;
+import am.banking.system.common.shared.exception.security.token.TokenGenerationException;
 import am.banking.system.notification.application.port.out.JwtTokenServiceClientPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
