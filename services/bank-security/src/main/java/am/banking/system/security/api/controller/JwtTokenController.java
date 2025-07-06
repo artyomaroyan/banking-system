@@ -41,6 +41,7 @@ public class JwtTokenController {
     }
 
     @PostMapping("/validate")
+    @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public Mono<ResponseEntity<Boolean>> validate(@RequestBody @Valid TokenValidatorRequest request) {
         return Mono.fromCallable(() ->
                         jwtTokenValidator.isValidToken(request.token(), request.username()))

@@ -1,7 +1,7 @@
 package am.banking.system.security.application.service.jwt;
 
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.common.shared.exception.security.EmptyTokenException;
+import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
 import am.banking.system.security.application.port.in.InternalTokenUseCase;
 import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
 import lombok.RequiredArgsConstructor;

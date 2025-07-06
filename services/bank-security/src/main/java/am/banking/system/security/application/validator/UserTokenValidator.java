@@ -47,11 +47,10 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
         return validateToken(token, PASSWORD_RECOVERY, PASSWORD_RESET);
     }
 
-    @Override
-    public String extractUsername(final String token, final TokenType type) {
-        final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
-        return tokenClaimsExtractor.extractAllClaims(token, key).getSubject();
-    }
+//    public String extractUsername(final String token, final TokenType type) {
+//        final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
+//        return tokenClaimsExtractor.extractAllClaims(token, key).getSubject();
+//    }
 
     private boolean validateToken(final String token, final TokenPurpose purpose, final TokenType type) {
         Optional<UserToken> userTokenOptional = userTokenRepository.findByToken(token);

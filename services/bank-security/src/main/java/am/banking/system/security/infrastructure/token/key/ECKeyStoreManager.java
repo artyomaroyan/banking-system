@@ -1,8 +1,8 @@
 package am.banking.system.security.infrastructure.token.key;
 
-import am.banking.system.common.shared.exception.security.InvalidECKeyType;
-import am.banking.system.common.shared.exception.security.KeyIdGenerationException;
-import am.banking.system.common.shared.exception.security.KeyStoreLoadException;
+import am.banking.system.common.shared.exception.security.keystore.InvalidECKeyType;
+import am.banking.system.common.shared.exception.security.keystore.KeyIdGenerationException;
+import am.banking.system.common.shared.exception.security.keystore.KeyStoreLoadException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.Curve;

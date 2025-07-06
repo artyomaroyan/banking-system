@@ -37,6 +37,7 @@ public class PasswordController {
     }
 
     @PostMapping("/validate")
+    @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public Mono<ResponseEntity<Boolean>> validate(@Valid @RequestBody PasswordValidatorRequest request) {
         return Mono.fromCallable(() ->
                         passwordEncoder.matches(request.rawPassword(), request.hashedPassword()))
