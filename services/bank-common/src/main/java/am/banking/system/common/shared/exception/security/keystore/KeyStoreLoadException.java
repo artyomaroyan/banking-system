@@ -1,4 +1,4 @@
-package am.banking.system.common.shared.exception.security;
+package am.banking.system.common.shared.exception.security.keystore;
 
 /**
  * Author: Artyom Aroyan
