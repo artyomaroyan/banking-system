@@ -17,7 +17,6 @@ public record AccountRequest(
         @NotBlank(message = "account owner ID must not be blank")
         String accountOwnerId,
         @NotBlank(message = "Account number must not be blank")
-//        @Size(min = 16, max = 16, message = "Account number must be exactly 16 digits")
         @Pattern(regexp = "\\d{16}", message = "Account number must be exactly 16 digits")
         String accountNumber,
         @NotBlank(message = "account owner username is required")
