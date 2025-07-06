@@ -1,6 +1,7 @@
 package am.banking.system.user.application.port.out;
 
 import am.banking.system.common.shared.dto.security.TokenResponse;
+import am.banking.system.common.shared.dto.security.TokenValidatorResponse;
 import am.banking.system.common.shared.dto.user.UserDto;
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
@@ -13,5 +14,5 @@ import reactor.core.publisher.Mono;
 public interface JwtTokenServiceClientPort {
     Mono<TokenResponse> generateJwtToken(@Valid UserDto user);
     Mono<String> generateSystemToken();
-    Mono<Boolean> validateJwtToken(String token, String username);
+    Mono<TokenValidatorResponse> validateJwtToken(String token, String username);
 }

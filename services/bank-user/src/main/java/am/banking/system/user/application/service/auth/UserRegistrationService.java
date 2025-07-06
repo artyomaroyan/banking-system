@@ -84,7 +84,7 @@ public class UserRegistrationService implements RegisterUserUseCase {
         return notificationServiceClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
                 .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
                 .then(jwtTokenServiceClient.generateJwtToken(userDto))
-                .doOnNext(jwt -> log.info("Generated JSON Web Token: {}", jwt))
+//                .doOnNext(jwt -> log.info("Generated JSON Web Token: {}", jwt))
                 .thenReturn(Result.successMessage(
                         "Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
     }

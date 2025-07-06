@@ -1,12 +1,14 @@
 package am.banking.system.user.infrastructure.adapter.out.security;
 
+import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.security.TokenValidatorRequest;
+import am.banking.system.common.shared.dto.security.TokenValidatorResponse;
 import am.banking.system.common.shared.dto.user.UserDto;
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.common.shared.exception.security.EmptyTokenException;
 import am.banking.system.common.shared.exception.security.TimeoutException;
-import am.banking.system.common.shared.exception.security.TokenGenerationException;
+import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
+import am.banking.system.common.shared.exception.security.token.TokenGenerationException;
+import am.banking.system.common.shared.response.WebClientResponseHandler;
 import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -20,6 +22,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 /**
  * Author: Artyom Aroyan
  * Date: 02.05.25
@@ -30,62 +35,70 @@ import java.time.Duration;
 public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
     private final WebClient webClient;
     private final InternalSecretProperties secretProperties;
+    private final WebClientResponseHandler webClientResponseHandler;
 
-    public JwtTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient, InternalSecretProperties secretProperties) {
+    public JwtTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient,
+                                 InternalSecretProperties secretProperties,
+                                 WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.secretProperties = secretProperties;
+        this.webClientResponseHandler = webClientResponseHandler;
     }
 
+    @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    @Override
     public Mono<TokenResponse> generateJwtToken(@Valid UserDto user) {
-        return webClient.post()
-                .uri("/api/internal/security/jwt/generate")
-                .bodyValue(user)
-                .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .doOnError(error -> log.error("Unable to generate token: {}", error.getMessage(), error));
+        return generateSystemToken()
+                .flatMap(token -> webClient.post()
+                        .uri("/api/internal/security/jwt/generate")
+                        .header(AUTHORIZATION, "Bearer " + token)
+                        .contentType(APPLICATION_JSON)
+                        .bodyValue(user)
+                        .exchangeToMono(response -> webClientResponseHandler
+                                .response(response, TokenResponse.class, "JWT Generation"))
+                        .timeout(Duration.ofSeconds(5)));
     }
 
+    @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    @Override
     public Mono<String> generateSystemToken() {
-        log.info("Sending user request with internal secret: {}", secretProperties.secret());
         return webClient.get()
                 .uri("/api/v1/secure/local/system-token")
-                .headers(header -> header.set("X-Internal-Secret", secretProperties.secret()))
+                .header("X-Internal-Secret", secretProperties.secret())
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, response -> {
-                    log.error("Failed to get system token. Status: {}", response.statusCode());
-
-                    return response.bodyToMono(String.class)
-                            .defaultIfEmpty("No error body")
-                            .flatMap(body -> Mono.error(new TokenGenerationException(
-                                    "System token request failed: " + response.statusCode() + " - " +  body)));
-                })
+                .onStatus(HttpStatusCode::isError, response ->
+                        response.bodyToMono(String.class)
+                                .defaultIfEmpty("No error body")
+                                .flatMap(body -> {
+                                    log.error("System token failed - status: {}, body: {}", response.statusCode(), body);
+                                    return Mono.error(new TokenGenerationException(
+                                            "System token request failed: " + response.statusCode() + " - " + body));
+                                }))
                 .bodyToMono(String.class)
                 .doOnNext(token -> {
-                    if (token == null || token.isEmpty() || token.trim().isBlank()) {
-                        log.error("Received empty system token");
+                    if (token == null || token.isBlank()) {
                         throw new EmptyTokenException("Received empty system token");
                     }
-                    log.info("Received System token: {}", token);
+                    log.info("System token successfully generated");
                 })
-                .timeout(Duration.ofSeconds(10),
-                        Mono.error(new TimeoutException("System token generation timed out")));
+                .timeout(Duration.ofSeconds(5),
+                        Mono.error(new TimeoutException("System token request timed out")));
     }
 
+    @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    @Override
-    public Mono<Boolean> validateJwtToken(String token, String username) {
-        return webClient.post()
-                .uri("/api/internal/security/jwt/validate")
-                .bodyValue(new TokenValidatorRequest(token, username))
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .doOnError(error -> log.error("Unable to validate token: {}", error.getMessage(), error));
+    public Mono<TokenValidatorResponse> validateJwtToken(String token, String username) {
+        return generateSystemToken()
+                .flatMap(_ -> webClient.post()
+                        .uri("/api/internal/security/jwt/validate")
+                        .header(AUTHORIZATION, "Bearer " + token)
+                        .contentType(APPLICATION_JSON)
+                        .bodyValue(new TokenValidatorRequest(token, username))
+                        .exchangeToMono(response -> webClientResponseHandler
+                                .response(response, TokenValidatorResponse.class, "JWT Validation"))
+                        .timeout(Duration.ofSeconds(5)));
     }
 }

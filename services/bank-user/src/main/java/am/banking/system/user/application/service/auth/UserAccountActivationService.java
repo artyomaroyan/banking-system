@@ -4,6 +4,7 @@ import am.banking.system.common.shared.response.Result;
 import am.banking.system.common.shared.exception.user.InvalidUserTokenException;
 import am.banking.system.common.shared.exception.user.UserAccountActivationException;
 import am.banking.system.user.application.port.in.ActivateUserAccountUseCase;
+import am.banking.system.user.application.port.out.TokenInvalidateClientPort;
 import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
 import am.banking.system.user.application.port.in.ManageUserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,13 @@ import reactor.core.publisher.Mono;
 public class UserAccountActivationService implements ActivateUserAccountUseCase {
     private final ManageUserUseCase userService;
     private final UserTokenServiceClientPort userTokenServiceClient;
+    private final TokenInvalidateClientPort tokenInvalidateClientPort;
 
     @Override
     public Mono<Result<String>> activateAccount(String activationToken, String username) {
         return userTokenServiceClient.validateEmailVerificationToken(activationToken, username)
                 .flatMap(valid -> {
-                    if (Boolean.FALSE.equals(valid)) {
+                    if (!valid.valid()) {
                         log.error("Invalid activation token: {}", activationToken);
                         return Mono.error(new InvalidUserTokenException("Invalid activation token for user: " + username));
                     }
@@ -40,7 +42,7 @@ public class UserAccountActivationService implements ActivateUserAccountUseCase 
                                 }
 
                                 return userService.updateUserAccountState(userResult.data().id())
-                                        .then(userTokenServiceClient.invalidateUsedToken(activationToken))
+                                        .then(tokenInvalidateClientPort.invalidateUsedToken(activationToken))
                                         .thenReturn(Result.success("Your account has been successfully activated"));
                             });
                 });
