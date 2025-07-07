@@ -16,7 +16,7 @@ final class PublicEndpoints {
 
     static final String[] ACCOUNT = {
             "/api/v1/user/account/register/**",
-            "/api/v1/user/account/activate/**",
+            "/api/v1/user/account/activate",
             "/api/v1/secure/local/system-token",
             "/api/internal/security/system/token"
     };

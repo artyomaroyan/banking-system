@@ -28,9 +28,9 @@ public class JwtTokenValidator implements JwtTokenValidatorUseCase {
     private final TokenClaimsExtractor tokenClaimsExtractor;
 
     @Override
-    public boolean isValidToken(String token, String username) {
+    public boolean isValidToken(String token) {
         final String extractedUsername = extractUsername(token);
-        return extractedUsername != null && extractedUsername.equals(username) && !isTokenExpired(token);
+        return extractedUsername != null && !extractedUsername.trim().isBlank() && !isTokenExpired(token);
     }
 
     @Override

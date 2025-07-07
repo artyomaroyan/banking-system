@@ -43,12 +43,12 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(PublicEndpoints.ALL)
-                        .permitAll()
+                            .permitAll()
                         .pathMatchers("/api/internal/security/password/hash",
                                 "/api/internal/security/user-token/email/issue")
                         .hasAnyAuthority("ROLE_SYSTEM", "DO_INTERNAL_TASKS")
-                        .anyExchange()
-                        .authenticated()
+                            .anyExchange()
+                                .authenticated()
                 )
                 .addFilterBefore(new InternalTokenSecretFilter(meterRegistry, internalSecretProperties),
                         SecurityWebFiltersOrder.AUTHENTICATION)
