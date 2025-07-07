@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
  * Time: 00:17:52
  */
 public interface JwtTokenValidatorUseCase {
-    boolean isValidToken(String token, String username);
+    boolean isValidToken(String token);
     String extractUsername(final String token);
     Mono<Jwt> validateInternalToken(String token);
 }

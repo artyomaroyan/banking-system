@@ -23,7 +23,7 @@ public class AuthorizationService implements AuthorizationServiceUseCase {
     @Override
     public boolean isAuthorized(String token, PermissionEnum permission) {
         var username = jwtTokenValidator.extractUsername(token);
-        if (!jwtTokenValidator.isValidToken(token, username)) {
+        if (!jwtTokenValidator.isValidToken(token)) {
             return false;
         }
         Set<PermissionEnum> permissions = tokenClaimsExtractor.extractPermissions(token);
