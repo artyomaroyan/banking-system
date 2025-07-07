@@ -20,7 +20,7 @@ public class WebClientResponseHandler {
 
         if (statusCode.is2xxSuccessful()) {
             return response.bodyToMono(clazz)
-                    .switchIfEmpty(Mono.error(new RuntimeException(context + " returned empty body")))
+                    .switchIfEmpty(Mono.error(new RuntimeException(context + " returned empty body. Expected: " + clazz.getSimpleName())))
                     .doOnNext(body -> log.info("{} response: {}", context, body));
         } else {
             return response.bodyToMono(String.class)
