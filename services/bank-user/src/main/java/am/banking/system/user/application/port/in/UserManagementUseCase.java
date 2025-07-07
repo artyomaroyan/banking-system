@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
  * Date: 21.06.25
  * Time: 18:43:28
  */
-public interface ManageUserUseCase {
+public interface UserManagementUseCase {
     Mono<Void> updateUserAccountState(Long id);
     Mono<Result<UserResponse>> getUserByUsername(String username);
     Mono<Result<UserResponse>> getUserByEmail(String email);

@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
  */
 public interface UserTokenServiceClientPort {
     Mono<TokenResponse> generateEmailVerificationToken(@Valid UserDto user);
-    Mono<TokenValidatorResponse> validateEmailVerificationToken(String token, String username);
+    Mono<Boolean> validateEmailVerificationToken(String token, String username);
     Mono<TokenResponse> generatePasswordRecoveryToken(@Valid UserDto user);
     Mono<TokenValidatorResponse> validatePasswordRecoveryToken(String token, String username);
 }

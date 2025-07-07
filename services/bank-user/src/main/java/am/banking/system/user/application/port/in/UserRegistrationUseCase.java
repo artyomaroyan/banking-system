@@ -9,6 +9,6 @@ import reactor.core.publisher.Mono;
  * Date: 21.06.25
  * Time: 18:41:17
  */
-public interface RegisterUserUseCase {
+public interface UserRegistrationUseCase {
     Mono<Result<String>> register(UserRequest request);
 }

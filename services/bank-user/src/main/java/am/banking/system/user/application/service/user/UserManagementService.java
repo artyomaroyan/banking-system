@@ -1,10 +1,10 @@
 package am.banking.system.user.application.service.user;
 
-import am.banking.system.common.util.GenericMapper;
-import am.banking.system.common.shared.response.Result;
 import am.banking.system.common.shared.exception.user.UserAccountActivationException;
+import am.banking.system.common.shared.response.Result;
+import am.banking.system.common.util.GenericMapper;
 import am.banking.system.user.api.dto.UserResponse;
-import am.banking.system.user.application.port.in.ManageUserUseCase;
+import am.banking.system.user.application.port.in.UserManagementUseCase;
 import am.banking.system.user.domain.entity.User;
 import am.banking.system.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService implements ManageUserUseCase {
+public class UserManagementService implements UserManagementUseCase {
     private final GenericMapper genericMapper;
     private final UserRepository userRepository;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;

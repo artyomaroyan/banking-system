@@ -2,8 +2,8 @@ package am.banking.system.user.api.controller;
 
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.application.port.in.ActivateUserAccountUseCase;
-import am.banking.system.user.application.port.in.RegisterUserUseCase;
+import am.banking.system.user.application.port.in.UserAccountActivationUseCase;
+import am.banking.system.user.application.port.in.UserRegistrationUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +24,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user/account")
 public class UserAccountController {
-    private final RegisterUserUseCase userRegistrationService;
-    private final ActivateUserAccountUseCase userAccountActivationService;
+    private final UserRegistrationUseCase userRegistrationService;
+    private final UserAccountActivationUseCase userAccountActivationService;
 
     @PostMapping("/register")
     Mono<ResponseEntity<Result<String>>> register(@Valid @RequestBody UserRequest request) {
@@ -33,8 +33,8 @@ public class UserAccountController {
                 .map(this::buildResponse);
     }
 
-    @GetMapping("/activate")
-    Mono<ResponseEntity<Result<String>>> activateAccount(@RequestParam String token, @RequestParam String username) {
+    @GetMapping("/activate/{token}/{username}")
+    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable String token, @PathVariable String username) {
         return userAccountActivationService.activateAccount(token, username)
                         .map(this::buildResponse);
     }

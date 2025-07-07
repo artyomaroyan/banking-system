@@ -6,7 +6,7 @@ import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.application.factory.UserFactory;
 import am.banking.system.user.application.mapper.UserDtoMapper;
-import am.banking.system.user.application.port.in.RegisterUserUseCase;
+import am.banking.system.user.application.port.in.UserRegistrationUseCase;
 import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
 import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
 import am.banking.system.user.application.service.validation.RequestValidation;
@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserRegistrationService implements RegisterUserUseCase {
+public class UserRegistrationService implements UserRegistrationUseCase {
     private final UserFactory userFactory;
     private final UserDtoMapper userReactiveMapper;
     private final RequestValidation requestValidation;

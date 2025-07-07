@@ -56,7 +56,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validateEmailVerificationToken(String token, String username) {
+    public Mono<Boolean> validateEmailVerificationToken(String token, String username) {
         return jwtTokenServiceClient.generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/user-token/email/validate")
@@ -64,7 +64,7 @@ public class UserTokenServiceClient implements UserTokenServiceClientPort {
                         .contentType(APPLICATION_JSON)
                         .bodyValue(new TokenValidatorRequest(token, username))
                         .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, TokenValidatorResponse.class, "Verification token validation"))
+                                .response(response, Boolean.class, "Verification token validation"))
                         .timeout(Duration.ofSeconds(5)));
     }
 

@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
  * Date: 21.06.25
  * Time: 18:40:03
  */
-public interface ActivateUserAccountUseCase {
+public interface UserAccountActivationUseCase {
     Mono<Result<String>> activateAccount(String activationToken, String username);
 }
