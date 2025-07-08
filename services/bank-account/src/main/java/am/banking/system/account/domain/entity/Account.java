@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @AllArgsConstructor
-@Table("account_db.account.account")
+@Table("account.account")
 public class Account extends BaseEntity {
     @Column("account_owner_id")
     private final Integer accountOwnerId;
