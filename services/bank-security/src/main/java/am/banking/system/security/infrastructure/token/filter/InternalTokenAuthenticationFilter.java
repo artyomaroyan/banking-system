@@ -28,7 +28,8 @@ public class InternalTokenAuthenticationFilter implements WebFilter {
 
     private static final Set<String> EXCLUDED_PATHS = Set.of(
             "/.well-known/jwks.json", // <- this was an issue which has tormented me 1 day, because I do not include it in exclude path list my decoder does not work and show me an empty page
-            "/api/v1/secure/local/system-token"
+            "/api/v1/secure/local/system-token",
+            "/api/internal/security/user-token/email/validate"
     );
 
     @NonNull

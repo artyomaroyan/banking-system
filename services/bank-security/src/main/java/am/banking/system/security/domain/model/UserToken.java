@@ -19,7 +19,7 @@ import java.util.Date;
 @Getter
 @Builder
 @AllArgsConstructor
-@Table("security_db.security.user_token")
+@Table("security.user_token")
 public class UserToken extends BaseEntity {
     @Column("user_id")
     private final Integer userId;

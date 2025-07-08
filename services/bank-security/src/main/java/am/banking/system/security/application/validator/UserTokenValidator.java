@@ -1,28 +1,27 @@
 package am.banking.system.security.application.validator;
 
 import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
-import am.banking.system.security.domain.model.UserToken;
 import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.domain.repository.UserTokenRepository;
 import am.banking.system.security.infrastructure.token.key.TokenSigningKeyManager;
-import am.banking.system.security.util.LogConstants;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.Optional;
 
 import static am.banking.system.security.domain.enums.TokenPurpose.ACCOUNT_VERIFICATION;
 import static am.banking.system.security.domain.enums.TokenPurpose.PASSWORD_RECOVERY;
 import static am.banking.system.security.domain.enums.TokenState.PENDING;
 import static am.banking.system.security.domain.enums.TokenType.EMAIL_VERIFICATION;
 import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
+import static am.banking.system.security.util.LogConstants.*;
 
 /**
  * Author: Artyom Aroyan
@@ -38,57 +37,50 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
     @Override
-    public boolean isValidEmailVerificationToken(final String token) {
+    public Mono<Boolean> isValidEmailVerificationToken(final String token) {
         return validateToken(token, ACCOUNT_VERIFICATION, EMAIL_VERIFICATION);
     }
 
     @Override
-    public boolean isValidPasswordResetToken(final String token) {
+    public Mono<Boolean> isValidPasswordResetToken(final String token) {
         return validateToken(token, PASSWORD_RECOVERY, PASSWORD_RESET);
     }
 
-//    public String extractUsername(final String token, final TokenType type) {
-//        final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
-//        return tokenClaimsExtractor.extractAllClaims(token, key).getSubject();
-//    }
+    private Mono<Boolean> validateToken(final String token, final TokenPurpose purpose, final TokenType type) {
+        return userTokenRepository.findByToken(token)
+                .flatMap(userToken -> {
+                    if (!userToken.getTokenPurpose().equals(purpose)) {
+                        log.error(INVALID_TOKEN_PURPOSE);
+                        return Mono.just(false);
+                    }
 
-    private boolean validateToken(final String token, final TokenPurpose purpose, final TokenType type) {
-        Optional<UserToken> userTokenOptional = userTokenRepository.findByToken(token);
-        if (userTokenOptional.isEmpty()) {
-            log.error(LogConstants.TOKEN_NOT_FOUND);
-            return false;
-        }
+                    if (!userToken.getTokenState().equals(PENDING)) {
+                        log.error(INVALID_TOKEN_STATE);
+                        return Mono.just(false);
+                    }
 
-        UserToken userToken = userTokenOptional.get();
-        if (!userToken.getTokenPurpose().equals(purpose)) {
-            log.error(LogConstants.INVALID_TOKEN_PURPOSE);
-            return false;
-        }
+                    if (userToken.getExpirationDate().before(new Date())) {
+                        log.error(EXPIRED_TOKEN);
+                        return Mono.just(false);
+                    }
 
-        if (!userToken.getTokenState().equals(PENDING)) {
-            log.error(LogConstants.INVALID_TOKEN_STATE);
-            return false;
-        }
-
-        if (userToken.getExpirationDate().before(new Date())) {
-            log.error(LogConstants.EXPIRED_TOKEN);
-            return false;
-        }
-
-        try {
-            final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
-            tokenClaimsExtractor.extractAllClaims(token, key);
-            log.info(LogConstants.TOKEN_VALIDATION_SUCCESS);
-            return true;
-        } catch (SecurityException | MalformedJwtException ex) {
-            log.error(LogConstants.INVALID_TOKEN_SIGNATURE, ex);
-        } catch (ExpiredJwtException ex) {
-            log.error(LogConstants.EXPIRED_TOKEN, ex);
-        } catch (UnsupportedJwtException ex) {
-            log.error(LogConstants.UNSUPPORTED_TOKEN, ex);
-        } catch (IllegalArgumentException ex) {
-            log.error(LogConstants.VALIDATION_FAILED, ex);
-        }
-        return false;
+                    try {
+                        final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
+                        tokenClaimsExtractor.extractAllClaims(token, key);
+                        log.info(TOKEN_VALIDATION_SUCCESS);
+                        return Mono.just(true);
+                    } catch (SecurityException | MalformedJwtException ex) {
+                        log.error(INVALID_TOKEN_SIGNATURE, ex.getMessage(), ex);
+                    } catch (ExpiredJwtException ex) {
+                        log.error(EXPIRED_TOKEN_MSG, ex.getMessage(), ex);
+                    } catch (UnsupportedJwtException ex) {
+                        log.error(UNSUPPORTED_TOKEN, ex.getMessage(), ex);
+                    } catch (IllegalArgumentException ex) {
+                        log.error(VALIDATION_FAILED, ex.getMessage(), ex);
+                    }
+                    return Mono.just(false);
+                })
+                .switchIfEmpty(Mono.fromRunnable(() -> log.error(TOKEN_NOT_FOUND))
+                        .thenReturn(false));
     }
 }

@@ -330,3 +330,44 @@ return exchange ->
 
 ------------------------------------------------------------------------------------------------------------------------
 
+        Optional<UserToken> userTokenOptional = userTokenRepository.findByToken(token);
+        if (userTokenOptional.isEmpty()) {
+            log.error(LogConstants.TOKEN_NOT_FOUND);
+            return false;
+        }
+
+        UserToken userToken = userTokenOptional.get();
+        if (!userToken.getTokenPurpose().equals(purpose)) {
+            log.error(LogConstants.INVALID_TOKEN_PURPOSE);
+            return false;
+        }
+
+        if (!userToken.getTokenState().equals(PENDING)) {
+            log.error(LogConstants.INVALID_TOKEN_STATE);
+            return false;
+        }
+
+        if (userToken.getExpirationDate().before(new Date())) {
+            log.error(LogConstants.EXPIRED_TOKEN);
+            return false;
+        }
+
+        try {
+            final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
+            tokenClaimsExtractor.extractAllClaims(token, key);
+            log.info(LogConstants.TOKEN_VALIDATION_SUCCESS);
+            return true;
+        } catch (SecurityException | MalformedJwtException ex) {
+            log.error(LogConstants.INVALID_TOKEN_SIGNATURE, ex);
+        } catch (ExpiredJwtException ex) {
+            log.error(LogConstants.EXPIRED_TOKEN, ex);
+        } catch (UnsupportedJwtException ex) {
+            log.error(LogConstants.UNSUPPORTED_TOKEN, ex);
+        } catch (IllegalArgumentException ex) {
+            log.error(LogConstants.VALIDATION_FAILED, ex);
+        }
+        return false;
+    }
+
+------------------------------------------------------------------------------------------------------------------------
+

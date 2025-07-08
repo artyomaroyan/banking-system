@@ -50,7 +50,7 @@ public class UserTokenService implements UserTokenServiceUseCase {
 
     public Mono<Long> markTokensForciblyExpired() {
         String sql = """
-                UPDATE security_db.security.user_token
+                UPDATE security.user_token
                 SET token_state = 'FORCIBLY_EXPIRED'
                 WHERE token_state = 'PENDING' AND expires_at < CURRENT_TIMESTAMP
                 """;

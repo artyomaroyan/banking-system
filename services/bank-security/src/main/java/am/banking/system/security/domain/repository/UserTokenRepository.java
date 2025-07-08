@@ -3,8 +3,7 @@ package am.banking.system.security.domain.repository;
 import am.banking.system.security.domain.model.UserToken;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -13,5 +12,5 @@ import java.util.Optional;
  */
 @Repository
 public interface UserTokenRepository extends ReactiveCrudRepository<UserToken, Integer> {
-    Optional<UserToken> findByToken(String token);
+    Mono<UserToken> findByToken(String token);
 }
