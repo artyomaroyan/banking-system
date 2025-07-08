@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Getter
 @AllArgsConstructor
-@Table("user_db.usr.usr")
+@Table("usr.usr")
 public class User extends BaseEntity {
     @Column("username")
     private final String username;

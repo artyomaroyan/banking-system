@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Getter
 @AllArgsConstructor
-@Table(name = "user_db.usr.permission")
+@Table(name = "usr.permission")
 public class Permission extends BaseEntity {
     @Column("permission_name")
     private final PermissionEnum permissionName;

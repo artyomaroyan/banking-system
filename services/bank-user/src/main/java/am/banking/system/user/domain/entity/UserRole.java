@@ -16,7 +16,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_db.usr.user_role")
+@Table(name = "usr.user_role")
 public class UserRole {
     @Column("user_id")
     private Integer userId;

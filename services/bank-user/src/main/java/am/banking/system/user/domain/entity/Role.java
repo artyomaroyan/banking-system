@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Getter
 @AllArgsConstructor
-@Table(name = "user_db.usr.role")
+@Table(name = "usr.role")
 public class Role extends BaseEntity {
     @Column("role_name")
     private final RoleEnum roleName;
