@@ -2,9 +2,6 @@ package am.banking.system.notification.domain.entity;
 
 import am.banking.system.common.shared.model.BaseEntity;
 import am.banking.system.notification.domain.enums.EmailType;
-import am.banking.system.common.shared.dto.notification.EmailVerification;
-import am.banking.system.common.shared.dto.notification.PasswordReset;
-import am.banking.system.common.shared.dto.notification.WelcomeEmail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-@Table("notification_db.notification.notification")
+@Table("notification.notification")
 public class Notification extends BaseEntity {
     @Column("email_type")
     private final EmailType emailType;
