@@ -37,36 +37,8 @@ services:
     networks:
       microservices-net:
 
-#  mongodb:
-#    container_name: mongo_db
-#    image: mongo
-#    ports:
-#      - "27017:27017"
-#    networks:
-#      - microservices-net
-#    volumes:
-#      - mongo:/data
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: admin
-#      MONGO_INITDB_ROOT_PASSWORD: secret
-#
-#  mongo-express:
-#    container_name: mongo_express
-#    image: mongo-express
-#    restart: always
-#    ports:
-#      - "8081:8081"
-#    networks:
-#      - microservices-net
-#    environment:
-#      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-#      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
-#      ME_CONFIG_MONGODB_SERVER: mongodb
-#      ME_CONFIG_BASICAUTH_USERNAME: admin
-#      ME_CONFIG_BASICAUTH_PASSWORD: secret
-
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.4.3
     container_name: zookeeper
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -78,21 +50,23 @@ services:
       microservices-net:
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.3
     container_name: ms_kafka
     ports:
       - "9092:9092"
+      - "29092:29092"
     depends_on:
       - zookeeper
     environment:
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://ms_kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
     networks:
-      microservices-net:
+      - microservices-net
+
 
   mail-dev:
     container_name: ms-mail-dev
