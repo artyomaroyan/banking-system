@@ -27,7 +27,7 @@ public class NotificationsConsumer {
     private final EmailService emailService;
     private final NotificationRepository notificationRepository;
 
-    @KafkaListener(topics = "email-verification", groupId = "notification-service-group")
+    @KafkaListener(topics = "email-verification", groupId = "notification-service-group", errorHandler = "kafkaListenerErrorHandler")
     public void consumeEmailVerificationNotification(EmailVerification request) {
         log.info("Received kafka event for email verification : {}", request.email());
 
@@ -50,7 +50,7 @@ public class NotificationsConsumer {
         }
     }
 
-    @KafkaListener(topics = "password-recovery", groupId = "notification-service-group")
+    @KafkaListener(topics = "password-recovery", groupId = "notification-service-group", errorHandler = "kafkaListenerErrorHandler")
     public void consumePasswordRecoveryNotification(PasswordReset request) {
         notificationRepository.save(
                         Notification.builder()
@@ -64,7 +64,7 @@ public class NotificationsConsumer {
         emailService.sendPasswordResetEmail(request.email(), request.username(), request.link());
     }
 
-    @KafkaListener(topics = "welcome-email", groupId = "notification-service-group")
+    @KafkaListener(topics = "welcome-email", groupId = "notification-service-group", errorHandler = "kafkaListenerErrorHandler")
     public void consumeWelcomeEmailNotification(WelcomeEmail request) {
         notificationRepository.save(
                         Notification.builder()
