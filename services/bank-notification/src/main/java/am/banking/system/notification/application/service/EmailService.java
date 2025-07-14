@@ -29,7 +29,7 @@ public class EmailService {
     private static final String APP_NAME = "Banking System";
     private static final String COMPANY_NAME = "Banking System Inc.";
     private static final String COMPANY_ADDRESS = "Armenia, Yerevan Davtashen 3rd District";
-    private static final int EXPIRATION_HOURS = 24;
+    private static final int EXPIRATION_HOURS = 15;
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
