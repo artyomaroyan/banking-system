@@ -1,6 +1,6 @@
 package am.banking.system.security.api.controller;
 
-import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
+import am.banking.system.security.application.port.in.InvalidateTokenUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +21,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @RequestMapping("/api/internal/security/token")
 public class TokenInvalidateController {
-    private final UserTokenServiceUseCase userTokenService;
+    private final InvalidateTokenUseCase invalidateTokenService;
 
     @PostMapping("/invalidate")
-    public Mono<ResponseEntity<String>> invalidate() {
-        return userTokenService.markTokensForciblyExpired()
-                .thenReturn(ResponseEntity.ok("Tokens marked as forcibly expired"));
+    public Mono<ResponseEntity<String>> invalidate(String token) {
+        return invalidateTokenService.markTokenAsVerified(token)
+                .thenReturn(ResponseEntity.ok("Token has been marked as verified"));
     }
 }

@@ -1,13 +1,10 @@
 package am.banking.system.security.util;
 
-import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
-import jakarta.annotation.PostConstruct;
+import am.banking.system.security.application.port.in.InvalidateTokenUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-
-import java.time.Duration;
 
 /**
  * Author: Artyom Aroyan
@@ -18,12 +15,11 @@ import java.time.Duration;
 @Component
 @RequiredArgsConstructor
 public class TokenScheduler {
-    private final UserTokenServiceUseCase userTokenService;
+    private final InvalidateTokenUseCase invalidateTokenService;
 
-    @PostConstruct
+    @Scheduled(fixedRate = 900000)
     public void init() {
-        Flux.interval(Duration.ofMinutes(15))
-                .flatMap(tick -> userTokenService.markTokensForciblyExpired())
+        invalidateTokenService.markTokensForciblyExpired()
                 .doOnNext(count -> log.info("Tokens marked as forcibly expired: {}", count))
                 .doOnError(error -> log.error("Failed to mark tokens for expired: {}", error.getMessage()))
                 .subscribe();

@@ -5,16 +5,14 @@ import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.domain.repository.UserTokenRepository;
 import am.banking.system.security.infrastructure.token.key.TokenSigningKeyManager;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.security.Key;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static am.banking.system.security.domain.enums.TokenPurpose.ACCOUNT_VERIFICATION;
 import static am.banking.system.security.domain.enums.TokenPurpose.PASSWORD_RECOVERY;
@@ -32,8 +30,8 @@ import static am.banking.system.security.util.LogConstants.*;
 @Component
 @RequiredArgsConstructor
 public class UserTokenValidator implements UserTokenValidatorUseCase {
-    private final TokenClaimsExtractor tokenClaimsExtractor;
     private final UserTokenRepository userTokenRepository;
+    private final TokenClaimsExtractor tokenClaimsExtractor;
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
     @Override
@@ -49,17 +47,17 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
     private Mono<Boolean> validateToken(final String token, final TokenPurpose purpose, final TokenType type) {
         return userTokenRepository.findByToken(token)
                 .flatMap(userToken -> {
-                    if (!userToken.getTokenPurpose().equals(purpose)) {
-                        log.error(INVALID_TOKEN_PURPOSE);
+                    if (!purpose.equals(userToken.getTokenPurpose())) {
+                        log.error("{} - expected: {}, actual: {}", INVALID_TOKEN_PURPOSE, purpose, userToken.getTokenPurpose());
                         return Mono.just(false);
                     }
 
-                    if (!userToken.getTokenState().equals(PENDING)) {
-                        log.error(INVALID_TOKEN_STATE);
+                    if (!PENDING.equals(userToken.getTokenState())) {
+                        log.error("{} - actual: {}", INVALID_TOKEN_STATE, userToken.getTokenState());
                         return Mono.just(false);
                     }
 
-                    if (userToken.getExpirationDate().before(new Date())) {
+                    if (userToken.getExpirationDate().isBefore(LocalDateTime.now())) {
                         log.error(EXPIRED_TOKEN);
                         return Mono.just(false);
                     }
@@ -69,16 +67,13 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
                         tokenClaimsExtractor.extractAllClaims(token, key);
                         log.info(TOKEN_VALIDATION_SUCCESS);
                         return Mono.just(true);
-                    } catch (SecurityException | MalformedJwtException ex) {
-                        log.error(INVALID_TOKEN_SIGNATURE, ex.getMessage(), ex);
-                    } catch (ExpiredJwtException ex) {
-                        log.error(EXPIRED_TOKEN_MSG, ex.getMessage(), ex);
-                    } catch (UnsupportedJwtException ex) {
-                        log.error(UNSUPPORTED_TOKEN, ex.getMessage(), ex);
+                    } catch (JwtException ex) {
+                        log.error("Jwt validation failed: {} - {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+                        return Mono.just(false);
                     } catch (IllegalArgumentException ex) {
                         log.error(VALIDATION_FAILED, ex.getMessage(), ex);
+                        return Mono.just(false);
                     }
-                    return Mono.just(false);
                 })
                 .switchIfEmpty(Mono.fromRunnable(() -> log.error(TOKEN_NOT_FOUND))
                         .thenReturn(false));

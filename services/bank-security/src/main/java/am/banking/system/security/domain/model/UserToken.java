@@ -9,7 +9,7 @@ import lombok.Getter;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Author: Artyom Aroyan
@@ -26,7 +26,7 @@ public class UserToken extends BaseEntity {
     @Column("token")
     private final String token;
     @Column("expires_at")
-    private final Date expirationDate;
+    private final LocalDateTime expirationDate;
     @Column("token_state")
     private final TokenState tokenState;
     @Column("token_purpose")

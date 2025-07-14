@@ -371,3 +371,24 @@ return exchange ->
 
 ------------------------------------------------------------------------------------------------------------------------
 
+    @Override
+    public Mono<Long> markTokenAsVerified(String token) {
+        String sql = """
+                UPDATE security.user_token
+                SET token_state = :newState
+                WHERE token = :token AND token_state = :currentState AND expires_at >= CURRENT_TIMESTAMP
+                """;
+
+        return r2dbcEntityTemplate
+                .getDatabaseClient()
+                .sql(sql)
+                .bind("newState", VERIFIED.name())
+                .bind("token", token)
+                .bind("currentState", PENDING.name())
+                .fetch()
+                .rowsUpdated()
+                .doOnNext(count -> log.info("Verification token(s): {}", count));
+    }
+
+------------------------------------------------------------------------------------------------------------------------
+

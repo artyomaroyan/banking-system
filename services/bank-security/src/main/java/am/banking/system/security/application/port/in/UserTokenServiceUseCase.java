@@ -11,5 +11,4 @@ import reactor.core.publisher.Mono;
 public interface UserTokenServiceUseCase {
     Mono<String> generatePasswordResetToken(final UserPrincipal principal);
     Mono<String> generateEmailVerificationToken(final UserPrincipal principal);
-    Mono<Long> markTokensForciblyExpired();
 }

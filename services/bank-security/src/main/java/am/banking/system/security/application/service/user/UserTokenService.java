@@ -3,18 +3,19 @@ package am.banking.system.security.application.service.user;
 import am.banking.system.security.api.shared.UserPrincipal;
 import am.banking.system.security.application.port.in.TokenGenerationUseCase;
 import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
-import am.banking.system.security.domain.model.UserToken;
 import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenType;
+import am.banking.system.security.domain.model.UserToken;
 import am.banking.system.security.domain.repository.UserTokenRepository;
 import am.banking.system.security.infrastructure.token.claims.TokenClaimsMapper;
 import am.banking.system.security.infrastructure.token.claims.TokenClaimsService;
 import am.banking.system.security.infrastructure.token.key.TokenSigningKeyManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import static am.banking.system.security.domain.enums.TokenPurpose.ACCOUNT_VERIFICATION;
@@ -35,7 +36,6 @@ public class UserTokenService implements UserTokenServiceUseCase {
     private final TokenClaimsMapper tokenClaimsMapper;
     private final TokenClaimsService tokenClaimsService;
     private final UserTokenRepository userTokenRepository;
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
     @Override
@@ -46,20 +46,6 @@ public class UserTokenService implements UserTokenServiceUseCase {
     @Override
     public Mono<String> generateEmailVerificationToken(final UserPrincipal principal) {
         return generateAndSaveToken(principal, ACCOUNT_VERIFICATION, EMAIL_VERIFICATION);
-    }
-
-    public Mono<Long> markTokensForciblyExpired() {
-        String sql = """
-                UPDATE security.user_token
-                SET token_state = 'FORCIBLY_EXPIRED'
-                WHERE token_state = 'PENDING' AND expires_at < CURRENT_TIMESTAMP
-                """;
-
-        return r2dbcEntityTemplate
-                .getDatabaseClient()
-                .sql(sql)
-                .fetch()
-                .rowsUpdated();
     }
 
     private Mono<String> generateAndSaveToken(final UserPrincipal principal, final TokenPurpose purpose, final TokenType type) {
@@ -74,7 +60,10 @@ public class UserTokenService implements UserTokenServiceUseCase {
         return tokenService.createToken(claims, principal.getUsername(), type);
     }
 
-    private Mono<Void> saveUserToken(final UserPrincipal principal, final String token, final TokenPurpose purpose, final Date expiration) {
+    private Mono<Void> saveUserToken(final UserPrincipal principal, final String token, final TokenPurpose purpose, final Date exp) {
+        LocalDateTime expiration = exp.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         UserToken userToken = UserToken.builder()
                 .token(token)
                 .expirationDate(expiration)

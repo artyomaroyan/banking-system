@@ -46,9 +46,9 @@ public class TokenSigningKeyManager {
     public Long getTokenExpiration(TokenType type) {
         return switch (type) {
             case JSON_WEB_TOKEN -> jwtSigningKeyProvider.getTokenExpiration();
+            case INTERNAL_JWT_TOKEN -> systemTokenKeyProvider.getTokenExpiration();
             case PASSWORD_RESET -> passwordRecoveryKeyProvider.getTokenExpiration();
             case EMAIL_VERIFICATION -> emailVerificationKeyProvider.getTokenExpiration();
-            case INTERNAL_JWT_TOKEN -> systemTokenKeyProvider.getTokenExpiration();
         };
     }
 }
