@@ -39,7 +39,7 @@ public class TokenInvalidateServiceClient implements TokenInvalidateClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<Void> invalidateUsedToken(String token) {
+    public Mono<String> invalidateUsedToken(String token) {
         return jwtTokenService.generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/token/invalidate")
@@ -47,7 +47,7 @@ public class TokenInvalidateServiceClient implements TokenInvalidateClientPort {
                         .contentType(APPLICATION_JSON)
                         .bodyValue(Void.class)
                         .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, Void.class, "Token invalidated"))
+                                .response(response, String.class, "Token invalidated"))
                         .timeout(Duration.ofSeconds(5)));
     }
 }

@@ -1,5 +1,6 @@
 package am.banking.system.user.application.port.out;
 
+import jakarta.validation.constraints.NotBlank;
 import reactor.core.publisher.Mono;
 
 /**
@@ -8,5 +9,5 @@ import reactor.core.publisher.Mono;
  * Time: 15:30:47
  */
 public interface TokenInvalidateClientPort {
-    Mono<Void> invalidateUsedToken(String token);
+    Mono<String> invalidateUsedToken(@NotBlank String token);
 }

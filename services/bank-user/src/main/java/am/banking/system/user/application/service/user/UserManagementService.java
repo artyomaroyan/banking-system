@@ -34,13 +34,13 @@ public class UserManagementService implements UserManagementUseCase {
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
     @Override
-    public Mono<Void> updateUserAccountState(Long id) {
+    public Mono<Void> updateUserAccountState(Integer id) {
         return r2dbcEntityTemplate.update(User.class)
                 .matching(Query.query(
                         Criteria.where("id").is(id)
-                                .and("state").is("PENDING")
+                                .and("account_state").is("PENDING")
                 ))
-                .apply(Update.update("state", "ACTIVE"))
+                .apply(Update.update("account_state", "ACTIVE"))
                 .flatMap(rows -> {
                     if (rows == 0) {
                         return Mono.error(new UserAccountActivationException(
