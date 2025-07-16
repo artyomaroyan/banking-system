@@ -10,6 +10,6 @@ import java.util.Map;
  * Time: 00:08:49
  */
 public interface TokenGenerationUseCase {
-    String createToken(Map<String, Object> claims, String subject, TokenType type);
-    String generate(TokenType type);
+    String generateInternalToken(TokenType type);
+    String generateUserToken(Map<String, Object> claims, String subject, TokenType type);
 }

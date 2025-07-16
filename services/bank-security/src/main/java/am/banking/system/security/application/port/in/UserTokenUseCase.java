@@ -8,7 +8,9 @@ import reactor.core.publisher.Mono;
  * Date: 23.04.25
  * Time: 00:10:49
  */
-public interface UserTokenServiceUseCase {
+public interface UserTokenUseCase {
+    Mono<String> generateSystemToken();
+    Mono<String> generateJwtAccessToken(final UserPrincipal principal);
     Mono<String> generatePasswordResetToken(final UserPrincipal principal);
     Mono<String> generateEmailVerificationToken(final UserPrincipal principal);
 }
