@@ -3,7 +3,7 @@ package am.banking.system.user.infrastructure.adapter.out.notification;
 import am.banking.system.common.shared.dto.notification.EmailVerification;
 import am.banking.system.common.shared.dto.notification.PasswordReset;
 import am.banking.system.common.shared.dto.notification.WelcomeEmail;
-import am.banking.system.user.application.port.out.NotificationServiceClientPort;
+import am.banking.system.user.application.port.out.NotificationClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class NotificationServiceClient implements NotificationServiceClientPort {
+public class NotificationClient implements NotificationClientPort {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Retry(name = "notificationService")

@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
  * Date: 02.05.25
  * Time: 00:32:21
  */
-public interface AuthorizeServiceClientPort {
+public interface AuthorizationClientPort {
     Mono<Boolean> authorizeUser(String token, PermissionEnum permission);
 }

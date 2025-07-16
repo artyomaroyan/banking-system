@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
  * Date: 02.05.25
  * Time: 00:21:22
  */
-public interface PasswordServiceClientPort {
+public interface PasswordClientPort {
     Mono<PasswordHashingResponse> hashPassword(String password);
     Mono<Boolean> validatePassword(String rawPassword, String hashedPassword);
 }

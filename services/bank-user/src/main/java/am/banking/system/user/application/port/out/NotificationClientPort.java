@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
  * Date: 12.05.25
  * Time: 03:29:42
  */
-public interface NotificationServiceClientPort {
+public interface NotificationClientPort {
     Mono<Void> sendVerificationEmail(String email, String username, String link);
     Mono<Void> sendPasswordResetEmail(String email, String username, String link);
     Mono<Void> sendWelcomeEmail(String email,  String username);

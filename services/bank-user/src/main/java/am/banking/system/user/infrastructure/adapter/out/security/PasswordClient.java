@@ -3,8 +3,8 @@ package am.banking.system.user.infrastructure.adapter.out.security;
 import am.banking.system.common.shared.dto.security.PasswordHashingRequest;
 import am.banking.system.common.shared.dto.security.PasswordHashingResponse;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
-import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
-import am.banking.system.user.application.port.out.PasswordServiceClientPort;
+import am.banking.system.user.application.port.out.PasswordClientPort;
+import am.banking.system.user.application.port.out.UserTokenClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
@@ -25,16 +25,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
  */
 @Slf4j
 @Service
-public class PasswordServiceClient implements PasswordServiceClientPort {
+public class PasswordClient implements PasswordClientPort {
     private final WebClient webClient;
-    private final JwtTokenServiceClientPort jwtTokenServiceClient;
+    private final UserTokenClientPort userTokenClient;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public PasswordServiceClient(@Qualifier("securedWebClient") WebClient webClient,
-                                 JwtTokenServiceClient jwtTokenServiceClient,
-                                 WebClientResponseHandler webClientResponseHandler) {
+    public PasswordClient(@Qualifier("securedWebClient") WebClient webClient,
+                          UserTokenClientPort jwtTokenServiceClient,
+                          WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
-        this.jwtTokenServiceClient = jwtTokenServiceClient;
+        this.userTokenClient = jwtTokenServiceClient;
         this.webClientResponseHandler = webClientResponseHandler;
     }
 
@@ -42,7 +42,7 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
     public Mono<PasswordHashingResponse> hashPassword(String password) {
-        return jwtTokenServiceClient.generateSystemToken()
+        return userTokenClient.generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/password/hash")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
@@ -57,7 +57,7 @@ public class PasswordServiceClient implements PasswordServiceClientPort {
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
     public Mono<Boolean> validatePassword(String rawPassword, String hashedPassword) {
-        return jwtTokenServiceClient.generateSystemToken()
+        return userTokenClient.generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/password/validate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)

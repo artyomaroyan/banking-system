@@ -1,10 +1,8 @@
 package am.banking.system.user.infrastructure.adapter.out.security;
 
-import am.banking.system.common.shared.dto.security.AuthorizationRequest;
-import am.banking.system.common.shared.enums.PermissionEnum;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
-import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
-import am.banking.system.user.application.port.out.AuthorizeServiceClientPort;
+import am.banking.system.user.application.port.out.TokenInvalidateClientPort;
+import am.banking.system.user.application.port.out.UserTokenClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
@@ -20,37 +18,36 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
  * Author: Artyom Aroyan
- * Date: 02.05.25
- * Time: 00:33:00
+ * Date: 06.07.25
+ * Time: 15:31:53
  */
 @Slf4j
 @Service
-public class AuthorizeServiceClient implements AuthorizeServiceClientPort {
+public class TokenInvalidateClient implements TokenInvalidateClientPort {
     private final WebClient webClient;
-    private final JwtTokenServiceClientPort jwtTokenServiceClient;
+    private final UserTokenClientPort userTokenClient;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public AuthorizeServiceClient(@Qualifier("securedWebClient") WebClient webClient,
-                                  JwtTokenServiceClientPort jwtTokenServiceClient,
-                                  WebClientResponseHandler webClientResponseHandler) {
+    public TokenInvalidateClient(@Qualifier("securedWebClient") WebClient webClient,
+                                 UserTokenClientPort userTokenClient,
+                                 WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
-        this.jwtTokenServiceClient = jwtTokenServiceClient;
+        this.userTokenClient = userTokenClient;
         this.webClientResponseHandler = webClientResponseHandler;
     }
 
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<Boolean> authorizeUser(String token, PermissionEnum permission) {
-        return jwtTokenServiceClient.generateSystemToken()
+    public Mono<String> invalidateUsedToken(String token) {
+        return userTokenClient.generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
-                        .uri("/api/internal/security/authorize")
+                        .uri("/api/internal/security/token/invalidate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new AuthorizationRequest(token, permission))
+                        .bodyValue(Void.class)
                         .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, Boolean.class, "Authorization"))
+                                .response(response, String.class, "Token invalidated"))
                         .timeout(Duration.ofSeconds(5)));
-
     }
 }
