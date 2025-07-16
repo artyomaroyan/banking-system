@@ -7,10 +7,9 @@ import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.application.factory.UserFactory;
 import am.banking.system.user.application.mapper.UserDtoMapper;
 import am.banking.system.user.application.port.in.UserRegistrationUseCase;
-import am.banking.system.user.application.port.out.JwtTokenServiceClientPort;
-import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
+import am.banking.system.user.application.port.out.NotificationClientPort;
+import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.application.service.validation.RequestValidation;
-import am.banking.system.user.infrastructure.adapter.out.notification.NotificationServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,9 @@ public class UserRegistrationService implements UserRegistrationUseCase {
     private final UserFactory userFactory;
     private final UserDtoMapper userReactiveMapper;
     private final RequestValidation requestValidation;
-    private final JwtTokenServiceClientPort jwtTokenServiceClient;
-    private final UserTokenServiceClientPort userTokenServiceClient;
-    private final NotificationServiceClient notificationServiceClient;
+    private final UserTokenClientPort userTokenClient;
+    private final NotificationClientPort notificationClient;
+    private final UserTokenClientPort userTokenServiceClient;
 
     @Override
     public Mono<Result<String>> register(UserRequest request) {
@@ -81,10 +80,9 @@ public class UserRegistrationService implements UserRegistrationUseCase {
         UserDto userDto = tuple.getT1();
         TokenResponse token = tuple.getT2();
 
-        return notificationServiceClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
+        return notificationClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
                 .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
-                .then(jwtTokenServiceClient.generateJwtToken(userDto))
-//                .doOnNext(jwt -> log.info("Generated JSON Web Token: {}", jwt))
+                .then(userTokenClient.generateJwtAccessToken(userDto))
                 .thenReturn(Result.successMessage(
                         "Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
     }

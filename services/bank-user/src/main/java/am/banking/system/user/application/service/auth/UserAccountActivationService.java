@@ -6,7 +6,7 @@ import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.application.port.in.UserAccountActivationUseCase;
 import am.banking.system.user.application.port.in.UserManagementUseCase;
 import am.banking.system.user.application.port.out.TokenInvalidateClientPort;
-import am.banking.system.user.application.port.out.UserTokenServiceClientPort;
+import am.banking.system.user.application.port.out.UserTokenClientPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,9 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class UserAccountActivationService implements UserAccountActivationUseCase {
+    private final UserTokenClientPort userTokenServiceClient;
     private final UserManagementUseCase userManagementService;
-    private final UserTokenServiceClientPort userTokenServiceClient;
-    private final TokenInvalidateClientPort tokenInvalidateClientPort;
+    private final TokenInvalidateClientPort tokenInvalidateClient;
 
     @Override
     public Mono<Result<String>> activateAccount(String activationToken, String username) {
@@ -42,7 +42,7 @@ public class UserAccountActivationService implements UserAccountActivationUseCas
                                 }
 
                                 return userManagementService.updateUserAccountState(userResult.data().id())
-                                        .then(tokenInvalidateClientPort.invalidateUsedToken(activationToken))
+                                        .then(tokenInvalidateClient.invalidateUsedToken(activationToken))
                                         .thenReturn(Result.success("Your account has been successfully activated"));
                             });
                 });

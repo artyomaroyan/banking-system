@@ -1,8 +1,8 @@
 package am.banking.system.user.application.factory;
 
 import am.banking.system.user.application.port.in.UserFactoryUseCase;
+import am.banking.system.user.application.port.out.PasswordClientPort;
 import am.banking.system.user.domain.entity.Role;
-import am.banking.system.user.infrastructure.adapter.out.security.PasswordServiceClient;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.domain.entity.User;
 import am.banking.system.user.domain.entity.UserRole;
@@ -27,14 +27,14 @@ import static am.banking.system.common.shared.enums.AccountState.PENDING;
 public class UserFactory implements UserFactoryUseCase {
     private final RoleService roleService;
     private final UserRepository userRepository;
+    private final PasswordClientPort passwordClient;
     private final UserRoleRepository userRoleRepository;
-    private final PasswordServiceClient securityServiceClient;
 
     @Override
     public Mono<User> createUser(UserRequest request) {
         log.info("Creating user with username: {}", request.username());
         return Mono.zip(
-                        securityServiceClient.hashPassword(request.password())
+                        passwordClient.hashPassword(request.password())
                                 .doOnNext(pwd -> log.info("Hashed rawPassword: {}", pwd))
                                 .doOnError(err -> log.error("Error hashing rawPassword: {}", err.getMessage(), err))
                                 .log("HASH_PASSWORD"),
