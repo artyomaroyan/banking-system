@@ -3,7 +3,7 @@ package am.banking.system.security.application.service.jwt;
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
 import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
 import am.banking.system.security.application.port.in.InternalTokenUseCase;
-import am.banking.system.security.application.port.in.JwtTokenServiceUseCase;
+import am.banking.system.security.application.port.in.UserTokenUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Service
 @RequiredArgsConstructor
 public class InternalTokenService implements InternalTokenUseCase {
-    private final JwtTokenServiceUseCase tokenService;
+    private final UserTokenUseCase userTokenService;
     private final InternalSecretProperties properties;
 
     @Override
@@ -35,7 +35,7 @@ public class InternalTokenService implements InternalTokenUseCase {
             return Mono.just(ResponseEntity.status(FORBIDDEN).body("Invalid internal secret"));
         }
 
-        return tokenService.generateSystemToken()
+        return userTokenService.generateSystemToken()
                 .flatMap(token -> {
                     if (token == null || token.isEmpty() || token.trim().isBlank()) {
                         log.error("Generated empty system token");
@@ -48,7 +48,7 @@ public class InternalTokenService implements InternalTokenUseCase {
                 .onErrorResume(error -> {
                     log.error("Error during internal token generation: {}", error.getMessage(), error);
                     return Mono.just(ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                            .body("Failed to generate internal system token"));
+                            .body("Failed to generateInternalToken internal system token"));
                 });
     }
 }

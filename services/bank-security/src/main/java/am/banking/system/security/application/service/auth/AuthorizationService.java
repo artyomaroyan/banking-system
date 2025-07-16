@@ -1,11 +1,12 @@
 package am.banking.system.security.application.service.auth;
 
 import am.banking.system.common.shared.enums.PermissionEnum;
-import am.banking.system.security.application.port.in.AuthorizationServiceUseCase;
+import am.banking.system.security.application.port.in.AuthorizationUseCase;
+import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import am.banking.system.security.application.validator.TokenClaimsExtractor;
-import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
@@ -16,16 +17,17 @@ import java.util.Set;
  */
 @Component
 @RequiredArgsConstructor
-public class AuthorizationService implements AuthorizationServiceUseCase {
-    private final JwtTokenValidatorUseCase jwtTokenValidator;
+public class AuthorizationService implements AuthorizationUseCase {
     private final TokenClaimsExtractor tokenClaimsExtractor;
+    private final UserTokenValidatorUseCase userTokenValidator;
 
     @Override
-    public boolean isAuthorized(String token, PermissionEnum permission) {
-        if (!jwtTokenValidator.isValidToken(token)) {
-            return false;
-        }
-        Set<PermissionEnum> permissions = tokenClaimsExtractor.extractPermissions(token);
-        return permissions.contains(permission);
+    public Mono<Boolean> isAuthorized(String token, PermissionEnum permission) {
+        return userTokenValidator.extractValidClaims(token)
+                .flatMap(_ -> {
+                    Set<PermissionEnum> permissions = tokenClaimsExtractor.extractPermissions(token);
+                    return Mono.just(permissions.contains(permission));
+                })
+                .defaultIfEmpty(false);
     }
 }

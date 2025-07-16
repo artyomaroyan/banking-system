@@ -1,5 +1,7 @@
 package am.banking.system.security.application.port.in;
 
+import io.jsonwebtoken.Claims;
+import org.springframework.security.oauth2.jwt.Jwt;
 import reactor.core.publisher.Mono;
 
 /**
@@ -8,6 +10,8 @@ import reactor.core.publisher.Mono;
  * Time: 00:20:19
  */
 public interface UserTokenValidatorUseCase {
-    Mono<Boolean> isValidEmailVerificationToken(final String token);
+    Mono<Jwt> validateInternalToken(String token);
+    Mono<Claims> extractValidClaims(String token);
     Mono<Boolean> isValidPasswordResetToken(final String token);
+    Mono<Boolean> isValidEmailVerificationToken(final String token);
 }

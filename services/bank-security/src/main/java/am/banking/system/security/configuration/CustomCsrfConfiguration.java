@@ -24,7 +24,7 @@ class CustomCsrfConfiguration {
                         PublicEndpoints.SWAGGER,
                         PublicEndpoints.ACCOUNT,
                         PublicEndpoints.JWKS,
-                        InternalEndpoints.JWT_TOKEN,
+                        InternalEndpoints.USER_TOKEN,
                         InternalEndpoints.NOTIFICATION
                 )
                 .flatMap(Stream::of)

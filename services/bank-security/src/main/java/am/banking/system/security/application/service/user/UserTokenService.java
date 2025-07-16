@@ -2,7 +2,7 @@ package am.banking.system.security.application.service.user;
 
 import am.banking.system.security.api.shared.UserPrincipal;
 import am.banking.system.security.application.port.in.TokenGenerationUseCase;
-import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
+import am.banking.system.security.application.port.in.UserTokenUseCase;
 import am.banking.system.security.domain.enums.TokenPurpose;
 import am.banking.system.security.domain.enums.TokenType;
 import am.banking.system.security.domain.model.UserToken;
@@ -18,11 +18,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import static am.banking.system.security.domain.enums.TokenPurpose.ACCOUNT_VERIFICATION;
-import static am.banking.system.security.domain.enums.TokenPurpose.PASSWORD_RECOVERY;
+import static am.banking.system.security.domain.enums.TokenPurpose.*;
 import static am.banking.system.security.domain.enums.TokenState.PENDING;
-import static am.banking.system.security.domain.enums.TokenType.EMAIL_VERIFICATION;
-import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
+import static am.banking.system.security.domain.enums.TokenType.*;
 
 /**
  * Author: Artyom Aroyan
@@ -31,20 +29,30 @@ import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
  */
 @Service
 @RequiredArgsConstructor
-public class UserTokenService implements UserTokenServiceUseCase {
-    private final TokenGenerationUseCase tokenService;
+public class UserTokenService implements UserTokenUseCase {
     private final TokenClaimsMapper tokenClaimsMapper;
     private final TokenClaimsService tokenClaimsService;
     private final UserTokenRepository userTokenRepository;
+    private final TokenGenerationUseCase tokenGenerationService;
     private final TokenSigningKeyManager tokenSigningKeyManager;
 
     @Override
-    public Mono<String> generatePasswordResetToken(final UserPrincipal principal) {
+    public Mono<String> generateSystemToken() {
+        return Mono.fromSupplier(() -> tokenGenerationService.generateInternalToken(INTERNAL_JWT_TOKEN));
+    }
+
+    @Override
+    public Mono<String> generateJwtAccessToken(UserPrincipal principal) {
+        return generateAndSaveToken(principal, JWT_ACCESS_TOKEN, JSON_WEB_TOKEN);
+    }
+
+    @Override
+    public Mono<String> generatePasswordResetToken(UserPrincipal principal) {
         return generateAndSaveToken(principal, PASSWORD_RECOVERY, PASSWORD_RESET);
     }
 
     @Override
-    public Mono<String> generateEmailVerificationToken(final UserPrincipal principal) {
+    public Mono<String> generateEmailVerificationToken(UserPrincipal principal) {
         return generateAndSaveToken(principal, ACCOUNT_VERIFICATION, EMAIL_VERIFICATION);
     }
 
@@ -57,7 +65,7 @@ public class UserTokenService implements UserTokenServiceUseCase {
     private String generateToken(final UserPrincipal principal, final TokenPurpose purpose, final TokenType type) {
         var claimsDto = tokenClaimsService.createUserTokenClaims(principal, purpose);
         var claims = tokenClaimsMapper.mapTokenClaims(claimsDto);
-        return tokenService.createToken(claims, principal.getUsername(), type);
+        return tokenGenerationService.generateUserToken(claims, principal.getUsername(), type);
     }
 
     private Mono<Void> saveUserToken(final UserPrincipal principal, final String token, final TokenPurpose purpose, final Date exp) {
@@ -65,11 +73,11 @@ public class UserTokenService implements UserTokenServiceUseCase {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
         UserToken userToken = UserToken.builder()
+                .userId(principal.getUserId())
                 .token(token)
                 .expirationDate(expiration)
                 .tokenPurpose(purpose)
                 .tokenState(PENDING)
-                .userId(principal.getUserId())
                 .build();
         return userTokenRepository.save(userToken).then();
     }

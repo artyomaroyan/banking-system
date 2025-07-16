@@ -1,7 +1,7 @@
 package am.banking.system.security.configuration;
 
 import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
+import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import am.banking.system.security.converter.JwtReactiveAuthenticationConverter;
 import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;
 import am.banking.system.security.infrastructure.token.filter.InternalTokenSecretFilter;
@@ -31,7 +31,7 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 public class SecurityConfiguration {
     private final MeterRegistry meterRegistry;
     private final ServerWebExchangeMatcher csrfMatcher;
-    private final JwtTokenValidatorUseCase jwtTokenValidator;
+    private final UserTokenValidatorUseCase userTokenValidator;
     private final CorsConfigurationSource corsConfigurationSource;
     private final InternalSecretProperties internalSecretProperties;
     private final JwtReactiveAuthenticationConverter jwtAuthenticationConverter;
@@ -52,7 +52,7 @@ public class SecurityConfiguration {
                 )
                 .addFilterBefore(new InternalTokenSecretFilter(meterRegistry, internalSecretProperties),
                         SecurityWebFiltersOrder.AUTHENTICATION)
-                .addFilterAt(new InternalTokenAuthenticationFilter(jwtTokenValidator),
+                .addFilterAt(new InternalTokenAuthenticationFilter(userTokenValidator),
                         SecurityWebFiltersOrder.AUTHENTICATION)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));

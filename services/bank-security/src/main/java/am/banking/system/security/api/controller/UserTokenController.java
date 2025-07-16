@@ -4,7 +4,7 @@ import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.security.TokenValidatorRequest;
 import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.security.application.mapper.UserPrincipalMapper;
-import am.banking.system.security.application.port.in.UserTokenServiceUseCase;
+import am.banking.system.security.application.port.in.UserTokenUseCase;
 import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,9 @@ import reactor.core.publisher.Mono;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/internal/security/user-token")
+@RequestMapping("/api/internal/security/token")
 public class UserTokenController {
-    private final UserTokenServiceUseCase userTokenService;
+    private final UserTokenUseCase userTokenService;
     private final UserTokenValidatorUseCase userTokenValidator;
 
     @PostMapping("/email/issue")
@@ -44,6 +44,22 @@ public class UserTokenController {
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public Mono<Boolean> validateEmailVerificationToken(@Valid @RequestBody TokenValidatorRequest request) {
         return userTokenValidator.isValidEmailVerificationToken(request.token());
+    }
+
+    @PostMapping("/access/issue")
+    @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
+    public Mono<ResponseEntity<TokenResponse>> issueJwtAccessToken(@Valid @RequestBody UserDto userDto) {
+        var principal = UserPrincipalMapper.toUserPrincipal(userDto);
+        return userTokenService.generateJwtAccessToken(principal)
+                .map(token -> ResponseEntity.ok(new TokenResponse(token)));
+    }
+
+    @PostMapping("/access/validate")
+    @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
+    public Mono<ResponseEntity<Boolean>> validateJwtAccessToken(@RequestBody @Valid TokenValidatorRequest request) {
+        return userTokenValidator.extractValidClaims(request.token())
+                .hasElement()
+                .map(ResponseEntity::ok);
     }
 
     @PostMapping("/password-reset/issue")

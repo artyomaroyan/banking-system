@@ -22,16 +22,16 @@ public class TokenService implements TokenGenerationUseCase {
     private final TokenStrategyFactory tokenStrategyFactory;
 
     @Override
-    public String createToken(Map<String, Object> claims, String subject, TokenType type) {
+    public String generateInternalToken(TokenType type) {
         return Optional.ofNullable(tokenStrategyFactory.getStrategy(type))
-                .map(strategy -> strategy.generateToken(claims, subject))
+                .map(TokenGenerationStrategy::generateSystemToken)
                 .orElseThrow(() -> new StrategyNotFoundException("No strategy found for type " + type));
     }
 
     @Override
-    public String generate(TokenType type) {
+    public String generateUserToken(Map<String, Object> claims, String subject, TokenType type) {
         return Optional.ofNullable(tokenStrategyFactory.getStrategy(type))
-                .map(TokenGenerationStrategy::generateSystemToken)
+                .map(strategy -> strategy.generateToken(claims, subject))
                 .orElseThrow(() -> new StrategyNotFoundException("No strategy found for type " + type));
     }
 }

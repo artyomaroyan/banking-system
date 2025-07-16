@@ -6,7 +6,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Author: Artyom Aroyan
@@ -27,23 +31,29 @@ public class UserPrincipal implements UserDetails {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.roles = Collections.unmodifiableSet(roles);
-        this.permissions = Collections.unmodifiableSet(permissions);
+        this.roles = Set.copyOf(roles);
+        this.permissions = Set.copyOf(permissions);
     }
 
     public AccountState getAccountState() {
-        if (!isAccountNonLocked() || !isAccountNonExpired() || !isCredentialsNonExpired() || !isEnabled()) {
+        if (!isAccountNonLocked()) {
             return AccountState.LOCKED;
+
+        } else if (!isAccountNonExpired() || !isCredentialsNonExpired()) {
+            return AccountState.INACTIVE;
+
+        } else if (!isEnabled()) {
+            return AccountState.PENDING;
         }
         return AccountState.ACTIVE;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        roles.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())));
-        permissions.forEach(permission -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permission.toUpperCase())));
-        return authorities;
+        return Stream.concat(
+                        roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())),
+                        permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.toUpperCase())))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

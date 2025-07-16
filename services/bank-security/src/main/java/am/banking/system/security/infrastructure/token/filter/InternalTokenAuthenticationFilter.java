@@ -1,6 +1,6 @@
 package am.banking.system.security.infrastructure.token.filter;
 
-import am.banking.system.security.application.port.in.JwtTokenValidatorUseCase;
+import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +24,12 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @Service
 @RequiredArgsConstructor
 public class InternalTokenAuthenticationFilter implements WebFilter {
-    private final JwtTokenValidatorUseCase jwtTokenValidator;
+    private final UserTokenValidatorUseCase userTokenValidator;
 
     private static final Set<String> EXCLUDED_PATHS = Set.of(
             "/.well-known/jwks.json", // <- this was an issue which has tormented me 1 day, because I do not include it in exclude path list my decoder does not work and show me an empty page
             "/api/v1/secure/local/system-token",
-            "/api/internal/security/user-token/email/validate"
+            "/api/internal/security/token/email/validate"
     );
 
     @NonNull
@@ -46,7 +46,7 @@ public class InternalTokenAuthenticationFilter implements WebFilter {
                 .flatMap(header -> {
                     String token = header.substring(7);
 
-                    return jwtTokenValidator.validateInternalToken(token)
+                    return userTokenValidator.validateInternalToken(token)
                             .doOnNext(jwt -> log.info("Authenticating service [{}] with authorities {}",
                                     jwt.getSubject(),
                                     jwt.getClaim("authorities")))
