@@ -49,6 +49,11 @@ spring:
 resilience4j:
   retry:
     instances:
+      accountService:
+        max-attempts: 3
+        wait-duration:
+          seconds: 1
+
       securityService:
         max-attempts: 3
         wait-duration:
@@ -65,6 +70,15 @@ resilience4j:
 
   circuitbreaker:
     instances:
+      accountService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          seconds: 10
+
       securityService:
         failure-rate-threshold: 50
         minimum-number-of-calls: 5
