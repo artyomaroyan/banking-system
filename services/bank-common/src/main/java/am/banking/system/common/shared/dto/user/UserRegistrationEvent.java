@@ -1,6 +1,8 @@
 package am.banking.system.common.shared.dto.user;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
@@ -12,7 +14,7 @@ import java.util.Objects;
  * Time: 15:31:42
  */
 @Validated
-public record UserRegistrationEvent(@NotBlank String userId, @NotBlank String username, @NotBlank String email,
+public record UserRegistrationEvent(@NotNull Integer userId, @NotBlank String username, @Email @NotBlank String email,
                                     @NotBlank String firstName, @NotBlank String lastName, @NotBlank String phone) {
 
     @Override

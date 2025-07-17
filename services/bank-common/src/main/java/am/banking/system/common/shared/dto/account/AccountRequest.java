@@ -1,11 +1,10 @@
-package am.banking.system.account.api.dto;
+package am.banking.system.common.shared.dto.account;
 
-import am.banking.system.account.domain.enums.AccountType;
+import am.banking.system.common.shared.enums.AccountType;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 /**
  * Author: Artyom Aroyan
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @Validated
 public record AccountRequest(
         @NotBlank(message = "account owner ID must not be blank")
-        String accountOwnerId,
+        Integer accountOwnerId,
         @NotBlank(message = "Account number must not be blank")
         @Pattern(regexp = "\\d{16}", message = "Account number must be exactly 16 digits")
         String accountNumber,
@@ -31,8 +30,5 @@ public record AccountRequest(
         @Digits(integer = 10, fraction = 2, message = "Balance must be a valid monetary amount")
         BigDecimal balance,
         @NotNull(message = "Account type is required")
-        AccountType accountType,
-        @NotNull(message = "Creation date is required")
-        @PastOrPresent(message = "Creation date cannot be in the future")
-        LocalDate createdAt){
+        AccountType accountType){
 }
