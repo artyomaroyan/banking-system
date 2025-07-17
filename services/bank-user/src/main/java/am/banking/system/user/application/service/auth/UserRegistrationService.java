@@ -1,5 +1,7 @@
 package am.banking.system.user.application.service.auth;
 
+import am.banking.system.common.shared.dto.account.AccountRequest;
+import am.banking.system.common.shared.dto.account.AccountResponse;
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.common.shared.response.Result;
@@ -9,6 +11,7 @@ import am.banking.system.user.application.mapper.UserDtoMapper;
 import am.banking.system.user.application.port.in.UserRegistrationUseCase;
 import am.banking.system.user.application.port.out.NotificationClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
+import am.banking.system.user.application.port.out.account.CurrentAccountCreationClientPort;
 import am.banking.system.user.application.service.validation.RequestValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,7 @@ public class UserRegistrationService implements UserRegistrationUseCase {
     private final UserTokenClientPort userTokenClient;
     private final NotificationClientPort notificationClient;
     private final UserTokenClientPort userTokenServiceClient;
+    private final CurrentAccountCreationClientPort currentAccountCreationClient;
 
     @Override
     public Mono<Result<String>> register(UserRequest request) {
@@ -69,6 +73,11 @@ public class UserRegistrationService implements UserRegistrationUseCase {
                             )
                             .doOnError(error -> log.error("Error while creating user: {}", error.getMessage(), error));
                 });
+    }
+
+    private Mono<AccountResponse> createDefaultAccount(AccountRequest request) {
+        return currentAccountCreationClient.createDefaultAccount(request)
+                .doOnNext(acc -> log.info("Created default account: {}", acc));
     }
 
     private Mono<TokenResponse> generateVerificationToken(UserDto userDto) {

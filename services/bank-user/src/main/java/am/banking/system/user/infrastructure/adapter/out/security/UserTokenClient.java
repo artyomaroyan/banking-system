@@ -87,6 +87,8 @@ public class UserTokenClient implements UserTokenClientPort {
     }
 
     @Override
+    @Retry(name = "securityService")
+    @CircuitBreaker(name = "securityService")
     public Mono<TokenResponse> generateJwtAccessToken(UserDto user) {
         return generateSystemToken()
                 .flatMap(token -> webClient.post()
@@ -130,6 +132,8 @@ public class UserTokenClient implements UserTokenClientPort {
     }
 
     @Override
+    @Retry(name = "securityService")
+    @CircuitBreaker(name = "securityService")
     public Mono<TokenValidatorResponse> validateJwtAccessToken(String token, String username) {
         return generateSystemToken()
                 .flatMap(_ -> webClient.post()

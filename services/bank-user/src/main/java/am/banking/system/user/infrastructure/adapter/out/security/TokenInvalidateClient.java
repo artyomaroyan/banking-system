@@ -1,5 +1,6 @@
 package am.banking.system.user.infrastructure.adapter.out.security;
 
+import am.banking.system.common.shared.dto.security.TokenInvalidateRequest;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
 import am.banking.system.user.application.port.out.TokenInvalidateClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
@@ -45,7 +46,7 @@ public class TokenInvalidateClient implements TokenInvalidateClientPort {
                         .uri("/api/internal/security/token/invalidate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(Void.class)
+                        .bodyValue(new TokenInvalidateRequest(token))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, String.class, "Token invalidated"))
                         .timeout(Duration.ofSeconds(5)));
