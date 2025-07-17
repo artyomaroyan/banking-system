@@ -55,3 +55,5 @@ logging:
         system:
           user: info
           security: info
+          notification: info
+          account: trace

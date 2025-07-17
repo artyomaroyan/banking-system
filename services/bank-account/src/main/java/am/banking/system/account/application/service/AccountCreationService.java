@@ -1,7 +1,8 @@
 package am.banking.system.account.application.service;
 
-import am.banking.system.account.api.dto.AccountRequest;
-import am.banking.system.account.api.dto.AccountResponse;
+import am.banking.system.common.shared.dto.account.AccountRequest;
+import am.banking.system.common.shared.dto.account.AccountResponse;
+import am.banking.system.account.application.port.in.AccountCreationUseCase;
 import am.banking.system.account.domain.entity.Account;
 import am.banking.system.account.domain.repository.AccountRepository;
 import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
@@ -12,9 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-import static am.banking.system.account.domain.enums.AccountType.CURRENT_ACCOUNT;
+import static am.banking.system.common.shared.enums.AccountType.CURRENT_ACCOUNT;
 
 /**
  * Author: Artyom Aroyan
@@ -23,7 +23,7 @@ import static am.banking.system.account.domain.enums.AccountType.CURRENT_ACCOUNT
  */
 @Service
 @RequiredArgsConstructor
-public class AccountCreationService implements IAccountCreationService {
+public class AccountCreationService implements AccountCreationUseCase {
     private final GenericMapper genericMapper;
     private final DatabaseClient databaseClient;
     private final AccountRepository accountRepository;
@@ -39,8 +39,7 @@ public class AccountCreationService implements IAccountCreationService {
                             event.firstName() + event.lastName(),
                             event.email(),
                             BigDecimal.valueOf(0.00),
-                            CURRENT_ACCOUNT,
-                            LocalDate.now());
+                            CURRENT_ACCOUNT);
 
                     Account account = genericMapper.map(accountRequest, Account.class);
                     return accountRepository.save(account)

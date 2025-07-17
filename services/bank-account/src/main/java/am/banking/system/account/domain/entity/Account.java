@@ -1,6 +1,6 @@
 package am.banking.system.account.domain.entity;
 
-import am.banking.system.account.domain.enums.AccountType;
+import am.banking.system.common.shared.enums.AccountType;
 import am.banking.system.common.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
