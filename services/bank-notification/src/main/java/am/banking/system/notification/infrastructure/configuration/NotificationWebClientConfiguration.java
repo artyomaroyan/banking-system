@@ -2,7 +2,7 @@ package am.banking.system.notification.infrastructure.configuration;
 
 import am.banking.system.common.infrastructure.tls.WebClientFactory;
 import am.banking.system.common.infrastructure.tls.configuration.SecurityTLSProperties;
-import am.banking.system.notification.infrastructure.adapter.out.security.JwtTokenServiceClient;
+import am.banking.system.notification.application.port.out.InternalTokenClientPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
@@ -32,7 +32,7 @@ public class NotificationWebClientConfiguration {
     }
 
     @Bean(name = "notificationWebClient")
-    public WebClient notificationWebClient(WebClientFactory webClientFactory, ObjectProvider<JwtTokenServiceClient> jwtProvider) {
+    public WebClient notificationWebClient(WebClientFactory webClientFactory, ObjectProvider<InternalTokenClientPort> jwtProvider) {
         return webClientFactory.createSecuredWebClient(tlsProperties.url())
                 .mutate()
                 .filter(systemTokenPropagationFilter(jwtProvider))
@@ -40,7 +40,7 @@ public class NotificationWebClientConfiguration {
                 .build();
     }
 
-    private ExchangeFilterFunction systemTokenPropagationFilter(ObjectProvider<JwtTokenServiceClient> jwtProvider) {
+    private ExchangeFilterFunction systemTokenPropagationFilter(ObjectProvider<InternalTokenClientPort> jwtProvider) {
         return ExchangeFilterFunction.ofRequestProcessor(request ->
                 jwtProvider.getObject()
                         .generateSystemToken()

@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
  * Date: 27.06.25
  * Time: 01:24:09
  */
-public interface JwtTokenServiceClientPort {
+public interface InternalTokenClientPort {
     Mono<String> generateSystemToken();
 }

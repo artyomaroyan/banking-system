@@ -4,7 +4,7 @@ import am.banking.system.common.infrastructure.tls.configuration.InternalSecretP
 import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
 import am.banking.system.common.shared.exception.security.TimeoutException;
 import am.banking.system.common.shared.exception.security.token.TokenGenerationException;
-import am.banking.system.notification.application.port.out.JwtTokenServiceClientPort;
+import am.banking.system.notification.application.port.out.InternalTokenClientPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
@@ -21,11 +21,11 @@ import java.time.Duration;
  */
 @Slf4j
 @Service
-public class JwtTokenServiceClient implements JwtTokenServiceClientPort {
+public class InternalTokenClient implements InternalTokenClientPort {
     private final WebClient webClient;
     private final InternalSecretProperties secretProperties;
 
-    public JwtTokenServiceClient(@Qualifier("securedWebClient") WebClient webClient, InternalSecretProperties secretProperties) {
+    public InternalTokenClient(@Qualifier("securedWebClient") WebClient webClient, InternalSecretProperties secretProperties) {
         this.webClient = webClient;
         this.secretProperties = secretProperties;
     }
