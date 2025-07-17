@@ -1,14 +1,14 @@
-package am.banking.system.account.application.service;
+package am.banking.system.account.application.port.in;
 
-import am.banking.system.account.api.dto.AccountResponse;
+import am.banking.system.common.shared.dto.account.AccountResponse;
 import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
 import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
- * Date: 01.06.25
- * Time: 15:52:35
+ * Date: 16.07.25
+ * Time: 22:47:41
  */
-public interface IAccountCreationService {
+public interface AccountCreationUseCase {
     Mono<AccountResponse> createDefaultAccount(UserRegistrationEvent event);
 }
