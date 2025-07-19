@@ -1,4 +1,4 @@
-package am.banking.system.common.shared.dto.user;
+package am.banking.system.common.shared.dto.account;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,14 +14,14 @@ import java.util.Objects;
  * Time: 15:31:42
  */
 @Validated
-public record UserRegistrationEvent(@NotNull Integer userId, @NotBlank String username, @Email @NotBlank String email,
-                                    @NotBlank String firstName, @NotBlank String lastName, @NotBlank String phone) {
+public record AccountCreationRequest(@NotNull Integer userId, @NotBlank String username, @Email @NotBlank String email,
+                                     @NotBlank String firstName, @NotBlank String lastName, @NotBlank String phone) {
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        UserRegistrationEvent that = (UserRegistrationEvent) obj;
+        AccountCreationRequest that = (AccountCreationRequest) obj;
         return Objects.equals(this.userId, that.userId) &&
                 Objects.equals(this.username, that.username) &&
                 Objects.equals(this.email, that.email) &&
@@ -38,7 +38,7 @@ public record UserRegistrationEvent(@NotNull Integer userId, @NotBlank String us
     @NonNull
     @Override
     public String toString() {
-        return "UserRegistrationEvent{" +
+        return "AccountCreationRequest{" +
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
