@@ -1,7 +1,7 @@
 package am.banking.system.user.infrastructure.adapter.out.accoount;
 
-import am.banking.system.common.shared.dto.account.AccountRequest;
 import am.banking.system.common.shared.dto.account.AccountResponse;
+import am.banking.system.common.shared.dto.account.AccountCreationRequest;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.application.port.out.account.CurrentAccountCreationClientPort;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.naming.ServiceUnavailableException;
 import java.time.Duration;
 
 /**
@@ -40,23 +41,21 @@ public class CurrentAccountCreationClient implements CurrentAccountCreationClien
     @Override
     @Retry(name = "accountService")
     @CircuitBreaker(name = "accountService")
-    public Mono<AccountResponse> createDefaultAccount(AccountRequest request) {
+    public Mono<AccountResponse> createDefaultAccount(AccountCreationRequest event) {
         return userTokenClient.generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/current-account/default")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(new AccountRequest(
-                                request.accountOwnerId(),
-                                request.accountNumber(),
-                                request.accountOwnerUsername(),
-                                request.accountOwnerFullName(),
-                                request.accountOwnerEmail(),
-                                request.balance(),
-                                request.accountType()))
+                        .bodyValue(event)
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, AccountResponse.class, "Default current account"))
                         .timeout(Duration.ofSeconds(5))
                 );
+    }
+
+    private Mono<AccountResponse> createDefaultAccountFallback(AccountCreationRequest event, Throwable ex) {
+        log.error("Account service is unavailable: {}", ex.getMessage(), ex);
+        return Mono.error(new ServiceUnavailableException("Account creation temporarily unavailable."));
     }
 }
