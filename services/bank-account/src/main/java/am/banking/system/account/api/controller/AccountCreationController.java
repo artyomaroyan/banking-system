@@ -2,7 +2,7 @@ package am.banking.system.account.api.controller;
 
 import am.banking.system.common.shared.dto.account.AccountResponse;
 import am.banking.system.account.application.port.in.AccountCreationUseCase;
-import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
+import am.banking.system.common.shared.dto.account.AccountCreationRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class AccountCreationController {
     private final AccountCreationUseCase accountCreationService;
 
     @PostMapping("/default")
-    Mono<ResponseEntity<AccountResponse>> createDefaultAccount(@Valid @RequestBody UserRegistrationEvent event) {
+    Mono<ResponseEntity<AccountResponse>> createDefaultAccount(@Valid @RequestBody AccountCreationRequest event) {
         return accountCreationService.createDefaultAccount(event)
                 .map(ResponseEntity::ok);
     }

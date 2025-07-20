@@ -1,7 +1,7 @@
 package am.banking.system.account.application.port.in;
 
 import am.banking.system.common.shared.dto.account.AccountResponse;
-import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
+import am.banking.system.common.shared.dto.account.AccountCreationRequest;
 import reactor.core.publisher.Mono;
 
 /**
@@ -10,5 +10,5 @@ import reactor.core.publisher.Mono;
  * Time: 22:47:41
  */
 public interface AccountCreationUseCase {
-    Mono<AccountResponse> createDefaultAccount(UserRegistrationEvent event);
+    Mono<AccountResponse> createDefaultAccount(AccountCreationRequest event);
 }

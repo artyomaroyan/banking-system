@@ -5,7 +5,7 @@ import am.banking.system.common.shared.dto.account.AccountResponse;
 import am.banking.system.account.application.port.in.AccountCreationUseCase;
 import am.banking.system.account.domain.entity.Account;
 import am.banking.system.account.domain.repository.AccountRepository;
-import am.banking.system.common.shared.dto.user.UserRegistrationEvent;
+import am.banking.system.common.shared.dto.account.AccountCreationRequest;
 import am.banking.system.common.util.GenericMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
@@ -29,15 +29,15 @@ public class AccountCreationService implements AccountCreationUseCase {
     private final AccountRepository accountRepository;
 
     @Override
-    public Mono<AccountResponse> createDefaultAccount(UserRegistrationEvent event) {
+    public Mono<AccountResponse> createDefaultAccount(AccountCreationRequest request) {
         return generateAccountNumber()
                 .flatMap(accountNumber -> {
                     AccountRequest accountRequest = new AccountRequest(
-                            event.userId(),
+                            request.userId(),
                             accountNumber,
-                            event.username(),
-                            event.firstName() + event.lastName(),
-                            event.email(),
+                            request.username(),
+                            request.firstName() + " " + request.lastName(),
+                            request.email(),
                             BigDecimal.valueOf(0.00),
                             CURRENT_ACCOUNT);
 
