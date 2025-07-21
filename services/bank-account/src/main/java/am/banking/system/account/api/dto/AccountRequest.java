@@ -1,4 +1,4 @@
-package am.banking.system.common.shared.dto.account;
+package am.banking.system.account.api.dto;
 
 import am.banking.system.common.shared.enums.AccountType;
 import jakarta.validation.constraints.*;
@@ -20,11 +20,6 @@ public record AccountRequest(
         String accountNumber,
         @NotBlank(message = "account owner username is required")
         String accountOwnerUsername,
-        @NotBlank(message = "account owner full name is required")
-        String accountOwnerFullName,
-        @Email
-        @NotBlank(message = "account owner email is required")
-        String accountOwnerEmail,
         @NotNull(message = "Balance is required")
         @DecimalMin(value = "0.00", message = "Balance must be zero or positive")
         @Digits(integer = 10, fraction = 2, message = "Balance must be a valid monetary amount")

@@ -1,6 +1,6 @@
 package am.banking.system.account.application.service;
 
-import am.banking.system.common.shared.dto.account.AccountRequest;
+import am.banking.system.account.api.dto.AccountRequest;
 import am.banking.system.common.shared.dto.account.AccountResponse;
 import am.banking.system.account.application.port.in.AccountCreationUseCase;
 import am.banking.system.account.domain.entity.Account;
@@ -36,9 +36,7 @@ public class AccountCreationService implements AccountCreationUseCase {
                             request.userId(),
                             accountNumber,
                             request.username(),
-                            request.firstName() + " " + request.lastName(),
-                            request.email(),
-                            BigDecimal.valueOf(0.00),
+                            BigDecimal.ZERO,
                             CURRENT_ACCOUNT);
 
                     Account account = genericMapper.map(accountRequest, Account.class);

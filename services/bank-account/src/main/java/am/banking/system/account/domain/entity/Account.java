@@ -24,10 +24,6 @@ public class Account extends BaseEntity {
     private final String accountNumber;
     @Column("account_owner_username")
     private final String accountOwnerUsername;
-    @Column("account_owner_full_name")
-    private final String accountOwnerFullName;
-    @Column("account_owner_email")
-    private final String accountOwnerEmail;
     @Column("balance")
     private final BigDecimal balance;
     @Column("account_type")
