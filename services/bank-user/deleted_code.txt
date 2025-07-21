@@ -876,3 +876,62 @@ return webClient.post()
                 .doOnError(error -> log.error("Custom Log:: unable to generate token: {}", error.getMessage(), error));
 
 ------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public Mono<Result<String>> register(UserRequest request) {
+        log.info("Initiating user registration for email: {}", request.email());
+
+        return requestValidation.validateRequest(request)
+                .doOnNext(errors -> {
+                    if (!errors.isEmpty()) {
+                        log.warn("Validation errors occurred during registration: {}", errors);
+                    } else {
+                        log.info("Validation passed for: {}", request.email());
+                    }
+                })
+                .flatMap(errors -> {
+                    if (!errors.isEmpty()) {
+                        String message = String.join(" ", errors);
+                        return Mono.just(Result.error(message, BAD_REQUEST.value()));
+                    }
+
+                    return userFactory.createUser(request)
+                            .doOnSubscribe(_ -> log.info("Subscribing to create user process"))
+                            .doOnNext(user -> log.info("Created user: {}", user))
+                            .flatMap(user -> userReactiveMapper.map(user)
+                                    .doOnNext(dto -> log.info("Mapped User to DTO: {}", dto))
+                                    .doOnNext(dto -> log.info("About to generate verification token for: {}", dto.email()))
+                                    .zipWhen(this::generateVerificationToken)
+                                    .flatMap(this::sendVerificationEmailAndGenerateJwt)
+                                    .onErrorResume(error -> {
+                                        log.error("Error during token generation or email sending: {}", error.getMessage(), error);
+                                        return Mono.just(Result.error(
+                                                "Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
+                                    })
+                            )
+                            .doOnError(error -> log.error("Error while creating user: {}", error.getMessage(), error));
+                });
+    }
+
+    private Mono<AccountResponse> createDefaultAccount(AccountRequest request) {
+        return currentAccountCreationClient.createDefaultAccount(request)
+                .doOnNext(acc -> log.info("Created default account: {}", acc));
+    }
+
+    private Mono<TokenResponse> generateVerificationToken(UserDto userDto) {
+        return userTokenServiceClient.generateEmailVerificationToken(userDto)
+                .doOnNext(token -> log.info("Generated email verification token: {}", token.token()));
+    }
+
+    private Mono<Result<String>> sendVerificationEmailAndGenerateJwt(Tuple2<UserDto, TokenResponse> tuple) {
+        UserDto userDto = tuple.getT1();
+        TokenResponse token = tuple.getT2();
+
+        return notificationClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
+                .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
+                .then(userTokenClient.generateJwtAccessToken(userDto))
+                .thenReturn(Result.successMessage(
+                        "Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
+    }
+
+------------------------------------------------------------------------------------------------------------------------

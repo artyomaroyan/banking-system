@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import javax.naming.ServiceUnavailableException;
 import java.time.Duration;
 
 /**
@@ -52,10 +51,5 @@ public class CurrentAccountCreationClient implements CurrentAccountCreationClien
                                 .response(response, AccountResponse.class, "Default current account"))
                         .timeout(Duration.ofSeconds(5))
                 );
-    }
-
-    private Mono<AccountResponse> createDefaultAccountFallback(AccountCreationRequest event, Throwable ex) {
-        log.error("Account service is unavailable: {}", ex.getMessage(), ex);
-        return Mono.error(new ServiceUnavailableException("Account creation temporarily unavailable."));
     }
 }
