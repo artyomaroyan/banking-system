@@ -1,8 +1,6 @@
 package am.banking.system.common.configuration;
 
-import am.banking.system.common.infrastructure.tls.WebClientFactory;
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
-import am.banking.system.common.infrastructure.tls.configuration.SecurityTLSProperties;
+import am.banking.system.common.infrastructure.configuration.InternalSecretProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,13 +14,13 @@ import static org.modelmapper.convention.MatchingStrategies.STRICT;
  * Time: 22:48:36
  */
 @Configuration
-@EnableConfigurationProperties({SecurityTLSProperties.class, InternalSecretProperties.class})
+@EnableConfigurationProperties({InternalSecretProperties.class})
 public class CommonBeanConfiguration {
 
-    @Bean
-    public WebClientFactory webClientFactory(SecurityTLSProperties securityTLSProperties) {
-        return new WebClientFactory(securityTLSProperties);
-    }
+//    @Bean
+//    public WebClientFactory webClientFactory(TlsProperties securityTLSProperties) {
+//        return new WebClientFactory(securityTLSProperties);
+//    }
 
     @Bean
     public ModelMapper modelMapper() {

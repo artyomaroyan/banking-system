@@ -1,4 +1,4 @@
-package am.banking.system.common.infrastructure.tls.configuration;
+package am.banking.system.common.infrastructure.configuration;
 
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
