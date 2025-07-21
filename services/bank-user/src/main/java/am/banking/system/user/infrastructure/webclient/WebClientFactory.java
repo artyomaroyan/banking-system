@@ -1,6 +1,5 @@
-package am.banking.system.common.infrastructure.tls;
+package am.banking.system.user.infrastructure.webclient;
 
-import am.banking.system.common.infrastructure.tls.configuration.SecurityTLSProperties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.SslContext;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,7 @@ import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
 
-import static am.banking.system.common.infrastructure.tls.TLSContextBuilder.buildSslContext;
+import static am.banking.system.user.infrastructure.webclient.TlsContextBuilder.buildSslContext;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -23,10 +22,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Component
 @RequiredArgsConstructor
 public class WebClientFactory {
-    private final SecurityTLSProperties securityTLSProperties;
+    private final TlsProperties tlsProperties;
 
     public WebClient createSecuredWebClient(String baseUrl) {
-        SslContext sslContext = buildSslContext(securityTLSProperties);
+        SslContext sslContext = buildSslContext(tlsProperties);
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()

@@ -1,6 +1,5 @@
-package am.banking.system.common.infrastructure.tls;
+package am.banking.system.user.infrastructure.webclient;
 
-import am.banking.system.common.infrastructure.tls.configuration.SecurityTLSProperties;
 import am.banking.system.common.shared.exception.WebClientTLSContextException;
 import io.netty.handler.ssl.SslContext;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +23,10 @@ import static io.netty.handler.ssl.SslContextBuilder.*;
  * Time: 22:12:36
  */
 @Slf4j
-public class TLSContextBuilder {
+public class TlsContextBuilder {
 
     // even if class name is SslContext by default it creates TLS connection.
-    public static SslContext buildSslContext(SecurityTLSProperties properties) {
+    public static SslContext buildSslContext(TlsProperties properties) {
         try {
             KeyStore keyStore = KeyStore.getInstance(properties.keyStoreType());
             try (InputStream ksStream = new FileInputStream(properties.keyStore())) {

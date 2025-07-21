@@ -1,6 +1,6 @@
 package am.banking.system.user.infrastructure.adapter.out.security;
 
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
+import am.banking.system.common.infrastructure.configuration.InternalSecretProperties;
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.security.TokenValidatorRequest;
 import am.banking.system.common.shared.dto.security.TokenValidatorResponse;
@@ -38,7 +38,7 @@ public class UserTokenClient implements UserTokenClientPort {
     private final InternalSecretProperties secretProperties;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public UserTokenClient(@Qualifier("securedWebClient") WebClient webClient,
+    public UserTokenClient(@Qualifier("securityWebClient") WebClient webClient,
                            InternalSecretProperties secretProperties,
                            WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;

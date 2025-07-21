@@ -30,7 +30,7 @@ public class PasswordClient implements PasswordClientPort {
     private final UserTokenClientPort userTokenClient;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public PasswordClient(@Qualifier("securedWebClient") WebClient webClient,
+    public PasswordClient(@Qualifier("securityWebClient") WebClient webClient,
                           UserTokenClientPort jwtTokenServiceClient,
                           WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;

@@ -1,9 +1,9 @@
-package am.banking.system.common.infrastructure.tls.configuration;
+package am.banking.system.user.infrastructure.webclient;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Arrays;
@@ -16,8 +16,8 @@ import java.util.Objects;
  */
 @Validated
 @ConfigurationProperties(prefix = "webclient.tls")
-public record SecurityTLSProperties(
-        @NotBlank String url,
+public record TlsProperties(
+//        @NotBlank String url,
         @NotBlank String keyStore,
         @NotNull char[] keyStorePassword,
         @NotBlank String keyStoreType,
@@ -32,10 +32,10 @@ public record SecurityTLSProperties(
         // Ensures exact type match (no subclassing allowed)
         if (obj == null || getClass() != obj.getClass()) return false;
         // Safe cast to the same class type
-        SecurityTLSProperties that = (SecurityTLSProperties) obj;
+        TlsProperties that = (TlsProperties) obj;
         // Compare all fields (including char[] arrays using Arrays.equals)
-        return Objects.equals(this.url, that.url) &&
-                Objects.equals(this.keyStore, that.keyStore) &&
+//        return Objects.equals(this.url, that.url) &&
+        return Objects.equals(this.keyStore, that.keyStore) &&
                 Arrays.equals(this.keyStorePassword, that.keyStorePassword) &&
                 Objects.equals(this.keyStoreType, that.keyStoreType) &&
                 Objects.equals(this.trustStore, that.trustStore) &&
@@ -45,7 +45,7 @@ public record SecurityTLSProperties(
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(url, keyStore, keyStoreType, trustStore, trustStoreType);
+        int result = Objects.hash(keyStore, keyStoreType, trustStore, trustStoreType);
         result = 31 * result + Arrays.hashCode(keyStorePassword);
         result = 31 * result + Arrays.hashCode(trustStorePassword);
         return result;
@@ -54,8 +54,8 @@ public record SecurityTLSProperties(
     @NonNull
     @Override
     public String toString() {
-        return "SecurityTLSProperties{" +
-                "url='" + url + '\'' +
+        return "TlsProperties{" +
+//                "url='" + url + '\'' +
                 ", keyStore='" + keyStore + '\'' +
                 ", keyStorePassword=[PROTECTED]" +
                 ", keyStoreType='" + keyStoreType + '\'' +

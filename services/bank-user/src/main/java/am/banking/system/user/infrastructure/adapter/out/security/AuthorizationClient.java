@@ -30,7 +30,7 @@ public class AuthorizationClient implements AuthorizationClientPort {
     private final UserTokenClientPort userTokenClient;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public AuthorizationClient(@Qualifier("securedWebClient") WebClient webClient,
+    public AuthorizationClient(@Qualifier("securityWebClient") WebClient webClient,
                                UserTokenClientPort jwtTokenServiceClient,
                                WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;

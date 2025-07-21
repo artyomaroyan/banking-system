@@ -29,7 +29,7 @@ public class CurrentAccountCreationClient implements CurrentAccountCreationClien
     private final UserTokenClientPort userTokenClient;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public CurrentAccountCreationClient(@Qualifier("securedWebClient") WebClient webClient,
+    public CurrentAccountCreationClient(@Qualifier("accountWebClient") WebClient webClient,
                                         UserTokenClientPort userTokenClient,
                                         WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;

@@ -1,4 +1,4 @@
-package am.banking.system.common.infrastructure.tls;
+package am.banking.system.user.infrastructure.webclient;
 
 import am.banking.system.common.shared.exception.*;
 import lombok.extern.slf4j.Slf4j;
