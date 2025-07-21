@@ -1,6 +1,6 @@
 package am.banking.system.security.application.service.jwt;
 
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
+import am.banking.system.common.infrastructure.configuration.InternalSecretProperties;
 import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
 import am.banking.system.security.application.port.in.InternalTokenUseCase;
 import am.banking.system.security.application.port.in.UserTokenUseCase;

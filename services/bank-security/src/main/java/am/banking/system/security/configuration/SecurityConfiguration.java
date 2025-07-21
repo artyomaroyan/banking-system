@@ -1,6 +1,6 @@
 package am.banking.system.security.configuration;
 
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
+import am.banking.system.common.infrastructure.configuration.InternalSecretProperties;
 import am.banking.system.security.application.port.in.UserTokenValidatorUseCase;
 import am.banking.system.security.converter.JwtReactiveAuthenticationConverter;
 import am.banking.system.security.infrastructure.token.filter.InternalTokenAuthenticationFilter;

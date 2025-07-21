@@ -1,6 +1,6 @@
 package am.banking.system.security.infrastructure.token.filter;
 
-import am.banking.system.common.infrastructure.tls.configuration.InternalSecretProperties;
+import am.banking.system.common.infrastructure.configuration.InternalSecretProperties;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
