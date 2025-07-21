@@ -1,9 +1,7 @@
 package am.banking.system.common.shared.dto.account;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;
@@ -14,8 +12,7 @@ import java.util.Objects;
  * Time: 15:31:42
  */
 @Validated
-public record AccountCreationRequest(@NotNull Integer userId, @NotBlank String username, @Email @NotBlank String email,
-                                     @NotBlank String firstName, @NotBlank String lastName, @NotBlank String phone) {
+public record AccountCreationRequest(@NotNull Integer userId, @NotBlank String username) {
 
     @Override
     public boolean equals(Object obj) {
@@ -23,28 +20,11 @@ public record AccountCreationRequest(@NotNull Integer userId, @NotBlank String u
         if (obj == null || getClass() != obj.getClass()) return false;
         AccountCreationRequest that = (AccountCreationRequest) obj;
         return Objects.equals(this.userId, that.userId) &&
-                Objects.equals(this.username, that.username) &&
-                Objects.equals(this.email, that.email) &&
-                Objects.equals(this.firstName, that.firstName) &&
-                Objects.equals(this.lastName, that.lastName) &&
-                Objects.equals(this.phone, that.phone);
+                Objects.equals(this.username, that.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, email, firstName, lastName, phone);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "AccountCreationRequest{" +
-                "userId='" + userId + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return Objects.hash(userId, username);
     }
 }
