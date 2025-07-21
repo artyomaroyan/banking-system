@@ -5,8 +5,13 @@ server:
     enabled: false
 
 webclient:
+  services:
+    account-base-url: http://localhost:8181
+    security-base-url: http://localhost:8989
+    notification-base-url: http://localhost:8040
+
   tls:
-    url: http://localhost:8989
+    #    url: http://localhost:8989
     key-store: /Users/artyom_aroyan/.keys/.bankapp/REST/security-keystore.p12
     key-store-password: ${SECURITY_KEYSTORE_PASSWORD}
     key-store-type: PKCS12
