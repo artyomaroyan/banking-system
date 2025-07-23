@@ -1,5 +1,6 @@
 package am.banking.system.account.api.dto;
 
+import am.banking.system.common.shared.enums.AccountCurrency;
 import am.banking.system.common.shared.enums.AccountType;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
@@ -25,5 +26,7 @@ public record AccountRequest(
         @Digits(integer = 10, fraction = 2, message = "Balance must be a valid monetary amount")
         BigDecimal balance,
         @NotNull(message = "Account type is required")
-        AccountType accountType){
+        AccountType accountType,
+        @NotNull(message = "Account currency is required")
+        AccountCurrency accountCurrency){
 }

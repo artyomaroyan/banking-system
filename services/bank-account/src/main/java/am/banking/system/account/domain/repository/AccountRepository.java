@@ -3,6 +3,7 @@ package am.banking.system.account.domain.repository;
 import am.banking.system.account.domain.entity.Account;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -11,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AccountRepository extends ReactiveCrudRepository<Account, String> {
+    Mono<Boolean> existsAccountsByAccountNumber(String accountNumber);
 }

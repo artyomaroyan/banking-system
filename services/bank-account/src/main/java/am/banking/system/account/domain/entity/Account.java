@@ -1,5 +1,6 @@
 package am.banking.system.account.domain.entity;
 
+import am.banking.system.common.shared.enums.AccountCurrency;
 import am.banking.system.common.shared.enums.AccountType;
 import am.banking.system.common.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -28,4 +29,6 @@ public class Account extends BaseEntity {
     private final BigDecimal balance;
     @Column("account_type")
     private final AccountType accountType;
+    @Column("account_currency")
+    private AccountCurrency accountCurrency;
 }
