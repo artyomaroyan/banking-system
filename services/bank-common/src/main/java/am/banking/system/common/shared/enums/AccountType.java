@@ -8,5 +8,5 @@ package am.banking.system.common.shared.enums;
 public enum AccountType {
     CARD_ACCOUNT,
     CURRENT_ACCOUNT,
-    SAVING_ACCOUNT,
+    SAVING_ACCOUNT
 }

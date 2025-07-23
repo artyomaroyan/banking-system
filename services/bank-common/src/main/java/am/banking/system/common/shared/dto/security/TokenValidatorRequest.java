@@ -1,6 +1,7 @@
 package am.banking.system.common.shared.dto.security;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -9,5 +10,5 @@ import org.springframework.validation.annotation.Validated;
  * Time: 00:20:55
  */
 @Validated
-public record TokenValidatorRequest(@NotBlank String token, @NotBlank String username) {
+public record TokenValidatorRequest(@NotNull Integer userId, @NotBlank String token, @NotBlank String username) {
 }
