@@ -24,16 +24,20 @@ public class PasswordEncoderService implements CustomPasswordEncoder {
 
     @Override
     public String encode(String rawPassword) {
-        return passwordEncoder.encode(rawPassword + new String(pepper));
+        return passwordEncoder.encode(addPaper(rawPassword));
     }
 
     @Override
     public boolean matches(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword + new String(pepper), encodedPassword);
+        return passwordEncoder.matches(addPaper(rawPassword), encodedPassword);
     }
 
     @PreDestroy
     void clearPepper() {
         Arrays.fill(pepper, '\0');
+    }
+
+    private String addPaper(String rawPassword) {
+        return rawPassword + new String(pepper);
     }
 }

@@ -41,7 +41,7 @@ public class InternalTokenService implements InternalTokenUseCase {
                         log.error("Generated empty system token");
                         return Mono.error(new EmptyTokenException("Generated empty system token"));
                     }
-                    log.info("Generated internal system token: {}", token);
+                    log.info("Generated internal system token: {}", token.substring(7, 12));
                     return Mono.just(ResponseEntity.ok(token));
                 })
 

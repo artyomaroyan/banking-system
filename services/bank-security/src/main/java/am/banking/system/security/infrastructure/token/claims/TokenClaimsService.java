@@ -28,17 +28,4 @@ public class TokenClaimsService {
                 .accountState(principal.getAccountState())
                 .build();
     }
-
-//    public TokenClaimsDto createJwtTokenClaims(UserPrincipal principal) {
-//        return TokenClaimsDto.builder()
-//                .userId(principal.getUserId())
-//                .username(principal.getUsername())
-//                .email(principal.getEmail())
-//                .roles(principal.getRoles().stream().map(Objects::toString).collect(Collectors.toSet()))
-//                .permissions(principal.getPermissions().stream().map(Object::toString).collect(Collectors.toSet()))
-//                .tokenState(TokenState.PENDING)
-//                .tokenPurpose(JWT_ACCESS_TOKEN)
-//                .accountState(principal.getAccountState())
-//                .build();
-//    }
 }

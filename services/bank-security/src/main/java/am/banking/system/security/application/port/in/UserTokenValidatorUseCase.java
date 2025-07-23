@@ -10,8 +10,8 @@ import reactor.core.publisher.Mono;
  * Time: 00:20:19
  */
 public interface UserTokenValidatorUseCase {
-    Mono<Jwt> validateInternalToken(String token);
-    Mono<Claims> extractValidClaims(String token);
-    Mono<Boolean> isValidPasswordResetToken(final String token);
-    Mono<Boolean> isValidEmailVerificationToken(final String token);
+    Mono<Jwt> validateInternalToken(final String token);
+    Mono<Claims> extractValidClaims(final String token);
+    Mono<Boolean> isValidPasswordResetToken(final Integer userId, final String token);
+    Mono<Boolean> isValidEmailVerificationToken(final Integer userId, final String token);
 }

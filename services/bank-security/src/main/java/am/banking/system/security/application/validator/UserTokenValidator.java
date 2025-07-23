@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 import static am.banking.system.security.domain.enums.TokenPurpose.ACCOUNT_VERIFICATION;
 import static am.banking.system.security.domain.enums.TokenPurpose.PASSWORD_RECOVERY;
@@ -94,20 +95,25 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
     }
 
     @Override
-    public Mono<Boolean> isValidPasswordResetToken(final String token) {
-        return validateToken(token, PASSWORD_RECOVERY, PASSWORD_RESET);
+    public Mono<Boolean> isValidPasswordResetToken(Integer userId, String token) {
+        return validateToken(userId, token, PASSWORD_RECOVERY, PASSWORD_RESET);
     }
 
     @Override
-    public Mono<Boolean> isValidEmailVerificationToken(final String token) {
-        return validateToken(token, ACCOUNT_VERIFICATION, EMAIL_VERIFICATION);
+    public Mono<Boolean> isValidEmailVerificationToken(Integer userId, String token) {
+        return validateToken(userId, token, ACCOUNT_VERIFICATION, EMAIL_VERIFICATION);
     }
 
-    private Mono<Boolean> validateToken(final String token, final TokenPurpose purpose, final TokenType type) {
+    private Mono<Boolean> validateToken(final Integer userId, final String token, final TokenPurpose purpose, final TokenType type) {
         return userTokenRepository.findByToken(token)
                 .flatMap(userToken -> {
                     if (!purpose.equals(userToken.getTokenPurpose())) {
                         log.error("{} - expected: {}, actual: {}", INVALID_TOKEN_PURPOSE, purpose, userToken.getTokenPurpose());
+                        return Mono.just(false);
+                    }
+
+                    if (!Objects.equals(userToken.getUserId(), userId)) {
+                        log.error("{} - expected: {}, actual: {}", INVALID_TOKEN_PURPOSE, userToken.getUserId(), userId);
                         return Mono.just(false);
                     }
 

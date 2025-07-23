@@ -43,7 +43,7 @@ public class UserTokenController {
     @PostMapping("/email/validate")
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public Mono<Boolean> validateEmailVerificationToken(@Valid @RequestBody TokenValidatorRequest request) {
-        return userTokenValidator.isValidEmailVerificationToken(request.token());
+        return userTokenValidator.isValidEmailVerificationToken(request.userId(), request.token());
     }
 
     @PostMapping("/access/issue")
@@ -72,6 +72,6 @@ public class UserTokenController {
 
     @PostMapping("/password-reset/validate")
     public Mono<Boolean> validatePasswordResetToken(@Valid @RequestBody TokenValidatorRequest request) {
-        return userTokenValidator.isValidPasswordResetToken(request.token());
+        return userTokenValidator.isValidPasswordResetToken(request.userId(), request.token());
     }
 }
