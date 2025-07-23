@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import static am.banking.system.common.shared.enums.AccountCurrency.AMD;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -67,7 +68,7 @@ public class UserRegistrationService implements UserRegistrationUseCase {
     }
 
     private Mono<AccountResponse> createDefaultAccount(UserDto userDto) {
-        AccountCreationRequest accRequest = new AccountCreationRequest(userDto.userId(), userDto.username());
+        AccountCreationRequest accRequest = new AccountCreationRequest(userDto.userId(), userDto.username(), AMD); // since this is default account which is created by user registration I set account suffix AMD.
         return currentAccountCreationClient.createDefaultAccount(accRequest)
                 .doOnNext(account -> log.info("Account created successfully: {}", account));
     }

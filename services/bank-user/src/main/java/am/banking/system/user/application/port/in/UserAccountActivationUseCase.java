@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono;
  * Time: 18:40:03
  */
 public interface UserAccountActivationUseCase {
-    Mono<Result<String>> activateAccount(String activationToken, String username);
+    Mono<Result<String>> activateAccount(Integer userId, String username, String activationToken);
 }

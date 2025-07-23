@@ -935,3 +935,16 @@ return webClient.post()
     }
 
 ------------------------------------------------------------------------------------------------------------------------
+
+//        return databaseClient.sql("SELECT nextval('account.account_number_seq') as seq")
+//                .map(row -> row.get("seq", Long.class))
+//                .first()
+//                .handle((seq, sink) -> {
+//                    if (seq == null) {
+//                        sink.error(new IllegalStateException("Failed to generate account number"));
+//                        return;
+//                    }
+//                    sink.next("%05d%011d".formatted(bankCode, seq));
+//                });
+
+------------------------------------------------------------------------------------------------------------------------

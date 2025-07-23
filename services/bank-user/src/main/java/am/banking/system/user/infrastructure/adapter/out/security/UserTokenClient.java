@@ -13,6 +13,7 @@ import am.banking.system.user.application.port.out.UserTokenClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -119,13 +120,13 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<Boolean> validateEmailVerificationToken(@NotBlank String token, @NotBlank String username) {
+    public Mono<Boolean> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username) {
         return generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/token/email/validate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(token, username))
+                        .bodyValue(new TokenValidatorRequest(userId, token, username))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, Boolean.class, "Verification token validation"))
                         .timeout(Duration.ofSeconds(5)));
@@ -134,13 +135,13 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validateJwtAccessToken(String token, String username) {
+    public Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, String token, String username) {
         return generateSystemToken()
                 .flatMap(_ -> webClient.post()
                         .uri("/api/internal/security/token/access/validate")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(token, username))
+                        .bodyValue(new TokenValidatorRequest(userId, token, username))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, TokenValidatorResponse.class, "JWT Validation"))
                         .timeout(Duration.ofSeconds(5)));
@@ -149,13 +150,13 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotBlank String token, @NotBlank String username) {
+    public Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, String token, String username) {
         return generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/token/password-reset/validate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(token, username))
+                        .bodyValue(new TokenValidatorRequest(userId, token, username))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, TokenValidatorResponse.class, "Password recovery token validation"))
                         .timeout(Duration.ofSeconds(5)));

@@ -33,9 +33,9 @@ public class UserAccountController {
                 .map(this::buildResponse);
     }
 
-    @GetMapping("/activate/{token}/{username}")
-    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable String token, @PathVariable String username) {
-        return userAccountActivationService.activateAccount(token, username)
+    @GetMapping("/activate/{userId}/{username}/{token}")
+    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable Integer userId, @PathVariable String username, @PathVariable String token) {
+        return userAccountActivationService.activateAccount(userId, username, token)
                         .map(this::buildResponse);
     }
 
