@@ -3,7 +3,7 @@ package am.banking.system.user.infrastructure.adapter.out.security;
 import am.banking.system.common.shared.dto.security.PasswordHashingRequest;
 import am.banking.system.common.shared.dto.security.PasswordHashingResponse;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
-import am.banking.system.user.application.port.out.PasswordClientPort;
+import am.banking.system.user.application.port.out.PasswordHashingClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -25,14 +25,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
  */
 @Slf4j
 @Service
-public class PasswordClient implements PasswordClientPort {
+public class PasswordHashingClient implements PasswordHashingClientPort {
     private final WebClient webClient;
     private final UserTokenClientPort userTokenClient;
     private final WebClientResponseHandler webClientResponseHandler;
 
-    public PasswordClient(@Qualifier("securityWebClient") WebClient webClient,
-                          UserTokenClientPort jwtTokenServiceClient,
-                          WebClientResponseHandler webClientResponseHandler) {
+    public PasswordHashingClient(@Qualifier("securityWebClient") WebClient webClient,
+                                 UserTokenClientPort jwtTokenServiceClient,
+                                 WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.userTokenClient = jwtTokenServiceClient;
         this.webClientResponseHandler = webClientResponseHandler;

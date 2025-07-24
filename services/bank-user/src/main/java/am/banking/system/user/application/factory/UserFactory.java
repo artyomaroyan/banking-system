@@ -1,7 +1,7 @@
 package am.banking.system.user.application.factory;
 
 import am.banking.system.user.application.port.in.UserFactoryUseCase;
-import am.banking.system.user.application.port.out.PasswordClientPort;
+import am.banking.system.user.application.port.out.PasswordHashingClientPort;
 import am.banking.system.user.domain.entity.Role;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.domain.entity.User;
@@ -27,7 +27,7 @@ import static am.banking.system.common.shared.enums.AccountState.PENDING;
 public class UserFactory implements UserFactoryUseCase {
     private final RoleService roleService;
     private final UserRepository userRepository;
-    private final PasswordClientPort passwordClient;
+    private final PasswordHashingClientPort passwordClient;
     private final UserRoleRepository userRoleRepository;
 
     @Override
