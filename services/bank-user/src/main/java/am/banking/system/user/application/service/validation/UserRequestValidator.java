@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -19,21 +19,16 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RequestValidator implements RequestValidation {
-
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
-
-    private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&.,])[A-Za-z\\d@$!%*?&.,]{8,20}$";
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
-
+public class UserRequestValidator implements RequestValidation<UserRequest> {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+?\\d{9,12}$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&.,])[A-Za-z\\d@$!%*?&.,]{8,20}$");
 
     private final UserRepository userRepository;
 
     @Override
-    public Mono<List<String>> validateRequest(UserRequest request) {
-        return Flux.concat(
+    public Mono<ValidationResult> isValidRequest(UserRequest request) {
+        return Flux.merge(
                         isValidUsername(request.username()),
                         isValidPassword(request.password()),
                         isValidEmail(request.email()),
@@ -41,7 +36,12 @@ public class RequestValidator implements RequestValidation {
                 )
                 .filter(result -> !result.isValid())
                 .map(ValidationResult::message)
-                .collectList();
+                .reduce(new ArrayList<>(), (all, next) -> {
+                    all.addAll(next);
+                    return all;
+                })
+                .map(errors -> errors.isEmpty() ?
+                        ValidationResult.valid() : ValidationResult.invalid(String.valueOf(errors)));
     }
 
     private Mono<ValidationResult> isValidUsername(String username) {

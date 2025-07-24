@@ -33,19 +33,19 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class UserRegistrationService implements UserRegistrationUseCase {
     private final UserFactory userFactory;
     private final UserDtoMapper userReactiveMapper;
-    private final RequestValidation requestValidation;
     private final UserTokenClientPort userTokenClient;
     private final NotificationClientPort notificationClient;
+    private final RequestValidation<UserRequest> requestValidation;
     private final CurrentAccountCreationClientPort currentAccountCreationClient;
 
     @Override
     public Mono<Result<String>> register(UserRequest request) {
         log.info("Initiating user registration for email: {}", request.email());
 
-        return requestValidation.validateRequest(request)
+        return requestValidation.isValidRequest(request)
                 .flatMap(errors -> {
-                    if (!errors.isEmpty()) {
-                        String errorMessage = String.join(" ", errors);
+                    if (!errors.message().isEmpty()) {
+                        String errorMessage = String.join(" ", errors.message());
                         log.error("Validation failed for {}: {}",  request.email(), errorMessage);
                         return Mono.just(Result.error(errorMessage, BAD_REQUEST.value()));
                     }
