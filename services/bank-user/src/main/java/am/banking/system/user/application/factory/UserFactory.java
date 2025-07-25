@@ -27,14 +27,14 @@ import static am.banking.system.common.shared.enums.AccountState.PENDING;
 public class UserFactory implements UserFactoryUseCase {
     private final RoleService roleService;
     private final UserRepository userRepository;
-    private final PasswordHashingClientPort passwordClient;
     private final UserRoleRepository userRoleRepository;
+    private final PasswordHashingClientPort passwordHashingClient;
 
     @Override
     public Mono<User> createUser(UserRequest request) {
         log.info("Creating user with username: {}", request.username());
         return Mono.zip(
-                        passwordClient.hashPassword(request.password())
+                        passwordHashingClient.hashPassword(request.password())
                                 .doOnNext(pwd -> log.info("Hashed rawPassword: {}", pwd))
                                 .doOnError(err -> log.error("Error hashing rawPassword: {}", err.getMessage(), err))
                                 .log("HASH_PASSWORD"),
