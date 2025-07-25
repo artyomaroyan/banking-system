@@ -6,8 +6,11 @@ import am.banking.system.user.application.port.in.password.PasswordRecoveryUseCa
 import am.banking.system.user.application.service.validation.PasswordRequestValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * Author: Artyom Aroyan
@@ -22,6 +25,17 @@ public class PasswordRecoveryService implements PasswordRecoveryUseCase {
 
     @Override
     public Mono<Result<String>> resetPassword(PasswordResetRequest request) {
-        return null;
+        log.info("Initiating password recovery for email: {}", request.email());
+        return requestValidator.isValidRequest(request)
+                .flatMap(errors -> {
+                    if (!errors.message().isEmpty()) {
+                        String errorMessage = String.join(", ", errors.message());
+                        log.error("Password recovery request validation failed: {}: {}", request.email(), errorMessage);
+                        return Mono.just(Result.error(errorMessage, BAD_REQUEST.value()));
+                    }
+                    log.info("Password recovery request validation success");
+
+                    return
+                })
     }
 }

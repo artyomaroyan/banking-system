@@ -1,14 +1,14 @@
 package am.banking.system.user.application.service.validation;
 
 import am.banking.system.user.api.dto.PasswordResetRequest;
-import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -24,33 +24,43 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&.,])[A-Za-z\\d@$!%*?&.,]{8,20}$");
 
     private final UserRepository userRepository;
-    private final UserTokenClientPort userTokenClient;
 
     @Override
     public Mono<ValidationResult> isValidRequest(PasswordResetRequest request) {
-        return null;
+        return Flux.merge(
+                isValidEmail(request.email()),
+                isValidPassword(request.newPassword())
+        )
+                .filter(result -> !result.isValid())
+                .map(ValidationResult::message)
+                .reduce(new ArrayList<>(), (all, next) -> {
+                    all.addAll(next);
+                    return all;
+                })
+                .map(errors -> errors.isEmpty() ?
+                        ValidationResult.valid() : ValidationResult.invalid(String.valueOf(errors)));
     }
 
-    private Mono<ValidationResult> isValidToken(String recoveryToken) {
-        return userTokenClient.validatePasswordRecoveryToken()
-    }
+    // todo: implement more validation checks for example add validation with userId. etc.
 
     private Mono<ValidationResult> isValidEmail(String email) {
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            String message = "Email " + email + " is not a valid email address";
+            log.error(message);
+            return Mono.just(ValidationResult.invalid(message));
+        }
+
         return userRepository.existsByEmail(email)
                 .map(exists -> {
-                    if (!EMAIL_PATTERN.matcher(email).matches()) {
-                        String message = "Email " + email + " is not a valid email address";
-                        log.error(message);
-                        return ValidationResult.invalid(message);
-                    }
                     if (Boolean.FALSE.equals(exists)) {
-                        String message = "User with " + email + " does not exist";
+                        String message = "User with email " + email + " does not exist";
                         log.error(message);
                         return ValidationResult.invalid(message);
                     }
-                    return Mono.just(ValidationResult.valid());
+                    return ValidationResult.valid();
                 });
     }
+
 
     private Mono<ValidationResult> isValidPassword(String password) {
         if (password.length() < 8 || password.length() > 20) {
