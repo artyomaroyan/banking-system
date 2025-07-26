@@ -1,5 +1,6 @@
 package am.banking.system.user.application.port.in.password;
 
+import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.user.api.dto.PasswordResetRequest;
 import reactor.core.publisher.Mono;
 
@@ -9,5 +10,5 @@ import reactor.core.publisher.Mono;
  * Time: 21:38:55
  */
 public interface PasswordRecoveryFactoryUserCase {
-    Mono<String> resetPassword(PasswordResetRequest request);
+    Mono<TokenResponse> resetPassword(PasswordResetRequest request);
 }
