@@ -18,6 +18,10 @@ public record Result<T> (T data, boolean success, String message, Integer errorC
                 .build();
     }
 
+    public static <T> Result<T> success(T data) {
+        return new Result<>(data,true, "Success", null);
+    }
+
     public static <T> Result<T> success(String message) {
         return success(null, message);
     }
