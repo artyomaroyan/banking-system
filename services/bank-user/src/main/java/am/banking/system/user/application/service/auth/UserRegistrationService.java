@@ -7,12 +7,13 @@ import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.application.factory.UserFactory;
-import am.banking.system.user.application.mapper.UserDtoMapper;
+import am.banking.system.user.application.mapper.ReactiveMapper;
 import am.banking.system.user.application.port.in.UserRegistrationUseCase;
 import am.banking.system.user.application.port.out.NotificationClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.application.port.out.account.CurrentAccountCreationClientPort;
 import am.banking.system.user.application.service.validation.RequestValidation;
+import am.banking.system.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,9 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 public class UserRegistrationService implements UserRegistrationUseCase {
     private final UserFactory userFactory;
-    private final UserDtoMapper userReactiveMapper;
     private final UserTokenClientPort userTokenClient;
     private final NotificationClientPort notificationClient;
+    private final ReactiveMapper<User, UserDto> userReactiveMapper;
     private final RequestValidation<UserRequest> requestValidation;
     private final CurrentAccountCreationClientPort currentAccountCreationClient;
 
