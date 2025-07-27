@@ -28,8 +28,8 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
     @Override
     public Mono<ValidationResult> isValidRequest(PasswordResetRequest request) {
         return Flux.merge(
-                isValidEmail(request.email()),
-                isValidPassword(request.newPassword())
+                isValidUserId(request.userId()),
+                isValidEmail(request.email())
         )
                 .filter(result -> !result.isValid())
                 .map(ValidationResult::message)
@@ -41,7 +41,18 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
                         ValidationResult.valid() : ValidationResult.invalid(String.valueOf(errors)));
     }
 
-    // todo: implement more validation checks for example add validation with userId. etc.
+    private Mono<ValidationResult> isValidUserId(Integer userId) {
+        return userRepository.existsById(userId)
+                .map(exists -> {
+                    if (Boolean.FALSE.equals(exists)) {
+                        String message = String.format("User with id %d does not exist", userId);
+                        log.error(message);
+                        return ValidationResult.invalid(message);
+
+                    }
+                    return ValidationResult.valid();
+                });
+    }
 
     private Mono<ValidationResult> isValidEmail(String email) {
         if (!EMAIL_PATTERN.matcher(email).matches()) {
