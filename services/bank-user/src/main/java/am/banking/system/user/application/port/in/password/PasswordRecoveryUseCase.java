@@ -11,4 +11,5 @@ import reactor.core.publisher.Mono;
  */
 public interface PasswordRecoveryUseCase {
     Mono<Result<String>> resetPassword(PasswordResetRequest request);
+    Mono<Result<String>> sendPasswordResetEmail(PasswordResetRequest request);
 }

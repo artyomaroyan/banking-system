@@ -6,6 +6,7 @@ import am.banking.system.common.shared.exception.NotFoundException;
 import am.banking.system.user.api.dto.PasswordResetRequest;
 import am.banking.system.user.application.mapper.ReactiveMapper;
 import am.banking.system.user.application.port.in.password.PasswordRecoveryFactoryUserCase;
+import am.banking.system.user.application.port.out.NotificationClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.domain.entity.User;
 import am.banking.system.user.domain.repository.UserRepository;
@@ -25,13 +26,27 @@ import reactor.core.publisher.Mono;
 public class PasswordRecoveryFactory implements PasswordRecoveryFactoryUserCase {
     private final UserRepository userRepository;
     private final UserTokenClientPort userTokenClient;
+    private final NotificationClientPort notificationClient;
     private final ReactiveMapper<User, UserDto> userDtoMapper;
 
     @Override
     public Mono<TokenResponse> resetPassword(PasswordResetRequest request) {
+        return null;
+    }
+
+    @Override
+    public Mono<Void> sendPasswordResetEmail(PasswordResetRequest request) {
         return userRepository.findById(request.userId())
                 .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + request.userId())))
-                .flatMap(userDtoMapper::map)
-                .flatMap(userTokenClient::generatePasswordRecoveryToken);
+                .flatMap(user -> userDtoMapper.map(user)
+                        .flatMap(userDto -> userTokenClient.generatePasswordRecoveryToken(userDto)
+                                .flatMap(resetToken -> {
+                                    String token = resetToken.token();
+
+                                    return notificationClient.sendPasswordResetEmail(
+                                            request.email(),
+                                            user.getUsername(),
+                                            token);
+                                })));
     }
 }

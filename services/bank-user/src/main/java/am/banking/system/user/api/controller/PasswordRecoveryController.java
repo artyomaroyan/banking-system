@@ -20,11 +20,16 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/password")
+@RequestMapping("/api/v1/password-reset")
 public class PasswordRecoveryController {
     private final PasswordRecoveryUseCase passwordRecoveryService;
 
-    @PostMapping("/reset")
+    @PostMapping("/request")
+    public Mono<Result<String>> sendPasswordResetEmail(@Valid @RequestBody PasswordResetRequest request) {
+        return passwordRecoveryService.sendPasswordResetEmail(request);
+    }
+
+    @PostMapping("/confirm")
     public Mono<Result<String>> resetPassword(@Valid @RequestBody PasswordResetRequest request) {
         return passwordRecoveryService.resetPassword(request);
     }

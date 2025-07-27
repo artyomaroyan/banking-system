@@ -27,24 +27,27 @@ public class PasswordRecoveryService implements PasswordRecoveryUseCase {
 
     @Override
     public Mono<Result<String>> resetPassword(PasswordResetRequest request) {
+        return null;
+    }
+
+    @Override
+    public Mono<Result<String>> sendPasswordResetEmail(PasswordResetRequest request) {
         log.info("Initiating password recovery for email: {}", request.email());
         return requestValidator.isValidRequest(request)
                 .flatMap(errors -> {
                     if (!errors.message().isEmpty()) {
                         String errorMessage = String.join(", ", errors.message());
-                        log.error("Password recovery request validation failed: {}: {}", request.email(), errorMessage);
-                        return Mono.just(Result.<String>error(errorMessage, BAD_REQUEST.value()));
+                        log.error("Password reset request validation failed: {}", errorMessage);
+                        return Mono.just(Result.error("Password reset request validation failed", BAD_REQUEST.value()));
                     }
-                    log.info("Password recovery request validation success");
 
-                    return passwordRecoveryFactory.resetPassword(request)
-                            .map(token -> Result.<String>success(token.token()))
-                            .doOnSuccess(_ -> log.info("Password recovery token generated for {} ", request.email()))
-                            .doOnError(_ -> log.error("Failed to generate password recovery token for {}", request.email()));
-                })
-                .onErrorResume(error -> {
-                    log.error("Password reset failed for {}: {}", request.email(), error.getMessage());
-                    return Mono.just(Result.error("Password recovery failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
+                    return passwordRecoveryFactory.sendPasswordResetEmail(request)
+                            .thenReturn(Result.success("Password reset email sent successfully"))
+                            .doOnSuccess(_ -> log.info("Password reset link has been sent to: {}", request.email()))
+                            .onErrorResume(ex -> {
+                                log.error("Failed to send password reset email to {}", request.email(), ex);
+                                return Mono.just(Result.error("Failed to send password reset email", INTERNAL_SERVER_ERROR.value()));
+                            });
                 });
     }
 }
