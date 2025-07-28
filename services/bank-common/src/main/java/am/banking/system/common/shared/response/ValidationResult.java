@@ -1,6 +1,5 @@
-package am.banking.system.user.application.service.validation;
+package am.banking.system.common.shared.response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,18 +13,11 @@ public record ValidationResult(boolean isValid, List<String> message) {
         return new ValidationResult(true, List.of());
     }
 
-    public static ValidationResult invalid(String message) {
+    public static ValidationResult invalid(String... message) {
         return new ValidationResult(false, List.of(message));
     }
 
     public static ValidationResult invalid(List<String> message) {
         return new ValidationResult(false, message);
-    }
-
-    public ValidationResult merge(ValidationResult other) {
-        if (this.isValid != other.isValid) return valid();
-        List<String> combined =  new ArrayList<>(this.message);
-        combined.addAll(other.message);
-        return invalid(combined);
     }
 }
