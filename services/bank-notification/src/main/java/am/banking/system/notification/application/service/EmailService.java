@@ -29,13 +29,16 @@ public class EmailService {
     private static final String APP_NAME = "Banking System";
     private static final String COMPANY_NAME = "Banking System Inc.";
     private static final String COMPANY_ADDRESS = "Armenia, Yerevan Davtashen 3rd District";
-    private static final int EXPIRATION_HOURS = 15;
+    private static final int EMAIL_TOKEN_EXP = 15;
+    private static final int PASS_TOKEN_EXP = 3;
+
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
     public void sendVerificationEmail(String to, String username, String verificationLink) {
         try {
             Context context = commonContext(username);
+            context.setVariable("expiration", EMAIL_TOKEN_EXP);
             context.setVariable("verificationLink", verificationLink);
             sendEmail(to, EMAIL_VERIFICATION.getSubject(), EMAIL_VERIFICATION.getTemplate(), context, EmailType.EMAIL_VERIFICATION);
         } catch (EmailSendingException ex) {
@@ -65,6 +68,7 @@ public class EmailService {
     public void sendPasswordResetEmail(String to, String username, String resetLink) {
         try {
             Context context = commonContext(username);
+            context.setVariable("expiration", PASS_TOKEN_EXP);
             context.setVariable("resetLink", resetLink);
             sendEmail(to, PASSWORD_RESET.getSubject(), PASSWORD_RESET.getTemplate(), context, PASSWORD_RECOVERY);
         } catch (EmailSendingException ex) {
@@ -94,7 +98,6 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("username", username);
         context.setVariable("appName", APP_NAME);
-        context.setVariable("expirationHours", EXPIRATION_HOURS);
         context.setVariable("companyName", COMPANY_NAME);
         context.setVariable("companyAddress", COMPANY_ADDRESS);
         return context;

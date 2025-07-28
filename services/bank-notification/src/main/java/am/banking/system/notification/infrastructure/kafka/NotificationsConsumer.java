@@ -50,7 +50,7 @@ public class NotificationsConsumer {
         }
     }
 
-    @KafkaListener(topics = "password-recovery", groupId = "notification-service-group", errorHandler = "kafkaListenerErrorHandler")
+    @KafkaListener(topics = "password-reset", groupId = "notification-service-group", errorHandler = "kafkaListenerErrorHandler")
     public void consumePasswordRecoveryNotification(PasswordReset request) {
         notificationRepository.save(
                         Notification.builder()
