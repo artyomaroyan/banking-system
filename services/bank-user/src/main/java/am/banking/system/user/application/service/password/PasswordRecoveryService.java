@@ -37,6 +37,8 @@ public class PasswordRecoveryService implements PasswordRecoveryUseCase {
 
                     return passwordRecoveryFactory.completePasswordReset(request)
                             .then(Mono.just(Result.success("Password successfully reset")));
+
+                    // todo: add password token deactivation method, when use password mark it as USED and deactivate it.
                 });
     }
 

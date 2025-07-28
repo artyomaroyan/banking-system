@@ -56,7 +56,7 @@ public class UserRequestValidator implements RequestValidation<UserRequest> {
             errors.add("Username must include uppercase, lowercase and number");
         }
 
-        if (!errors.isEmpty()) {
+        if (errors.isEmpty()) {
             return Mono.just(ValidationResult.valid());
         } else  {
             log.error("Username validation failed '{}'", username);
@@ -75,7 +75,7 @@ public class UserRequestValidator implements RequestValidation<UserRequest> {
             errors.add("Password must include uppercase, lowercase, number, and special character.");
         }
 
-        if (!errors.isEmpty()) {
+        if (errors.isEmpty()) {
             return Mono.just(ValidationResult.valid());
         } else {
             log.error("Password validation failed: {}", errors);
@@ -113,7 +113,7 @@ public class UserRequestValidator implements RequestValidation<UserRequest> {
             errors.add("Phone number must include numeric characters");
         }
 
-        if (!errors.isEmpty()) {
+        if (errors.isEmpty()) {
             return Mono.just(ValidationResult.valid());
         } else  {
             log.error("Phone number validation failed: {}", errors);
@@ -146,6 +146,6 @@ public class UserRequestValidator implements RequestValidation<UserRequest> {
     }
 
     private boolean isValidPhoneNumberLength(String number) {
-        return number.length() < 9 || number.length() > 12;
+        return number.length() >= 9 && number.length() <= 12;
     }
 }

@@ -52,7 +52,7 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
             errors.add("Password must include uppercase, lowercase, number, and special character.");
         }
 
-        if (!errors.isEmpty()) {
+        if (errors.isEmpty()) {
             return Mono.just(ValidationResult.valid());
         } else {
             log.error("Password validation failed: {}", errors);
