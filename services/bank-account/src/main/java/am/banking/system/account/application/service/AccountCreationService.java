@@ -28,6 +28,7 @@ public class AccountCreationService implements AccountCreationUseCase {
     private final GenericMapper genericMapper;
     private final AccountRepository accountRepository;
 
+    // TODO: add bank account state to check is account active or freeze. etc.
     @Override
     public Mono<AccountResponse> createDefaultAccount(AccountCreationRequest request) {
         return generateAccountNumber(request.accountCurrency().name())
