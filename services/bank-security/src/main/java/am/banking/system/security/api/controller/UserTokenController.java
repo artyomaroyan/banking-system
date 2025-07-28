@@ -73,7 +73,8 @@ public class UserTokenController {
     }
 
     @PostMapping("/password-reset/validate")
-    public Mono<Boolean> validatePasswordResetToken(@Valid @RequestBody TokenValidatorRequest request) {
-        return userTokenValidator.isValidPasswordResetToken(request.userId(), request.token());
+    public Mono<TokenValidatorResponse> validatePasswordResetToken(@Valid @RequestBody TokenValidatorRequest request) {
+        return userTokenValidator.isValidPasswordResetToken(request.userId(), request.token())
+                .map(TokenValidatorResponse::new);
     }
 }
