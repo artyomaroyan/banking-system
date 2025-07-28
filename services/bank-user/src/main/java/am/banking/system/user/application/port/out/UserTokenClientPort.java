@@ -15,10 +15,10 @@ import reactor.core.publisher.Mono;
  */
 public interface UserTokenClientPort {
     Mono<String> generateSystemToken();
-    Mono<TokenResponse> generateEmailVerificationToken(@Valid UserDto user);
     Mono<TokenResponse> generateJwtAccessToken(@Valid UserDto user);
+    Mono<TokenResponse> generateEmailVerificationToken(@Valid UserDto user);
     Mono<TokenResponse> generatePasswordRecoveryToken(@Valid UserDto user);
-    Mono<Boolean> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
     Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
+    Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
     Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
 }

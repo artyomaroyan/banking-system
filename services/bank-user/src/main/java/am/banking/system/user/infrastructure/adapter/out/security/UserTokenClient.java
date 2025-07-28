@@ -75,21 +75,6 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenResponse> generateEmailVerificationToken(UserDto user) {
-        return generateSystemToken()
-                .flatMap(systemToken -> webClient.post()
-                        .uri("/api/internal/security/token/email/issue")
-                        .header(AUTHORIZATION, "Bearer " + systemToken)
-                        .contentType(APPLICATION_JSON)
-                        .bodyValue(user)
-                        .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, TokenResponse.class, "Verification token generation"))
-                        .timeout(Duration.ofSeconds(5)));
-    }
-
-    @Override
-    @Retry(name = "securityService")
-    @CircuitBreaker(name = "securityService")
     public Mono<TokenResponse> generateJwtAccessToken(UserDto user) {
         return generateSystemToken()
                 .flatMap(token -> webClient.post()
@@ -99,6 +84,21 @@ public class UserTokenClient implements UserTokenClientPort {
                         .bodyValue(user)
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, TokenResponse.class, "JWT Generation"))
+                        .timeout(Duration.ofSeconds(5)));
+    }
+
+    @Override
+    @Retry(name = "securityService")
+    @CircuitBreaker(name = "securityService")
+    public Mono<TokenResponse> generateEmailVerificationToken(UserDto user) {
+        return generateSystemToken()
+                .flatMap(systemToken -> webClient.post()
+                        .uri("/api/internal/security/token/email/issue")
+                        .header(AUTHORIZATION, "Bearer " + systemToken)
+                        .contentType(APPLICATION_JSON)
+                        .bodyValue(user)
+                        .exchangeToMono(response -> webClientResponseHandler
+                                .response(response, TokenResponse.class, "Verification token generation"))
                         .timeout(Duration.ofSeconds(5)));
     }
 
@@ -120,21 +120,6 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<Boolean> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username) {
-        return generateSystemToken()
-                .flatMap(systemToken -> webClient.post()
-                        .uri("/api/internal/security/token/email/validate")
-                        .header(AUTHORIZATION, "Bearer " + systemToken)
-                        .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(userId, token, username))
-                        .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, Boolean.class, "Verification token validation"))
-                        .timeout(Duration.ofSeconds(5)));
-    }
-
-    @Override
-    @Retry(name = "securityService")
-    @CircuitBreaker(name = "securityService")
     public Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, String token, String username) {
         return generateSystemToken()
                 .flatMap(_ -> webClient.post()
@@ -144,6 +129,21 @@ public class UserTokenClient implements UserTokenClientPort {
                         .bodyValue(new TokenValidatorRequest(userId, token, username))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, TokenValidatorResponse.class, "JWT Validation"))
+                        .timeout(Duration.ofSeconds(5)));
+    }
+
+    @Override
+    @Retry(name = "securityService")
+    @CircuitBreaker(name = "securityService")
+    public Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username) {
+        return generateSystemToken()
+                .flatMap(systemToken -> webClient.post()
+                        .uri("/api/internal/security/token/email/validate")
+                        .header(AUTHORIZATION, "Bearer " + systemToken)
+                        .contentType(APPLICATION_JSON)
+                        .bodyValue(new TokenValidatorRequest(userId, token, username))
+                        .exchangeToMono(response -> webClientResponseHandler
+                                .response(response, TokenValidatorResponse.class, "Verification token validation"))
                         .timeout(Duration.ofSeconds(5)));
     }
 

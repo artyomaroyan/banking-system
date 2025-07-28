@@ -1,10 +1,7 @@
 package am.banking.system.user.application.service.validation;
 
-import am.banking.system.user.api.dto.PasswordResetRequest;
-import am.banking.system.user.api.dto.UserRequest;
+import am.banking.system.common.shared.response.ValidationResult;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * Author: Artyom Aroyan

@@ -970,3 +970,21 @@ return webClient.post()
                 });
 
 ------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public Mono<Void> sendPasswordResetEmail(PasswordResetRequest request) {
+        return userRepository.findById(request.userId())
+                .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + request.userId())))
+                .flatMap(user -> userDtoMapper.map(user)
+                        .flatMap(userDto -> userTokenClient.generatePasswordRecoveryToken(userDto)
+                                .flatMap(resetToken -> {
+                                    String token = resetToken.token();
+
+                                    return notificationClient.sendPasswordResetEmail(
+                                            request.email(),
+                                            user.getUsername(),
+                                            token);
+                                })));
+    }
+
+------------------------------------------------------------------------------------------------------------------------

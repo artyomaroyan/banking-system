@@ -1,5 +1,6 @@
 package am.banking.system.user.application.service.validation;
 
+import am.banking.system.common.shared.response.ValidationResult;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class UserRequestValidator implements RequestValidation<UserRequest> {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+?\\d{9,12}$");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9]{3,20}$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&.,])[A-Za-z\\d@$!%*?&.,]{8,20}$");
 
@@ -35,69 +38,114 @@ public class UserRequestValidator implements RequestValidation<UserRequest> {
                         isValidPhoneNumber(request.phone())
                 )
                 .filter(result -> !result.isValid())
-                .map(ValidationResult::message)
-                .reduce(new ArrayList<>(), (all, next) -> {
-                    all.addAll(next);
-                    return all;
-                })
-                .map(errors -> errors.isEmpty() ?
-                        ValidationResult.valid() : ValidationResult.invalid(String.valueOf(errors)));
+                .flatMap(result -> Flux.fromIterable(result.message()))
+                .collectList()
+                .map(messages -> messages.isEmpty()
+                ? ValidationResult.valid()
+                        : ValidationResult.invalid());
     }
 
     private Mono<ValidationResult> isValidUsername(String username) {
-        return userRepository.existsByUsername(username)
-                .map(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        String message = "Username " + username + " is already in use";
-                        log.error(message);
-                        return ValidationResult.invalid(message);
-                    }
-                    return ValidationResult.valid();
-                });
+        List<String> errors = new ArrayList<>();
+
+        if (!isValidUsernameLength(username)) {
+            errors.add("Username must be between 3 and 20 characters");
+        }
+
+        if (!isValidUsernameFormat(username)) {
+            errors.add("Username must include uppercase, lowercase and number");
+        }
+
+        if (!errors.isEmpty()) {
+            return Mono.just(ValidationResult.valid());
+        } else  {
+            log.error("Username validation failed '{}'", username);
+            return Mono.just(ValidationResult.invalid(errors));
+        }
     }
 
     private Mono<ValidationResult> isValidPassword(String password) {
-        if (password.length() < 8 || password.length() > 20) {
-            String message = "Password must be between 8 and 20 characters";
-            log.error(message);
-            return Mono.just(ValidationResult.invalid(message));
+        List<String> errors = new ArrayList<>();
+
+        if (!isValidPasswordLength(password)) {
+            errors.add("Password must be between 8 and 20 characters.");
         }
-        if (!PASSWORD_PATTERN.matcher(password).matches()) {
-            String message = "Password must contain uppercase, lowercase, number, special char";
-            log.error(message);
-            return Mono.just(ValidationResult.invalid(message));
+
+        if (!isValidPasswordFormat(password)) {
+            errors.add("Password must include uppercase, lowercase, number, and special character.");
         }
-        return Mono.just(ValidationResult.valid());
+
+        if (!errors.isEmpty()) {
+            return Mono.just(ValidationResult.valid());
+        } else {
+            log.error("Password validation failed: {}", errors);
+            return Mono.just(ValidationResult.invalid(errors));
+        }
     }
 
     private Mono<ValidationResult> isValidEmail(String email) {
+        List<String> errors = new ArrayList<>();
+
+        if (!isValidEmailFormat(email)) {
+            errors.add("Email '%s' is not valid".formatted(email));
+        }
+
         return userRepository.existsByEmail(email)
                 .map(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        String message = "Email " + email + " is already in use";
-                        log.error(message);
-                        return ValidationResult.invalid(message);
+                    if (Boolean.FALSE.equals(exists)) {
+                        errors.add("User with email '%s' does not exist".formatted(email));
                     }
-                    if (!EMAIL_PATTERN.matcher(email).matches()) {
-                        String message = "Email " + email + " is not a valid email address";
-                        log.error(message);
-                        return ValidationResult.invalid(message);
-                    }
-                    return ValidationResult.valid();
+
+                    return errors.isEmpty()
+                            ? ValidationResult.valid()
+                            : ValidationResult.invalid(errors);
                 });
     }
 
     private Mono<ValidationResult> isValidPhoneNumber(String number) {
-        if (number.length() < 9 || number.length() > 12) {
-            String message = "Phone number must be between 9 and 12 characters";
-            log.error(message);
-            return Mono.just(ValidationResult.invalid(message));
+        List<String> errors = new ArrayList<>();
+
+        if (!isValidPhoneNumberLength(number)) {
+            errors.add("Phone number must be between 9 and 12 characters");
         }
-        if (!PHONE_PATTERN.matcher(number).matches()) {
-            String message = "Invalid phone number";
-            log.error(message);
-            return Mono.just(ValidationResult.invalid(message));
+
+        if (!isValidPhoneNumberFormat(number)) {
+            errors.add("Phone number must include numeric characters");
         }
-        return Mono.just(ValidationResult.valid());
+
+        if (!errors.isEmpty()) {
+            return Mono.just(ValidationResult.valid());
+        } else  {
+            log.error("Phone number validation failed: {}", errors);
+            return Mono.just(ValidationResult.invalid(errors));
+        }
+    }
+
+    private boolean isValidUsernameLength(String username) {
+        return username.length() >= 3 && username.length() <= 20;
+    }
+
+    private boolean isValidUsernameFormat(String username) {
+        return USERNAME_PATTERN.matcher(username).matches();
+    }
+
+    private boolean isValidPasswordLength(String password) {
+        return password.length() >= 8 && password.length() <= 20;
+    }
+
+    private boolean isValidPasswordFormat(String password) {
+        return PASSWORD_PATTERN.matcher(password).matches();
+    }
+
+    private boolean isValidEmailFormat(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+
+    private boolean isValidPhoneNumberFormat(String number) {
+        return PHONE_PATTERN.matcher(number).matches();
+    }
+
+    private boolean isValidPhoneNumberLength(String number) {
+        return number.length() < 9 || number.length() > 12;
     }
 }

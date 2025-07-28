@@ -1,7 +1,8 @@
 package am.banking.system.user.api.controller;
 
 import am.banking.system.common.shared.response.Result;
-import am.banking.system.user.api.dto.PasswordResetRequest;
+import am.banking.system.user.api.dto.PasswordResetConfirmRequest;
+import am.banking.system.user.api.dto.PasswordResetEmailRequest;
 import am.banking.system.user.application.port.in.password.PasswordRecoveryUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,12 @@ public class PasswordRecoveryController {
     private final PasswordRecoveryUseCase passwordRecoveryService;
 
     @PostMapping("/request")
-    public Mono<Result<String>> sendPasswordResetEmail(@Valid @RequestBody PasswordResetRequest request) {
+    public Mono<Result<String>> sendPasswordResetEmail(@Valid @RequestBody PasswordResetEmailRequest request) {
         return passwordRecoveryService.sendPasswordResetEmail(request);
     }
 
     @PostMapping("/confirm")
-    public Mono<Result<String>> resetPassword(@Valid @RequestBody PasswordResetRequest request) {
+    public Mono<Result<String>> resetPassword(@Valid @RequestBody PasswordResetConfirmRequest request) {
         return passwordRecoveryService.resetPassword(request);
     }
 }

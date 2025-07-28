@@ -1,7 +1,8 @@
 package am.banking.system.user.application.service.password;
 
 import am.banking.system.common.shared.response.Result;
-import am.banking.system.user.api.dto.PasswordResetRequest;
+import am.banking.system.user.api.dto.PasswordResetConfirmRequest;
+import am.banking.system.user.api.dto.PasswordResetEmailRequest;
 import am.banking.system.user.application.port.in.password.PasswordRecoveryFactoryUserCase;
 import am.banking.system.user.application.port.in.password.PasswordRecoveryUseCase;
 import am.banking.system.user.application.service.validation.PasswordRequestValidator;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * Author: Artyom Aroyan
@@ -26,12 +26,22 @@ public class PasswordRecoveryService implements PasswordRecoveryUseCase {
     private final PasswordRecoveryFactoryUserCase passwordRecoveryFactory;
 
     @Override
-    public Mono<Result<String>> resetPassword(PasswordResetRequest request) {
-        return null;
+    public Mono<Result<String>> resetPassword(PasswordResetConfirmRequest request) {
+        return requestValidator.isValidPassword(request.newPassword())
+                .flatMap(errors -> {
+                    if (!errors.message().isEmpty()) {
+                        String errorMessage = String.join(", ", errors.message());
+                        log.error("Invalid password format: {}", errorMessage);
+                        return Mono.just(Result.error("Please enter valid password", BAD_REQUEST.value()));
+                    }
+
+                    return passwordRecoveryFactory.completePasswordReset(request)
+                            .then(Mono.just(Result.success("Password successfully reset")));
+                });
     }
 
     @Override
-    public Mono<Result<String>> sendPasswordResetEmail(PasswordResetRequest request) {
+    public Mono<Result<String>> sendPasswordResetEmail(PasswordResetEmailRequest request) {
         log.info("Initiating password recovery for email: {}", request.email());
         return requestValidator.isValidRequest(request)
                 .flatMap(errors -> {
@@ -42,12 +52,7 @@ public class PasswordRecoveryService implements PasswordRecoveryUseCase {
                     }
 
                     return passwordRecoveryFactory.sendPasswordResetEmail(request)
-                            .thenReturn(Result.success("Password reset email sent successfully"))
-                            .doOnSuccess(_ -> log.info("Password reset link has been sent to: {}", request.email()))
-                            .onErrorResume(ex -> {
-                                log.error("Failed to send password reset email to {}", request.email(), ex);
-                                return Mono.just(Result.error("Failed to send password reset email", INTERNAL_SERVER_ERROR.value()));
-                            });
+                            .then(Mono.just(Result.success("Password reset verification link successfully send to your email")));
                 });
     }
 }
