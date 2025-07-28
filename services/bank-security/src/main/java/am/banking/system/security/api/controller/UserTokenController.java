@@ -2,6 +2,7 @@ package am.banking.system.security.api.controller;
 
 import am.banking.system.common.shared.dto.security.TokenResponse;
 import am.banking.system.common.shared.dto.security.TokenValidatorRequest;
+import am.banking.system.common.shared.dto.security.TokenValidatorResponse;
 import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.security.application.mapper.UserPrincipalMapper;
 import am.banking.system.security.application.port.in.UserTokenUseCase;
@@ -42,8 +43,9 @@ public class UserTokenController {
 
     @PostMapping("/email/validate")
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
-    public Mono<Boolean> validateEmailVerificationToken(@Valid @RequestBody TokenValidatorRequest request) {
-        return userTokenValidator.isValidEmailVerificationToken(request.userId(), request.token());
+    public Mono<TokenValidatorResponse> validateEmailVerificationToken(@Valid @RequestBody TokenValidatorRequest request) {
+        return userTokenValidator.isValidEmailVerificationToken(request.userId(), request.token())
+                .map(TokenValidatorResponse::new);
     }
 
     @PostMapping("/access/issue")

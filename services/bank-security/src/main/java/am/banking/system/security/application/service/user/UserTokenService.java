@@ -43,6 +43,7 @@ public class UserTokenService implements UserTokenUseCase {
 
     @Override
     public Mono<String> generateJwtAccessToken(UserPrincipal principal) {
+        // todo: change JWT access token state to VALID when it is new generated and expired when schedule task checks it is expired.
         return generateAndSaveToken(principal, JWT_ACCESS_TOKEN, JSON_WEB_TOKEN);
     }
 

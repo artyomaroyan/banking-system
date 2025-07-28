@@ -31,6 +31,8 @@ public class InvalidateTokenService implements InvalidateTokenUseCase {
     public Mono<Long> markTokensForciblyExpired() {
         return updateTokenState(FORCIBLY_EXPIRED, null);
     }
+    // todo: add method to check user account, if it is active mark JWT access token state as VALID,
+    //  and method which check if JWT access token is expired mark token state as EXPIRED.
 
     private Mono<Long> updateTokenState(TokenState to, @Nullable String tokenFilter) {
         StringBuilder sql = new StringBuilder("""
