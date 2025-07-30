@@ -13,6 +13,6 @@ import java.util.Set;
  * Time: 15:57:31
  */
 @Validated
-public record UserDto(@NotNull Integer userId, @NotBlank String username, @NotBlank String password,
-                      @NotBlank String email, @NotEmpty Set<String> roles, @NotEmpty Set<String> permissions) {
+public record UserDto(@NotNull Integer userId, @NotBlank String username, @NotBlank String email,
+                      @NotEmpty Set<String> roles, @NotEmpty Set<String> permissions) {
 }
