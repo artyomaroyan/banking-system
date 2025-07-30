@@ -18,7 +18,7 @@ public interface UserTokenClientPort {
     Mono<TokenResponse> generateJwtAccessToken(@Valid UserDto user);
     Mono<TokenResponse> generateEmailVerificationToken(@Valid UserDto user);
     Mono<TokenResponse> generatePasswordRecoveryToken(@Valid UserDto user);
-    Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
-    Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
-    Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username);
+    Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token);
+    Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token);
+    Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token);
 }

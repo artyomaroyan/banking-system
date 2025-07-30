@@ -120,13 +120,13 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, String token, String username) {
+    public Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, String username, String token) {
         return generateSystemToken()
                 .flatMap(_ -> webClient.post()
                         .uri("/api/internal/security/token/access/validate")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(userId, token, username))
+                        .bodyValue(new TokenValidatorRequest(userId, username,  token))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, TokenValidatorResponse.class, "JWT Validation"))
                         .timeout(Duration.ofSeconds(5)));
@@ -135,30 +135,30 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String token, @NotBlank String username) {
+    public Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, String username, String token) {
         return generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
-                        .uri("/api/internal/security/token/email/validate")
+                        .uri("/api/internal/security/token/password-reset/validate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(userId, token, username))
+                        .bodyValue(new TokenValidatorRequest(userId, username, token))
                         .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, TokenValidatorResponse.class, "Verification token validation"))
+                                .response(response, TokenValidatorResponse.class, "Password recovery token validation"))
                         .timeout(Duration.ofSeconds(5)));
     }
 
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, String token, String username) {
+    public Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token) {
         return generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
-                        .uri("/api/internal/security/token/password-reset/validate")
+                        .uri("/api/internal/security/token/email/validate")
                         .header(AUTHORIZATION, "Bearer " + systemToken)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(userId, token, username))
+                        .bodyValue(new TokenValidatorRequest(userId, username, token))
                         .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, TokenValidatorResponse.class, "Password recovery token validation"))
+                                .response(response, TokenValidatorResponse.class, "Email verification token validation"))
                         .timeout(Duration.ofSeconds(5)));
     }
 }

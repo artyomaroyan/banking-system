@@ -10,5 +10,5 @@ import java.time.LocalDateTime;
  * Time: 00:11:53
  */
 public record UserResponse(Integer id, LocalDateTime createdAt, LocalDateTime updatedAt, String username, String firstName,
-                           String lastName, String email, String password, String phone, Integer age, AccountState state) {
+                           String lastName, String email, String phone, Integer age, AccountState state) {
 }

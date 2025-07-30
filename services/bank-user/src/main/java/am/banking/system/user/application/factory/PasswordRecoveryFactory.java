@@ -68,8 +68,9 @@ public class PasswordRecoveryFactory implements PasswordRecoveryFactoryUserCase 
     private Mono<UserDto> validateToken(UserDto userDto, String token) {
         return userTokenClient.validatePasswordRecoveryToken(
                         userDto.userId(),
-                        token,
-                        userDto.username())
+                        userDto.username(),
+                        token
+                )
                 .thenReturn(userDto);
     }
 
