@@ -15,7 +15,7 @@ public class UserPrincipalMapper {
         return new UserPrincipal(
                 userDto.userId(),
                 userDto.username(),
-                userDto.password(),
+                null,
                 userDto.email(),
                 userDto.roles(),
                 userDto.permissions()

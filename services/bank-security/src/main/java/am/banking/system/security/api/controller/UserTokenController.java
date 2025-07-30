@@ -45,7 +45,9 @@ public class UserTokenController {
     @PreAuthorize("hasRole('SYSTEM') or hasAuthority('DO_INTERNAL_TASKS')")
     public Mono<TokenValidatorResponse> validateEmailVerificationToken(@Valid @RequestBody TokenValidatorRequest request) {
         return userTokenValidator.isValidEmailVerificationToken(request.userId(), request.token())
-                .map(TokenValidatorResponse::new);
+                .map(valid -> Boolean.TRUE.equals(valid) ?
+                        TokenValidatorResponse.success() :
+                        TokenValidatorResponse.failure("Email verification token validation failed"));
     }
 
     @PostMapping("/access/issue")
@@ -75,6 +77,8 @@ public class UserTokenController {
     @PostMapping("/password-reset/validate")
     public Mono<TokenValidatorResponse> validatePasswordResetToken(@Valid @RequestBody TokenValidatorRequest request) {
         return userTokenValidator.isValidPasswordResetToken(request.userId(), request.token())
-                .map(TokenValidatorResponse::new);
+                .map(valid -> Boolean.TRUE.equals(valid) ?
+                        TokenValidatorResponse.success() :
+                        TokenValidatorResponse.failure("Password reset token validation failed"));
     }
 }
