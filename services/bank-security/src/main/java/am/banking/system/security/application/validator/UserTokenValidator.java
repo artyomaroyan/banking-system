@@ -27,7 +27,6 @@ import static am.banking.system.security.domain.enums.TokenPurpose.PASSWORD_RECO
 import static am.banking.system.security.domain.enums.TokenState.PENDING;
 import static am.banking.system.security.domain.enums.TokenType.EMAIL_VERIFICATION;
 import static am.banking.system.security.domain.enums.TokenType.PASSWORD_RESET;
-import static am.banking.system.security.util.LogConstants.*;
 
 /**
  * Author: Artyom Aroyan
@@ -106,41 +105,19 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
 
     private Mono<Boolean> validateToken(final Integer userId, final String token, final TokenPurpose purpose, final TokenType type) {
         return userTokenRepository.findByToken(token)
-                .flatMap(userToken -> {
-                    if (!purpose.equals(userToken.getTokenPurpose())) {
-                        log.error("{} - expected: {}, actual: {}", INVALID_TOKEN_PURPOSE, purpose, userToken.getTokenPurpose());
-                        return Mono.just(false);
-                    }
-
-                    if (!Objects.equals(userToken.getUserId(), userId)) {
-                        log.error("{} - expected: {}, actual: {}", INVALID_TOKEN_PURPOSE, userToken.getUserId(), userId);
-                        return Mono.just(false);
-                    }
-
-                    if (!PENDING.equals(userToken.getTokenState())) {
-                        log.error("{} - actual: {}", INVALID_TOKEN_STATE, userToken.getTokenState());
-                        return Mono.just(false);
-                    }
-
-                    if (userToken.getExpirationDate().isBefore(LocalDateTime.now())) {
-                        log.error(EXPIRED_TOKEN);
-                        return Mono.just(false);
-                    }
-
+                .filter(t -> Objects.equals(t.getUserId(), userId))
+                .filter(t -> !t.getExpirationDate().isBefore(LocalDateTime.now()) &&
+                        t.getTokenState().equals(PENDING) &&
+                        t.getTokenPurpose().equals(purpose))
+                .flatMap(_ -> {
                     try {
-                        final Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
+                        Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
                         tokenClaimsExtractor.extractAllClaims(token, key);
-                        log.info(TOKEN_VALIDATION_SUCCESS);
                         return Mono.just(true);
-                    } catch (JwtException ex) {
-                        log.error("Jwt validation failed: {} - {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
-                        return Mono.just(false);
-                    } catch (IllegalArgumentException ex) {
-                        log.error(VALIDATION_FAILED, ex.getMessage(), ex);
-                        return Mono.just(false);
+                    } catch (JwtException _) {
+                        return  Mono.just(false);
                     }
                 })
-                .switchIfEmpty(Mono.fromRunnable(() -> log.error(TOKEN_NOT_FOUND))
-                        .thenReturn(false));
+                .defaultIfEmpty(false);
     }
 }

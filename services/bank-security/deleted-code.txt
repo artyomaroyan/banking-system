@@ -392,3 +392,42 @@ return exchange ->
 
 ------------------------------------------------------------------------------------------------------------------------
 
+public sealed interface TokenValidationResult {
+    record Valid()  implements TokenValidationResult {}
+    record Invalid(String reason) implements TokenValidationResult {}
+}
+
+------------------------------------------------------------------------------------------------------------------------
+
+    private Mono<TokenValidationResult> validateToken(final Integer userId, final String token, final TokenPurpose purpose, final TokenType type) {
+        return userTokenRepository.findByToken(token)
+                .switchIfEmpty(Mono.error(new TokenValidationException("Token not found")))
+                .flatMap(userToken -> {
+                    if (!Objects.equals(userId, userToken.getUserId())) {
+                        return Mono.just(new Invalid("Token does not belong to this user"));
+                    }
+
+                    if (!userToken.getExpirationDate().isBefore(LocalDateTime.now())) {
+                        return Mono.just(new Invalid("Token expired"));
+                    }
+
+                    if (!purpose.equals(userToken.getTokenPurpose())) {
+                        return Mono.just(new Invalid("Invalid token purpose"));
+                    }
+
+                    if (!PENDING.equals(userToken.getTokenState())) {
+                        return Mono.just(new Invalid("Invalid token state"));
+                    }
+
+                    try {
+                        Key key = tokenSigningKeyManager.getSigningCredentials(type).key();
+                        tokenClaimsExtractor.extractAllClaims(token, key);
+                        return Mono.just(new Valid());
+                    } catch (JwtException | IllegalArgumentException ex) {
+                        return Mono.just(new Invalid("JWT validation failed: " + ex));
+                    }
+                });
+    }
+
+------------------------------------------------------------------------------------------------------------------------
+
