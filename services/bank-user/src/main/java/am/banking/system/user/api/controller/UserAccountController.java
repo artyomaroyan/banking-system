@@ -2,8 +2,8 @@ package am.banking.system.user.api.controller;
 
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.application.port.in.UserAccountActivationUseCase;
-import am.banking.system.user.application.port.in.UserRegistrationUseCase;
+import am.banking.system.user.application.port.in.user.UserAccountActivationUseCase;
+import am.banking.system.user.application.port.in.user.UserRegistrationUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

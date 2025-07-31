@@ -8,7 +8,7 @@ import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.application.factory.UserFactory;
 import am.banking.system.user.application.mapper.ReactiveMapper;
-import am.banking.system.user.application.port.in.UserRegistrationUseCase;
+import am.banking.system.user.application.port.in.user.UserRegistrationUseCase;
 import am.banking.system.user.application.port.out.NotificationClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.application.port.out.account.CurrentAccountCreationClientPort;

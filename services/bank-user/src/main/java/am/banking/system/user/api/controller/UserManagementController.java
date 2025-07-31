@@ -2,7 +2,7 @@ package am.banking.system.user.api.controller;
 
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserResponse;
-import am.banking.system.user.application.port.in.UserManagementUseCase;
+import am.banking.system.user.application.port.in.user.UserManagementUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

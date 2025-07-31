@@ -1,4 +1,4 @@
-package am.banking.system.user.application.port.in;
+package am.banking.system.user.application.port.in.user;
 
 import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.domain.entity.User;

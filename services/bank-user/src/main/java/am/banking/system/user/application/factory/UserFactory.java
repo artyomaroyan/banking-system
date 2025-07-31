@@ -1,6 +1,6 @@
 package am.banking.system.user.application.factory;
 
-import am.banking.system.user.application.port.in.UserFactoryUseCase;
+import am.banking.system.user.application.port.in.user.UserFactoryUseCase;
 import am.banking.system.user.application.port.out.PasswordHashingClientPort;
 import am.banking.system.user.domain.entity.Role;
 import am.banking.system.user.api.dto.UserRequest;

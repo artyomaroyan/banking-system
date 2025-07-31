@@ -4,7 +4,7 @@ import am.banking.system.common.shared.exception.user.UserAccountActivationExcep
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.common.util.GenericMapper;
 import am.banking.system.user.api.dto.UserResponse;
-import am.banking.system.user.application.port.in.UserManagementUseCase;
+import am.banking.system.user.application.port.in.user.UserManagementUseCase;
 import am.banking.system.user.domain.entity.User;
 import am.banking.system.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,7 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.data.relational.core.query.Update;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -64,5 +65,9 @@ public class UserManagementService implements UserManagementUseCase {
                 .map(user -> genericMapper.map(user, UserResponse.class))
                 .map(response -> Result.success(response, SUCCESS))
                 .defaultIfEmpty(Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
+    }
+
+    public Mono<Result<UserResponse>> getCurrentUser(Authentication authentication) {
+        return null;
     }
 }

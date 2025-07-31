@@ -1,8 +1,9 @@
 package am.banking.system.user.application.service.auth;
 
+import am.banking.system.common.shared.dto.security.TokenValidatorResponse;
 import am.banking.system.common.shared.response.Result;
-import am.banking.system.user.application.port.in.UserAccountActivationUseCase;
-import am.banking.system.user.application.port.in.UserManagementUseCase;
+import am.banking.system.user.application.port.in.user.UserAccountActivationUseCase;
+import am.banking.system.user.application.port.in.user.UserManagementUseCase;
 import am.banking.system.user.application.port.out.TokenInvalidateClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class UserAccountActivationService implements UserAccountActivationUseCas
     public Mono<Result<String>> activateAccount(Integer userId, String username, String activationToken) {
         return userTokenClient.validateEmailVerificationToken(userId, username, activationToken)
                 .flatMap(valid -> {
-                    if (!valid.valid()) {
+                    if (!TokenValidatorResponse.valid().success()) {
                         return Mono.just(Result.error("Email validation token validation failed", BAD_REQUEST.value()));
                     }
                     return handleUserActivation(username, activationToken);

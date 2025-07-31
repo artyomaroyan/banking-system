@@ -1,4 +1,4 @@
-package am.banking.system.user.application.port.in;
+package am.banking.system.user.application.port.in.user;
 
 import am.banking.system.common.shared.response.Result;
 import reactor.core.publisher.Mono;

@@ -1,4 +1,4 @@
-package am.banking.system.user.application.port.in;
+package am.banking.system.user.application.port.in.user;
 
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
