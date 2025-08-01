@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -31,7 +32,7 @@ public class RolePermissionLinkService {
                 .then();
     }
 
-    public Mono<Void> assignPermissionsToRole(Integer roleId, Set<Permission> permissions) {
+    public Mono<Void> assignPermissionsToRole(UUID roleId, Set<Permission> permissions) {
         return Flux.fromIterable(permissions)
                 .flatMap(permission -> rolePermissionRepository.save(
                         new RolePermission(roleId, permission.getId())

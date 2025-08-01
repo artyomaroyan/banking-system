@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -28,7 +30,7 @@ public class UserAccountActivationService implements UserAccountActivationUseCas
     private final TokenInvalidateClientPort tokenInvalidateClient;
 
     @Override
-    public Mono<Result<String>> activateAccount(Integer userId, String username, String activationToken) {
+    public Mono<Result<String>> activateAccount(UUID userId, String username, String activationToken) {
         return userTokenClient.validateEmailVerificationToken(userId, username, activationToken)
                 .flatMap(valid -> {
                     if (!TokenValidatorResponse.valid().success()) {

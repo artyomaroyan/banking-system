@@ -32,7 +32,6 @@ public class UserDtoMapper implements ReactiveMapper<User, UserDto> {
                         .map(permissions -> new UserDto(
                                 source.getId(),
                                 source.getUsername(),
-                                source.getPassword(),
                                 source.getEmail(),
                                 roles,
                                 permissions

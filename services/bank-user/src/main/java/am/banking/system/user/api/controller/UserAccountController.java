@@ -11,6 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -34,7 +36,7 @@ public class UserAccountController {
     }
 
     @GetMapping("/activate/{userId}/{username}/{token}")
-    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable Integer userId, @PathVariable String username, @PathVariable String token) {
+    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable UUID userId, @PathVariable String username, @PathVariable String token) {
         return userAccountActivationService.activateAccount(userId, username, token)
                         .map(this::buildResponse);
     }

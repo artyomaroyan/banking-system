@@ -30,7 +30,6 @@ public class UserMappingConfiguration {
                             user.getFirstName(),
                             user.getLastName(),
                             user.getEmail(),
-                            user.getPassword(),
                             user.getPhone(),
                             user.getAge(),
                             user.getAccountState()
