@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -13,7 +14,7 @@ import java.util.Objects;
  * Time: 15:31:42
  */
 @Validated
-public record AccountCreationRequest(@NotNull Integer userId, @NotBlank String username,
+public record AccountCreationRequest(@NotNull UUID userId, @NotBlank String username,
                                      @NotNull AccountCurrency accountCurrency) {
 
     @Override

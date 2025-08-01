@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -13,6 +14,6 @@ import java.util.Set;
  * Time: 15:57:31
  */
 @Validated
-public record UserDto(@NotNull Integer userId, @NotBlank String username, @NotBlank String email,
+public record UserDto(@NotNull UUID userId, @NotBlank String username, @NotBlank String email,
                       @NotEmpty Set<String> roles, @NotEmpty Set<String> permissions) {
 }

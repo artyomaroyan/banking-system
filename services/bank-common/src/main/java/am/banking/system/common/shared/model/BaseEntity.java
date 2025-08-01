@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.Column;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
     @Id
     @Column("id")
-    private Integer id;
+    private UUID id;
     @CreatedDate
     @Column("created_at")
     private LocalDateTime createdAt;
