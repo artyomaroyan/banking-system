@@ -9,6 +9,6 @@ import reactor.core.publisher.Mono;
  * Time: 00:05:06
  */
 public interface InvalidateTokenUseCase {
-    Mono<Long> markTokenAsVerified(@NotBlank String token);
     Mono<Long> markTokensForciblyExpired();
+    Mono<Long> markTokenAsVerified(@NotBlank String token);
 }

@@ -24,12 +24,13 @@ public class InvalidateTokenService implements InvalidateTokenUseCase {
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
     @Override
-    public Mono<Long> markTokenAsVerified(String token) {
-        return updateTokenState(VERIFIED, token);
-    }
-
     public Mono<Long> markTokensForciblyExpired() {
         return updateTokenState(FORCIBLY_EXPIRED, null);
+    }
+
+    @Override
+    public Mono<Long> markTokenAsVerified(String token) {
+        return updateTokenState(VERIFIED, token);
     }
     // todo: add method to check user account, if it is active mark JWT access token state as VALID,
     //  and method which check if JWT access token is expired mark token state as EXPIRED.

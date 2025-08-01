@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @Table("security.user_token")
 public class UserToken extends BaseEntity {
     @Column("user_id")
-    private final Integer userId;
+    private final UUID userId;
     @Column("token")
     private final String token;
     @Column("expires_at")

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,14 +20,14 @@ import java.util.stream.Stream;
  */
 @Getter
 public class UserPrincipal implements UserDetails {
-    private final Integer userId;
+    private final UUID userId;
     private final String username;
     private final String password;
     private final String email;
     private final Set<String> roles;
     private final Set<String> permissions;
 
-    public UserPrincipal(Integer userId, String username, String password, String email, Set<String> roles, Set<String> permissions) {
+    public UserPrincipal(UUID userId, String username, String password, String email, Set<String> roles, Set<String> permissions) {
         this.userId = userId;
         this.username = username;
         this.password = password;
