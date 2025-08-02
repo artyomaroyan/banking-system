@@ -10,13 +10,15 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 /**
  * Author: Artyom Aroyan
  * Date: 14.04.25
  * Time: 00:06:06
  */
 @Repository
-public interface PermissionRepository extends ReactiveCrudRepository<Permission, Integer> {
+public interface PermissionRepository extends ReactiveCrudRepository<Permission, UUID> {
     @Query("""
 SELECT p.* FROM user_db.usr.permission p
 JOIN user_db.usr.role_permission rp ON p.id = rp.permission_id
