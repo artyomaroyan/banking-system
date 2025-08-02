@@ -24,8 +24,8 @@ public class UserMappingConfiguration {
                     User user = (User) ctx.getSource();
                     return new UserResponse(
                             user.getId(),
-                            user.getCreatedAt(),
-                            user.getUpdatedAt(),
+//                            user.getCreatedAt(),
+//                            user.getUpdatedAt(),
                             user.getUsername(),
                             user.getFirstName(),
                             user.getLastName(),
