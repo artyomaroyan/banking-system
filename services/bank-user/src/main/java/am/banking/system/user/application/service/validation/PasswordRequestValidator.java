@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -60,7 +61,7 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
         }
     }
 
-    private Mono<ValidationResult> isValidUserId(Integer userId) {
+    private Mono<ValidationResult> isValidUserId(UUID userId) {
         return userRepository.existsById(userId)
                 .map(exists -> {
                     if (Boolean.FALSE.equals(exists)) {

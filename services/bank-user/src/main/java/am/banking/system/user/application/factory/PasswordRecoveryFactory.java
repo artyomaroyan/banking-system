@@ -18,6 +18,8 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 /**
  * Author: Artyom Aroyan
  * Date: 25.07.25
@@ -52,7 +54,7 @@ public class PasswordRecoveryFactory implements PasswordRecoveryFactoryUserCase 
                 .doOnError(ex -> log.error("[resetPassword] Failed for userId={} — {}", request.userId(), ex.getMessage(), ex));
     }
 
-    private Mono<UserDto> findUserAndMapToDto(Integer userId) {
+    private Mono<UserDto> findUserAndMapToDto(UUID userId) {
         return userRepository.findById(userId)
                 .switchIfEmpty(Mono.error(new NotFoundException("User not found with id: " + userId)))
                 .flatMap(userDtoMapper::map);
@@ -79,7 +81,7 @@ public class PasswordRecoveryFactory implements PasswordRecoveryFactoryUserCase 
                 .map(PasswordHashingResponse::hashedPassword);
     }
 
-    private Mono<Void> updatePassword(Integer userId, String newPassword) {
+    private Mono<Void> updatePassword(UUID userId, String newPassword) {
         String sql = """
                 UPDATE usr.usr
                 SET password = :newPassword
