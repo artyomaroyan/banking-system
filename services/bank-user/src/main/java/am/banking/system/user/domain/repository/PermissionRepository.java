@@ -18,14 +18,7 @@ import java.util.UUID;
  * Time: 00:06:06
  */
 @Repository
-public interface PermissionRepository extends ReactiveCrudRepository<Permission, UUID> {
-    @Query("""
-SELECT p.* FROM user_db.usr.permission p
-JOIN user_db.usr.role_permission rp ON p.id = rp.permission_id
-WHERE rp.role_id = :roleId
-""")
-    Flux<Permission> findAllByRoleId(Integer roleId);
-
+public interface PermissionRepository extends ReactiveCrudRepository<Permission, Integer> {
     @Query("SELECT * FROM user_db.usr.permission WHERE permission_name = :permissionName")
     Mono<Permission> findByPermissionEnum(PermissionEnum permissionName);
 

@@ -8,8 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
 /**
  * Author: Artyom Aroyan
  * Date: 02.05.25
@@ -20,7 +18,7 @@ public interface UserTokenClientPort {
     Mono<TokenResponse> generateJwtAccessToken(@Valid UserDto user);
     Mono<TokenResponse> generateEmailVerificationToken(@Valid UserDto user);
     Mono<TokenResponse> generatePasswordRecoveryToken(@Valid UserDto user);
-    Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull UUID userId, @NotBlank String username, @NotBlank String token);
-    Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull UUID userId, @NotBlank String username, @NotBlank String token);
-    Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull UUID userId, @NotBlank String username, @NotBlank String token);
+    Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token);
+    Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token);
+    Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token);
 }

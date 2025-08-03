@@ -23,7 +23,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.UUID;
 
 import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -121,7 +120,7 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull UUID userId, String username, String token) {
+    public Mono<TokenValidatorResponse> validateJwtAccessToken(@NotNull Integer userId, String username, String token) {
         return generateSystemToken()
                 .flatMap(_ -> webClient.post()
                         .uri("/api/internal/security/token/access/validate")
@@ -136,7 +135,7 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull UUID userId, String username, String token) {
+    public Mono<TokenValidatorResponse> validatePasswordRecoveryToken(@NotNull Integer userId, String username, String token) {
         return generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/token/password-reset/validate")
@@ -151,7 +150,7 @@ public class UserTokenClient implements UserTokenClientPort {
     @Override
     @Retry(name = "securityService")
     @CircuitBreaker(name = "securityService")
-    public Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull UUID userId, @NotBlank String username, @NotBlank String token) {
+    public Mono<TokenValidatorResponse> validateEmailVerificationToken(@NotNull Integer userId, @NotBlank String username, @NotBlank String token) {
         return generateSystemToken()
                 .flatMap(systemToken -> webClient.post()
                         .uri("/api/internal/security/token/email/validate")

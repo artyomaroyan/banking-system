@@ -61,7 +61,7 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
         }
     }
 
-    private Mono<ValidationResult> isValidUserId(UUID userId) {
+    private Mono<ValidationResult> isValidUserId(Integer userId) {
         return userRepository.existsById(userId)
                 .map(exists -> {
                     if (Boolean.FALSE.equals(exists)) {

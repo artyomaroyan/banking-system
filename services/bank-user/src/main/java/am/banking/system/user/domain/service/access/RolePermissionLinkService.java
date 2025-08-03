@@ -28,15 +28,15 @@ public class RolePermissionLinkService {
                         rolePermissionRepository.existsByRoleIdAndPermissionId(role.getId(), permission.getId())
                                 .filter(exists -> !exists)
                                 .flatMap(_ -> rolePermissionRepository.save(
-                                        RolePermission.of(role.getId(), permission.getId()))
+                                        new RolePermission(role.getId(), permission.getId()))
                                 ))
                 .then();
     }
 
-    public Mono<Void> assignPermissionsToRole(UUID roleId, Set<Permission> permissions) {
+    public Mono<Void> assignPermissionsToRole(Integer roleId, Set<Permission> permissions) {
         return Flux.fromIterable(permissions)
                 .flatMap(permission -> rolePermissionRepository.save(
-                        RolePermission.of(roleId, permission.getId())
+                        new RolePermission(roleId, permission.getId())
                 ))
                 .then();
     }

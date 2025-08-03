@@ -30,7 +30,7 @@ public class UserAccountActivationService implements UserAccountActivationUseCas
     private final TokenInvalidateClientPort tokenInvalidateClient;
 
     @Override
-    public Mono<Result<String>> activateAccount(UUID userId, String username, String activationToken) {
+    public Mono<Result<String>> activateAccount(Integer userId, String username, String activationToken) {
         return userTokenClient.validateEmailVerificationToken(userId, username, activationToken)
                 .flatMap(valid -> {
                     if (!TokenValidatorResponse.valid().success()) {

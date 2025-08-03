@@ -4,11 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -21,17 +18,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "usr.user_role")
 public class UserRole {
-    @Id
-    @Column("id")
-    private UUID id;
+//    @Id
+//    @Column("id")
+//    private Integer id;
     @Column("user_id")
-    private UUID userId;
+    private Integer userId;
     @Column("role_id")
-    private UUID roleId;
-
-    public UserRole(UUID userId, UUID roleId) {
-        this.id = null;
-        this.userId = userId;
-        this.roleId = roleId;
-    }
+    private Integer roleId;
 }

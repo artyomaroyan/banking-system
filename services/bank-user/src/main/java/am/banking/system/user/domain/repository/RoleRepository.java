@@ -14,6 +14,6 @@ import java.util.UUID;
  * Time: 00:05:45
  */
 @Repository
-public interface RoleRepository extends ReactiveCrudRepository<Role, UUID> {
+public interface RoleRepository extends ReactiveCrudRepository<Role, Integer> {
     Mono<Role> findByRoleName(RoleEnum roleName);
 }

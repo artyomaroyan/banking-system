@@ -6,8 +6,6 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
-import java.util.UUID;
-
 /**
  * Author: Artyom Aroyan
  * Date: 20.06.25
@@ -19,7 +17,7 @@ public class UserRoleRepositoryImpl implements UserRoleCustomRepository {
     private final DatabaseClient databaseClient;
 
     @Override
-    public Flux<String> findRolesByUserId(UUID userId) {
+    public Flux<String> findRolesByUserId(Integer userId) {
         return databaseClient.sql("""
                         SELECT r.role_name
                         FROM user_db.usr.user_role ur

@@ -13,6 +13,6 @@ import java.util.UUID;
  * Time: 15:56:21
  */
 @Repository
-public interface RolePermissionRepository extends ReactiveCrudRepository<RolePermission, UUID>, RolePermissionCustomRepository {
-    Mono<Boolean> existsByRoleIdAndPermissionId(UUID roleId, UUID permissionId);
+public interface RolePermissionRepository extends ReactiveCrudRepository<RolePermission, Integer>, RolePermissionCustomRepository {
+    Mono<Boolean> existsByRoleIdAndPermissionId(Integer roleId, Integer permissionId);
 }

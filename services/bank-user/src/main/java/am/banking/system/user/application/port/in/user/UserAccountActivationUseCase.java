@@ -11,5 +11,5 @@ import java.util.UUID;
  * Time: 18:40:03
  */
 public interface UserAccountActivationUseCase {
-    Mono<Result<String>> activateAccount(UUID userId, String username, String activationToken);
+    Mono<Result<String>> activateAccount(Integer userId, String username, String activationToken);
 }

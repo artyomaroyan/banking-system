@@ -1009,3 +1009,12 @@ return webClient.post()
     }
 
 ------------------------------------------------------------------------------------------------------------------------
+
+    @Query("""
+SELECT p.* FROM user_db.usr.permission p
+JOIN user_db.usr.role_permission rp ON p.id = rp.permission_id
+WHERE rp.role_id = :roleId
+""")
+    Flux<Permission> findAllByRoleId(Integer roleId);
+
+------------------------------------------------------------------------------------------------------------------------

@@ -13,7 +13,7 @@ import java.util.UUID;
  * Time: 00:04:45
  */
 @Repository
-public interface UserRepository extends ReactiveCrudRepository<User, UUID> {
+public interface UserRepository extends ReactiveCrudRepository<User, Integer> {
     Mono<Boolean> existsByUsername(String username);
 
     Mono<Boolean> existsByEmail(String email);

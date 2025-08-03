@@ -12,5 +12,5 @@ import java.util.UUID;
  * Time: 00:25:41
  */
 @Repository
-public interface UserRoleRepository extends ReactiveCrudRepository<UserRole, UUID>, UserRoleCustomRepository {
+public interface UserRoleRepository extends ReactiveCrudRepository<UserRole, Integer>, UserRoleCustomRepository {
 }
