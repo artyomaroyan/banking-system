@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -16,7 +15,7 @@ import java.util.UUID;
 @Validated
 public record AccountRequest(
         @NotBlank(message = "account owner ID must not be blank")
-        UUID accountOwnerId,
+        Integer accountOwnerId,
         @NotBlank(message = "Account number must not be blank")
         @Pattern(regexp = "\\d{16}", message = "Account number must be exactly 16 digits")
         String accountNumber,

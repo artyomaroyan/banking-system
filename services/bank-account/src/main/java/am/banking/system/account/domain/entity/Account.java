@@ -9,7 +9,6 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -21,7 +20,7 @@ import java.util.UUID;
 @Table("account.account")
 public class Account extends BaseEntity {
     @Column("account_owner_id")
-    private final UUID accountOwnerId;
+    private final Integer accountOwnerId;
     @Column("account_number")
     private final String accountNumber;
     @Column("account_owner_username")
