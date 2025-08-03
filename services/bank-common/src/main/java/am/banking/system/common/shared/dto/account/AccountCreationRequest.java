@@ -14,7 +14,7 @@ import java.util.UUID;
  * Time: 15:31:42
  */
 @Validated
-public record AccountCreationRequest(@NotNull UUID userId, @NotBlank String username,
+public record AccountCreationRequest(@NotNull Integer userId, @NotBlank String username,
                                      @NotNull AccountCurrency accountCurrency) {
 
     @Override
