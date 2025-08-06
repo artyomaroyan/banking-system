@@ -16,12 +16,6 @@ import static org.modelmapper.convention.MatchingStrategies.STRICT;
 @Configuration
 @EnableConfigurationProperties({InternalSecretProperties.class})
 public class CommonBeanConfiguration {
-
-//    @Bean
-//    public WebClientFactory webClientFactory(TlsProperties securityTLSProperties) {
-//        return new WebClientFactory(securityTLSProperties);
-//    }
-
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
