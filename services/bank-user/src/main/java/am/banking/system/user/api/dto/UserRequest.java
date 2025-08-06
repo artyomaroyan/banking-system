@@ -2,12 +2,14 @@ package am.banking.system.user.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Author: Artyom Aroyan
  * Date: 14.04.25
  * Time: 20:40:22
  */
+@Validated
 public record UserRequest(
         @Schema(example = "user1")
         @NotBlank(message = "username is required")
