@@ -95,16 +95,16 @@ public class UserTokenValidator implements UserTokenValidatorUseCase {
     }
 
     @Override
-    public Mono<Boolean> isValidPasswordResetToken(Integer userId, String token) {
+    public Mono<Boolean> isValidPasswordResetToken(UUID userId, String token) {
         return validateToken(userId, token, PASSWORD_RECOVERY, PASSWORD_RESET);
     }
 
     @Override
-    public Mono<Boolean> isValidEmailVerificationToken(Integer userId, String token) {
+    public Mono<Boolean> isValidEmailVerificationToken(UUID userId, String token) {
         return validateToken(userId, token, ACCOUNT_VERIFICATION, EMAIL_VERIFICATION);
     }
 
-    private Mono<Boolean> validateToken(final Integer userId, final String token, final TokenPurpose purpose, final TokenType type) {
+    private Mono<Boolean> validateToken(final UUID userId, final String token, final TokenPurpose purpose, final TokenType type) {
         return userTokenRepository.findByToken(token)
                 .filter(t -> Objects.equals(t.getUserId(), userId))
                 .filter(t -> !t.getExpirationDate().isBefore(LocalDateTime.now()) &&

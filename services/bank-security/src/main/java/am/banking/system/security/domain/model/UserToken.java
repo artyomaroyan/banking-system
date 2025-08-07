@@ -23,7 +23,7 @@ import java.util.UUID;
 @Table("security.user_token")
 public class UserToken extends BaseEntity {
     @Column("user_id")
-    private final Integer userId;
+    private final UUID userId;
     @Column("token")
     private final String token;
     @Column("expires_at")

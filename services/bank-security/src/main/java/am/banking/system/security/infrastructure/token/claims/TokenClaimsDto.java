@@ -6,6 +6,7 @@ import am.banking.system.security.domain.enums.TokenState;
 import lombok.Builder;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -13,6 +14,6 @@ import java.util.Set;
  * Time: 01:36:08
  */
 @Builder
-public record TokenClaimsDto(Integer userId, String username, String email, Set<String> roles, Set<String> permissions,
+public record TokenClaimsDto(UUID userId, String username, String email, Set<String> roles, Set<String> permissions,
                              TokenState tokenState, TokenPurpose tokenPurpose, AccountState accountState) {
 }
