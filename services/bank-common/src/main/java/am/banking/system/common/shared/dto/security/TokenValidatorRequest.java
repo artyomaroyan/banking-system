@@ -12,5 +12,5 @@ import java.util.UUID;
  * Time: 00:20:55
  */
 @Validated
-public record TokenValidatorRequest(@NotNull Integer userId, @NotBlank String token, @NotBlank String username) {
+public record TokenValidatorRequest(@NotNull UUID userId, @NotBlank String token, @NotBlank String username) {
 }

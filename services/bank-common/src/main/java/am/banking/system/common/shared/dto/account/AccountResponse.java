@@ -12,6 +12,6 @@ import java.util.UUID;
  * Date: 01.06.25
  * Time: 16:12:48
  */
-public record AccountResponse(Integer accountOwnerId, String accountNumber, String accountOwnerUsername,
+public record AccountResponse(UUID accountOwnerId, String accountNumber, String accountOwnerUsername,
                               BigDecimal balance, AccountType accountType, LocalDateTime createdAt) {
 }
