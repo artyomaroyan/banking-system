@@ -41,17 +41,15 @@ public class RoleService {
 
     private Mono<Role> createRoleWithDefaultPermissions(RoleEnum roleName) {
         log.debug("Creating role with default permissions for role {}", roleName);
-        return permissionService.getPermissionsByRole(roleName)
-                .doOnNext(permission -> log.debug("Loading permissions: {}", permission))
+        return permissionService.getPermissionIdsByRole(roleName)
                 .collect(Collectors.toSet())
-                .flatMap(permissions -> {
+                .flatMap(permissionIds -> {
                     Role newRole = new Role(roleName);
+
                     return roleRepository.save(newRole)
-                            .doOnNext(saved -> log.info("Saved new role {}", saved))
-                            .flatMap(savedRole -> rolePermissionLinkService
-                                    .assignPermissionsToRole(savedRole.getId(), permissions)
-                                    .doOnSuccess(_ -> log.info("Assigned permissions to role {}", savedRole.getId()))
-                                    .thenReturn(savedRole));
+                            .flatMap(savedRole ->
+                                    rolePermissionLinkService.assignPermissionsToRole(savedRole.getId(), permissionIds)
+                                            .thenReturn(savedRole));
                 });
     }
 }

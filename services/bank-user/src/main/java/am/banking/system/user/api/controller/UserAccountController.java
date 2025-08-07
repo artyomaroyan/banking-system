@@ -36,7 +36,7 @@ public class UserAccountController {
     }
 
     @GetMapping("/activate/{userId}/{username}/{token}")
-    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable Integer userId, @PathVariable String username, @PathVariable String token) {
+    Mono<ResponseEntity<Result<String>>> activateAccount(@PathVariable UUID userId, @PathVariable String username, @PathVariable String token) {
         return userAccountActivationService.activateAccount(userId, username, token)
                         .map(this::buildResponse);
     }

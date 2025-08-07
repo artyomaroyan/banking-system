@@ -1,7 +1,5 @@
 package am.banking.system.user.domain.service.access;
 
-import am.banking.system.user.domain.entity.Permission;
-import am.banking.system.user.domain.entity.Role;
 import am.banking.system.user.domain.entity.RolePermission;
 import am.banking.system.user.domain.repository.RolePermissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +20,39 @@ import java.util.UUID;
 public class RolePermissionLinkService {
     private final RolePermissionRepository rolePermissionRepository;
 
-    public Mono<Void> savePermissionsForRole(Role role, Set<Permission> permissions) {
-        return Flux.fromIterable(permissions)
-                .flatMap(permission ->
-                        rolePermissionRepository.existsByRoleIdAndPermissionId(role.getId(), permission.getId())
+//    public Mono<Void> savePermissionsForRole(UUID roleId, Set<UUID> permissionIds) {
+//        return Flux.fromIterable(permissionIds)
+//                .flatMap(permissionId ->
+//                        rolePermissionRepository.save(new RolePermission(roleId, permissionId))
+//                                .then()).then();
+//    }
+//
+//    public Mono<Void> assignPermissionsToRole(UUID roleId, Set<UUID> permissionIds) {
+//        return Flux.fromIterable(permissionIds)
+//                .flatMap(permissionId ->
+//                        rolePermissionRepository.save(new RolePermission(roleId, permissionId)
+//                        ))
+//                .then();
+//    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+    public Mono<Void> savePermissionsForRole(UUID roleId, Set<UUID> permissionIds) {
+        return Flux.fromIterable(permissionIds)
+                .flatMap(permissionId ->
+                        rolePermissionRepository.existsByRoleIdAndPermissionId(roleId, permissionId)
                                 .filter(exists -> !exists)
-                                .flatMap(_ -> rolePermissionRepository.save(
-                                        new RolePermission(role.getId(), permission.getId()))
+                                .flatMap(_ ->
+                                        rolePermissionRepository.save(new RolePermission(roleId, permissionId))
                                 ))
                 .then();
     }
 
-    public Mono<Void> assignPermissionsToRole(Integer roleId, Set<Permission> permissions) {
-        return Flux.fromIterable(permissions)
-                .flatMap(permission -> rolePermissionRepository.save(
-                        new RolePermission(roleId, permission.getId())
-                ))
+    public Mono<Void> assignPermissionsToRole(UUID roleId, Set<UUID> permissionIds) {
+        return Flux.fromIterable(permissionIds)
+                .flatMap(permissionId ->
+                        rolePermissionRepository.save(new RolePermission(roleId, permissionId)
+                        ))
                 .then();
     }
 }

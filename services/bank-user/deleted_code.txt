@@ -1018,3 +1018,96 @@ WHERE rp.role_id = :roleId
     Flux<Permission> findAllByRoleId(Integer roleId);
 
 ------------------------------------------------------------------------------------------------------------------------
+
+//    public Mono<Void> savePermissionsForRole(UUID roleId, Set<UUID> permissionIds) {
+//        if (permissionIds == null || permissionIds.isEmpty()) {
+//            return Mono.empty();
+//        }
+//
+//        return Flux.fromIterable(permissionIds)
+//                .flatMap(permissionId -> {
+//                    if (roleId == null || permissionId == null) {
+//                        return Mono.error(new IllegalArgumentException("Role ID and Permission ID cannot be null"));
+//                    }
+//                    return rolePermissionRepository.existsByRoleIdAndPermissionId(roleId, permissionId)
+//                            .filter(exists -> !exists)
+//                            .flatMap(_ -> rolePermissionRepository.save(new RolePermission(roleId, permissionId)));
+//                })
+//                .then();
+//    }
+//
+//    public Mono<Void> assignPermissionsToRole(UUID roleId, Set<UUID> permissionIds) {
+//        if (permissionIds == null || permissionIds.isEmpty()) {
+//            return Mono.empty();
+//        }
+//
+//        return Flux.fromIterable(permissionIds)
+//                .flatMap(permissionId -> {
+//                    if (roleId == null || permissionId == null) {
+//                        return Mono.error(new IllegalArgumentException("Role ID and Permission ID cannot be null"));
+//                    }
+//                    return rolePermissionRepository.save(new RolePermission(roleId, permissionId));
+//                })
+//                .then();
+//    }
+
+------------------------------------------------------------------------------------------------------------------------
+
+//    @Bean
+//    @Order(1)
+//    public CommandLineRunner initializePermissionsAndRoles() {
+//        return _ -> {
+//            try {
+//                initializePermissions()
+//                        .then(initializeRoles())
+//                        .doOnSuccess(_ -> log.info("Roles & Permissions initialized successfully"))
+//                        .doOnError(e -> log.error("Failed to initialize permissions and roles", e))
+//                        .block();
+//            } catch (Exception e) {
+//                log.error("Critical error during initialization", e);
+//                throw e;
+//            }
+//        };
+//    }
+//
+//    private Mono<Void> initializePermissions() {
+//        return Flux.fromIterable(PERMISSION_ENUMS)
+//                .flatMap(permissionName ->
+//                        permissionRepository.findByPermissionEnum(permissionName)
+//                                .switchIfEmpty(Mono.defer(() ->
+//                                        permissionRepository.save(new Permission(permissionName))
+//                                ))
+//                )
+//                .then();
+//    }
+//
+//    private Mono<Void> initializeRoles() {
+//        return Flux.fromIterable(ROLE_PERMISSION_MAP.entrySet())
+//                .flatMap(entry -> {
+//                    RoleEnum roleName = entry.getKey();
+//                    Set<PermissionEnum> permissionEnums = entry.getValue();
+//
+//                    return roleRepository.findByRoleName(roleName)
+//                            .switchIfEmpty(Mono.defer(() -> roleRepository.save(new Role(roleName))))
+//                            .flatMap(role -> initializeRolePermissions(role, permissionEnums));
+//                })
+//                .then();
+//    }
+//
+//    private Mono<Void> initializeRolePermissions(Role role, Set<PermissionEnum> permissions) {
+//        return Flux.fromIterable(permissions)
+//                .flatMap(permissionName ->
+//                        permissionRepository.findByPermissionEnum(permissionName)
+//                                .map(Permission::getId)
+//                                .switchIfEmpty(Mono.error(new RuntimeException("Permission not found: " + permissionName)))
+//                                .flux().collect(Collectors.toSet())
+//                                .flatMap(permissionIds ->
+//                                        rolePermissionLinkService.savePermissionsForRole(role.getId(), new HashSet<>(permissionIds))
+//                                                .onErrorResume(e -> {
+//                                                    log.error("Failed to assign permissions to role {}", role.getRoleName(), e);
+//                                                    return Mono.empty();
+//                                                }))).then();
+//    }
+//}
+
+------------------------------------------------------------------------------------------------------------------------

@@ -13,9 +13,10 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.data.relational.core.query.Update;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 import static am.banking.system.user.util.LogConstants.SUCCESS;
 import static am.banking.system.user.util.LogConstants.USER_NOT_FOUND;
@@ -35,7 +36,7 @@ public class UserManagementService implements UserManagementUseCase {
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
     @Override
-    public Mono<Void> updateUserAccountState(Integer id) {
+    public Mono<Void> updateUserAccountState(UUID id) {
         return r2dbcEntityTemplate.update(User.class)
                 .matching(Query.query(
                         Criteria.where("id").is(id)
@@ -67,7 +68,7 @@ public class UserManagementService implements UserManagementUseCase {
                 .defaultIfEmpty(Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
     }
 
-    public Mono<Result<UserResponse>> getCurrentUser(Authentication authentication) {
-        return null;
-    }
+//    public Mono<Result<UserResponse>> getCurrentUser(Authentication authentication) {
+//        return null;
+//    }
 }

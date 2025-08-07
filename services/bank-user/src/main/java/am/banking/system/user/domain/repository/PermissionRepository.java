@@ -18,15 +18,18 @@ import java.util.UUID;
  * Time: 00:06:06
  */
 @Repository
-public interface PermissionRepository extends ReactiveCrudRepository<Permission, Integer> {
-    @Query("SELECT * FROM user_db.usr.permission WHERE permission_name = :permissionName")
+public interface PermissionRepository extends ReactiveCrudRepository<Permission, UUID> {
+    @Query("SELECT * FROM usr.permission WHERE permission_name = :permissionName")
     Mono<Permission> findByPermissionEnum(PermissionEnum permissionName);
 
     @Query("""
-SELECT p.* FROM user_db.usr.permission p
-JOIN user_db.usr.role_permission rp on p.id = rp.permission_id
-JOIN user_db.usr.role r on rp.role_id = r.id
+SELECT p.* FROM usr.permission p
+JOIN usr.role_permission rp on p.id = rp.permission_id
+JOIN usr.role r on rp.role_id = r.id
 WHERE r.role_name = :roleName
 """)
     Flux<Permission> findPermissionByRole(@Param("roleName") RoleEnum roleName);
+
+    @Query("SELECT id FROM usr.permission WHERE permission_name = :roleName")
+    Flux<UUID> findPermissionIdsByRole(@Param("roleName") RoleEnum roleName);
 }
