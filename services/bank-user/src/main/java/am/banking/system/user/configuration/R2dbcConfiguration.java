@@ -11,11 +11,12 @@ import io.r2dbc.spi.Option;
 import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.convert.CustomConversions;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.r2dbc.spi.ConnectionFactoryOptions.*;
@@ -48,9 +49,20 @@ public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
     @NonNull
     @Override
     public R2dbcCustomConversions r2dbcCustomConversions() {
-        return new R2dbcCustomConversions(
-                CustomConversions.StoreConversions.NONE,
-                List.of(new PermissionEnumWriteConverter(), new PermissionEnumReadConverter(),
-                        new RoleEnumWriteConverter(), new RoleEnumReadConverter()));
+        List<Converter<?, ?>> converters = new ArrayList<>();
+        converters.add(new RoleEnumReadConverter());
+        converters.add(new RoleEnumWriteConverter());
+        converters.add(new PermissionEnumReadConverter());
+        converters.add(new PermissionEnumWriteConverter());
+        return new R2dbcCustomConversions(getStoreConversions(), converters);
     }
+//    @Bean
+//    @NonNull
+//    @Override
+//    public R2dbcCustomConversions r2dbcCustomConversions() {
+//        return new R2dbcCustomConversions(
+//                CustomConversions.StoreConversions.NONE,
+//                List.of(new PermissionEnumWriteConverter(), new PermissionEnumReadConverter(),
+//                        new RoleEnumWriteConverter(), new RoleEnumReadConverter()));
+//    }
 }
