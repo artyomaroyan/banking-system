@@ -1,8 +1,8 @@
 package am.banking.system.user.application.port.in.user;
 
+import am.banking.system.common.shared.dto.security.AuthenticationRequest;
+import am.banking.system.common.shared.dto.security.AuthenticationResponse;
 import am.banking.system.common.shared.response.Result;
-import am.banking.system.user.api.dto.AuthenticationRequest;
-import am.banking.system.user.api.dto.AuthenticationResponse;
 import reactor.core.publisher.Mono;
 
 /**

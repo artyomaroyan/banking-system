@@ -1,5 +1,7 @@
 package am.banking.system.user.domain.repository;
 
+import am.banking.system.common.shared.dto.security.AuthenticationResponse;
+import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.domain.entity.User;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;

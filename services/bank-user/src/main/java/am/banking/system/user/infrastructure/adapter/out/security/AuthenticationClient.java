@@ -1,8 +1,8 @@
 package am.banking.system.user.infrastructure.adapter.out.security;
 
+import am.banking.system.common.shared.dto.security.AuthenticationRequest;
 import am.banking.system.common.shared.dto.security.AuthenticationResponse;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
-import am.banking.system.user.api.dto.AuthenticationRequest;
 import am.banking.system.user.application.port.out.AuthenticationClientPort;
 import am.banking.system.user.application.port.out.UserTokenClientPort;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +47,8 @@ public class AuthenticationClient implements AuthenticationClientPort {
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, AuthenticationResponse.class, "Authentication"))
                         .timeout(Duration.ofSeconds(5))
+                        .doOnNext(_ -> log.info("AuthenticationClient: user '{}' authenticated successfully", username))
+                        .doOnError(err -> log.error("AuthenticationClient: error for '{}' : {}", username,  err.getMessage()))
                 );
     }
 }
