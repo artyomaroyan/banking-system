@@ -53,6 +53,14 @@ public class UserManagementService implements UserManagementUseCase {
     }
 
     @Override
+    public Mono<Result<UserResponse>> getUserById(UUID id) {
+        return userRepository.findById(id)
+                .map(user -> genericMapper.map(user, UserResponse.class))
+                .map(response -> Result.success(response, SUCCESS))
+                .defaultIfEmpty(Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
+    }
+
+    @Override
     public Mono<Result<UserResponse>> getUserByUsername(String username) {
         return userRepository.findUserByUsername(username)
                 .map(user -> genericMapper.map(user, UserResponse.class))
@@ -67,8 +75,4 @@ public class UserManagementService implements UserManagementUseCase {
                 .map(response -> Result.success(response, SUCCESS))
                 .defaultIfEmpty(Result.error(USER_NOT_FOUND, NO_CONTENT.value()));
     }
-
-//    public Mono<Result<UserResponse>> getCurrentUser(Authentication authentication) {
-//        return null;
-//    }
 }

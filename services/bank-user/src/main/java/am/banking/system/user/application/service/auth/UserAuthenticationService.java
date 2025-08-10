@@ -36,7 +36,7 @@ public class UserAuthenticationService implements UserAuthenticationUseCase {
                     }
 
                     return authenticationClient.authenticate(request.username(), request.password())
-                            .map(Result.success("Successfully authenticated"))
+                            .map(authResponse -> Result.success(authResponse, "Successfully authenticated"))
                             .onErrorResume(ex -> {
                                 log.warn("Invalid credentials: {}", ex.getMessage());
                                 return Mono.just(Result.error("Invalid credentials", BAD_REQUEST.value()));

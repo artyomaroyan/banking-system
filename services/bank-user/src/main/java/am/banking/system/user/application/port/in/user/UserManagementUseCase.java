@@ -13,6 +13,7 @@ import java.util.UUID;
  */
 public interface UserManagementUseCase {
     Mono<Void> updateUserAccountState(UUID id);
+    Mono<Result<UserResponse>> getUserById(UUID id);
     Mono<Result<UserResponse>> getUserByUsername(String username);
     Mono<Result<UserResponse>> getUserByEmail(String email);
 }
