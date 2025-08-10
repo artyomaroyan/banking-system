@@ -31,10 +31,6 @@ public record Result<T> (T data, boolean success, String message, Integer errorC
                 .build();
     }
 
-    public static <T> Result<T> fromValidation(ValidationResult result, int status) {
-        return new Result<>(null,false,String.join(", ", result.message()), status);
-    }
-
     private static String defaultMessage(String message) {
         return message == null || message.isBlank() ? "" : message;
     }
