@@ -1,3 +1,21 @@
 spring:
   application:
     name: api-gateway
+
+  cloud:
+    config:
+      uri: http://localhost:8888
+    gateway:
+      routes:
+        - id: user-service-protected
+          uri: lb://USER-SERVICE
+            - Path=/api/v1/user/management
+          filters:
+            - StripPrefix=2
+            - name: AddClaimHeadersFilter
+              args:
+                roles-header-name: X-Roles
+        - id: user-service-public
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/public
