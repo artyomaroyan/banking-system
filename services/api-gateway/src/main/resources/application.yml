@@ -5,3 +5,67 @@ spring:
   application:
     name: api-gateway
 
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "*"
+            allowed-methods: [GET, POST, PUT, DELETE, PATCH, OPTIONS]
+            allowed-headers: "*"
+            exposed-headers: "X-Correlation-Id,X-User-Id,X-Roles,X-Scopes"
+            allow-credentials: false
+
+      default-filters:
+        - RemoveRequestHeader=Cookie
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - RequestRateLimiter=redis-rate-limiter.replenishRate=10,redis-rate-limiter.burstCapacity=20,key-resolver=#{@ipKeyResolver}
+
+      routes:
+        - id: security-public
+          uri: lb://security-service
+          predicates:
+            - Path=/oauth2/**,/.well-known/**,/auth/**,/actuator/security/**
+          filters:
+            - StripPrefix=0
+
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/user/**
+          filters:
+            - StripPrefix=1
+            - CircuitBreaker=name=userServiceCB
+
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/api/v1/account/**
+          filters:
+            - StripPrefix=1
+            - CircuitBreaker=name=accountServiceCB
+
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          jwk-set-uri: http://localhost:8989/api/internal/security/token/access/issue
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost/8761/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,metrics,prometheus
+  tracing:
+    sampling:
+      probability: 1.0
