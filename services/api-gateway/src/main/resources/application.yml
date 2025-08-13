@@ -1,0 +1,7 @@
+server:
+  port: 7210
+
+spring:
+  application:
+    name: api-gateway
+
