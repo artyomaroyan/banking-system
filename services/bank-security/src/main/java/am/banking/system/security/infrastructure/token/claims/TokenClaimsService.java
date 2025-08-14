@@ -18,11 +18,11 @@ public class TokenClaimsService {
 
     public TokenClaimsDto createUserTokenClaims(UserPrincipal principal, TokenPurpose purpose) {
         return TokenClaimsDto.builder()
-                .userId(principal.getUserId())
+                .userId(principal.userId())
                 .username(principal.getUsername())
-                .email(principal.getEmail())
-                .roles(principal.getRoles().stream().map(Objects::toString).collect(Collectors.toSet()))
-                .permissions(principal.getPermissions().stream().map(Object::toString).collect(Collectors.toSet()))
+                .email(principal.email())
+                .roles(principal.roles().stream().map(Objects::toString).collect(Collectors.toSet()))
+                .permissions(principal.permissions().stream().map(Object::toString).collect(Collectors.toSet()))
                 .tokenState(TokenState.PENDING)
                 .tokenPurpose(purpose)
                 .accountState(principal.getAccountState())

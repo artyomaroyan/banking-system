@@ -1,7 +1,7 @@
 package am.banking.system.security.api.shared;
 
 import am.banking.system.common.shared.enums.AccountState;
-import lombok.Getter;
+import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,16 +18,11 @@ import java.util.stream.Stream;
  * Date: 17.04.25
  * Time: 00:35:43
  */
-@Getter
-public class UserPrincipal implements UserDetails {
-    private final UUID userId;
-    private final String username;
-    private final String password;
-    private final String email;
-    private final Set<String> roles;
-    private final Set<String> permissions;
+public record UserPrincipal(UUID userId, String username, String password, String email,
+                            Set<String> roles, Set<String> permissions) implements UserDetails {
 
-    public UserPrincipal(UUID userId, String username, String password, String email, Set<String> roles, Set<String> permissions) {
+    public UserPrincipal(UUID userId, String username, String password, String email,
+                         Set<String> roles, Set<String> permissions) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -55,6 +50,16 @@ public class UserPrincipal implements UserDetails {
                         roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())),
                         permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.toUpperCase())))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     @Override
@@ -94,6 +99,7 @@ public class UserPrincipal implements UserDetails {
         return Objects.hash(userId, username);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "User principal {" +

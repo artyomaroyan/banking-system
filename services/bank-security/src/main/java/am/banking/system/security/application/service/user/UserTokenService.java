@@ -74,7 +74,7 @@ public class UserTokenService implements UserTokenUseCase {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
         UserToken userToken = UserToken.builder()
-                .userId(principal.getUserId())
+                .userId(principal.userId())
                 .token(token)
                 .expirationDate(expiration)
                 .tokenPurpose(purpose)

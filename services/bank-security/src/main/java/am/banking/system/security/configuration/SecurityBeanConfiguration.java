@@ -1,13 +1,14 @@
 package am.banking.system.security.configuration;
 
+import am.banking.system.security.converter.JwtReactiveAuthenticationConverter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.DelegatingReactiveAuthenticationManager;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
-
-import java.util.List;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager;
 
 /**
  * Author: Artyom Aroyan
@@ -21,20 +22,16 @@ public class SecurityBeanConfiguration {
         return new SimpleMeterRegistry();
     }
 
-    // If you have multiple authentication strategies (JWT, DB, etc.) you should use this Bean.
     @Bean
-    protected ReactiveAuthenticationManager authenticationManager(List<ReactiveAuthenticationManager> managers) {
-        return new DelegatingReactiveAuthenticationManager(managers);
-
+    protected JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager(
+            ReactiveJwtDecoder jwtDecoder, JwtReactiveAuthenticationConverter jwtConverter) {
+        var manager = new JwtReactiveAuthenticationManager(jwtDecoder);
+        manager.setJwtAuthenticationConverter(jwtConverter);
+        return manager;
     }
-    // If you’re using ReactiveUserDetailsService for fetching users from DB: you should use this Bean.
-//    @Bean
-//    protected ReactiveAuthenticationManager authenticationManager(
-//            ReactiveUserDetailsService userDetailsService, Argon2PasswordEncoder passwordEncoder) {
-//
-//        UserDetailsRepositoryReactiveAuthenticationManager manager =
-//                new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
-//        manager.setPasswordEncoder(passwordEncoder);
-//        return manager;
-//    }
+
+    @Bean
+    protected ReactiveAuthenticationManager authenticationManager(JwtReactiveAuthenticationManager jwtManager) {
+        return new DelegatingReactiveAuthenticationManager(jwtManager);
+    }
 }
