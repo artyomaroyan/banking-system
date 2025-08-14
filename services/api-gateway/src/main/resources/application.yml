@@ -52,7 +52,7 @@ spring:
     oauth2:
       resource-server:
         jwt:
-          jwk-set-uri: http://localhost:8989/api/internal/security/token/access/issue
+          jwk-set-uri: http://security-service/.well-known/jwks.json
 
 eureka:
   client:
