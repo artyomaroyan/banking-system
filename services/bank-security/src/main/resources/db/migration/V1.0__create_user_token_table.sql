@@ -1,6 +1,6 @@
 create table if not exists security.user_token(
     id uuid unique not null primary key default gen_random_uuid(),
-    user_id integer not null ,
+    user_id uuid not null ,
     created_at timestamp not null default current_timestamp ,
     updated_at timestamp not null default current_timestamp,
     expires_at timestamp not null ,
