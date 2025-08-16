@@ -13,5 +13,5 @@ import java.util.UUID;
  */
 public interface UserFactoryUseCase {
     Mono<User> createUser(UserRequest request);
-    Mono<User> updateUser(UUID userId,UserRequest request);
+    Mono<User> updateUser(User existingUser, UserRequest request);
 }

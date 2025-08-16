@@ -14,6 +14,7 @@ import am.banking.system.user.application.port.out.UserTokenClientPort;
 import am.banking.system.user.application.port.out.account.CurrentAccountCreationClientPort;
 import am.banking.system.user.application.service.validation.RequestValidation;
 import am.banking.system.user.domain.entity.User;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,33 +40,62 @@ public class UserRegistrationService implements UserRegistrationUseCase {
     private final RequestValidation<UserRequest> requestValidation;
     private final CurrentAccountCreationClientPort currentAccountCreationClient;
 
+//    @Override
+//    public Mono<Result<String>> register(UserRequest request) {
+//        log.info("Initiating user registration for email: {}", request.email());
+//
+//        return requestValidation.isValidRequest(request)
+//                .flatMap(errors -> {
+//                    if (!errors.message().isEmpty()) {
+//                        String errorMessage = String.join(" ", errors.message());
+//                        log.error("Validation failed for {}: {}",  request.email(), errorMessage);
+//                        return Mono.just(Result.error(errorMessage, BAD_REQUEST.value()));
+//                    }
+//                    log.info("Validation passed for email: {}",  request.email());
+//
+//                    return userFactory.createUser(request)
+//                            .doOnNext(user -> log.info("Created user: {}", user))
+//                            .flatMap(userReactiveMapper::map)
+//                            .flatMap(user -> createDefaultAccount(user)
+//                                    .then(generateVerificationToken(user)
+//                                            .flatMap(token ->
+//                                                    sendVerificationEmailAndGenerateAccessToken(user, token))
+//                                    )
+//                            )
+//                            .onErrorResume(error -> {
+//                                log.error("Registration failed: {}", error.getMessage(), error);
+//                                return Mono.just(Result.error("Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
+//                            });
+//                });
+//    }
+
     @Override
     public Mono<Result<String>> register(UserRequest request) {
-        log.info("Initiating user registration for email: {}", request.email());
+        return Mono.just(request)
+                .doOnNext(req -> log.info("Initiating registration for email: {}", req.email()))
+                .flatMap(this::validateRequest)
+                .flatMap(this::createUserAndAccount)
+                .flatMap(this::processVerification)
+                .onErrorResume(this::handleRegistrationError);
+    }
 
+    private Mono<UserRequest> validateRequest(UserRequest request) {
         return requestValidation.isValidRequest(request)
                 .flatMap(errors -> {
                     if (!errors.message().isEmpty()) {
                         String errorMessage = String.join(" ", errors.message());
                         log.error("Validation failed for {}: {}",  request.email(), errorMessage);
-                        return Mono.just(Result.error(errorMessage, BAD_REQUEST.value()));
+                        return Mono.error(new ValidationException(errorMessage));
                     }
-                    log.info("Validation passed for email: {}",  request.email());
-
-                    return userFactory.createUser(request)
-                            .doOnNext(user -> log.info("Created user: {}", user))
-                            .flatMap(userReactiveMapper::map)
-                            .flatMap(user -> createDefaultAccount(user)
-                                    .then(generateVerificationToken(user)
-                                            .flatMap(token ->
-                                                    sendVerificationEmailAndGenerateAccessToken(user, token))
-                                    )
-                            )
-                            .onErrorResume(error -> {
-                                log.error("Registration failed: {}", error.getMessage(), error);
-                                return Mono.just(Result.error("Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
-                            });
+                    return Mono.just(request);
                 });
+    }
+
+    private Mono<UserDto> createUserAndAccount(UserRequest request) {
+        return userFactory.createUser(request)
+                .flatMap(userReactiveMapper::map)
+                .flatMap(userDto -> createDefaultAccount(userDto)
+                        .thenReturn(userDto));
     }
 
     private Mono<AccountResponse> createDefaultAccount(UserDto userDto) {
@@ -74,15 +104,34 @@ public class UserRegistrationService implements UserRegistrationUseCase {
                 .doOnNext(account -> log.info("Account created successfully: {}", account));
     }
 
-    private Mono<Result<String>> sendVerificationEmailAndGenerateAccessToken(UserDto userDto, TokenResponse token) {
-        return notificationClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
-                .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
-                .then(userTokenClient.generateJwtAccessToken(userDto))
+    private Mono<Result<String>> processVerification(UserDto userDto) {
+        return generateVerificationToken(userDto)
+                .flatMap(token -> sendVerificationEmail(userDto, token))
                 .thenReturn(Result.success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
     }
+
+//    private Mono<Result<String>> sendVerificationEmailAndGenerateAccessToken(UserDto userDto, TokenResponse token) {
+//        return notificationClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
+//                .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()))
+//                .then(userTokenClient.generateJwtAccessToken(userDto))
+//                .thenReturn(Result.success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
+//    }
 
     private Mono<TokenResponse> generateVerificationToken(UserDto userDto) {
         return userTokenClient.generateEmailVerificationToken(userDto)
                 .doOnNext(token -> log.info("Generated email verification token: {}", token.token().substring(7, 12)));
+    }
+
+    private Mono<Void> sendVerificationEmail(UserDto userDto, TokenResponse token) {
+        return notificationClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
+                .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()));
+    }
+
+    private Mono<Result<String>> handleRegistrationError(Throwable error) {
+        log.error("Registration failed: {}", error.getMessage(), error);
+        if (error instanceof ValidationException) {
+            return Mono.just(Result.error(error.getMessage(), BAD_REQUEST.value()));
+        }
+        return Mono.just(Result.error("Registration process failed. Please try again later.", INTERNAL_SERVER_ERROR.value()));
     }
 }
