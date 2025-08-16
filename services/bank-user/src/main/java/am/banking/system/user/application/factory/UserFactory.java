@@ -14,6 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import static am.banking.system.common.shared.enums.AccountState.ACTIVE;
 import static am.banking.system.common.shared.enums.AccountState.PENDING;
 
 /**
@@ -71,5 +75,20 @@ public class UserFactory implements UserFactoryUseCase {
                             });
                 })
                 .doOnError(error -> log.error("Error during user creation: {}", error.getMessage(), error));
+    }
+
+    @Override
+    public Mono<User> updateUser(UUID userId, UserRequest request) {
+        User userToUpdate = new User(
+                request.username(),
+                request.firstName(),
+                request.lastName(),
+                request.email(),
+                request.password(),
+                request.phone(),
+                request.age(),
+                ACTIVE
+        );
+        return userRepository.save(userToUpdate);
     }
 }

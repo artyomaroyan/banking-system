@@ -4,6 +4,8 @@ import am.banking.system.user.api.dto.UserRequest;
 import am.banking.system.user.domain.entity.User;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 /**
  * Author: Artyom Aroyan
  * Date: 21.06.25
@@ -11,4 +13,5 @@ import reactor.core.publisher.Mono;
  */
 public interface UserFactoryUseCase {
     Mono<User> createUser(UserRequest request);
+    Mono<User> updateUser(UUID userId,UserRequest request);
 }
