@@ -1,8 +1,8 @@
 package am.banking.system.user.domain.entity;
 
-import am.banking.system.common.shared.model.BaseEntity;
 import am.banking.system.common.shared.enums.AccountState;
-import lombok.AllArgsConstructor;
+import am.banking.system.common.shared.model.BaseEntity;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -13,7 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
  * Time: 23:30:13
  */
 @Getter
-@AllArgsConstructor
+@Builder
 @Table("usr.usr")
 public class User extends BaseEntity {
     @Column("username")
