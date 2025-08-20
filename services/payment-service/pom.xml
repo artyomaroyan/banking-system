@@ -40,7 +40,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- these dependencies are to fix bank-common's Vulnerability -->
+            <!-- these dependencies are to fix payment-service's Vulnerability -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
