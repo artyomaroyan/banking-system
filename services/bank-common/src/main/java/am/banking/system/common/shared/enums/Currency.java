@@ -8,7 +8,7 @@ import lombok.Getter;
  * Time: 14:06:55
  */
 @Getter
-public enum AccountCurrency {
+public enum Currency {
     AMD("00"),
     USD("01"),
     EUR("02"),
@@ -16,13 +16,13 @@ public enum AccountCurrency {
 
     private final String suffix;
 
-    AccountCurrency(String suffix) {
+    Currency(String suffix) {
         this.suffix = suffix;
     }
 
     public static String fromCurrency(String currencyCode) {
         try {
-            return AccountCurrency.valueOf(currencyCode.toUpperCase()).getSuffix();
+            return Currency.valueOf(currencyCode.toUpperCase()).getSuffix();
         } catch (IllegalArgumentException _) {
             return "99"; // Default suffix for unknown currencies
         }

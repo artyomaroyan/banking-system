@@ -1,6 +1,6 @@
 package am.banking.system.common.shared.dto.account;
 
-import am.banking.system.common.shared.enums.AccountCurrency;
+import am.banking.system.common.shared.enums.Currency;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 @Validated
 public record AccountCreationRequest(@NotNull UUID userId, @NotBlank String username,
-                                     @NotNull AccountCurrency accountCurrency) {
+                                     @NotNull Currency currency) {
 
     @Override
     public boolean equals(Object obj) {
