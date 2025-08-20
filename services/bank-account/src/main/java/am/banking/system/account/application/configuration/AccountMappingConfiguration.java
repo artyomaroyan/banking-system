@@ -29,7 +29,7 @@ public class AccountMappingConfiguration {
                             request.accountOwnerUsername(),
                             request.balance(),
                             request.accountType(),
-                            request.accountCurrency()
+                            request.currency()
                     );
                 });
     }

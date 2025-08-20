@@ -1,7 +1,7 @@
 package am.banking.system.account.application.service;
 
 import am.banking.system.account.api.dto.AccountRequest;
-import am.banking.system.common.shared.enums.AccountCurrency;
+import am.banking.system.common.shared.enums.Currency;
 import am.banking.system.common.shared.dto.account.AccountResponse;
 import am.banking.system.account.application.port.in.AccountCreationUseCase;
 import am.banking.system.account.domain.entity.Account;
@@ -31,7 +31,7 @@ public class AccountCreationService implements AccountCreationUseCase {
     // TODO: add bank account state to check is account active or freeze. etc.
     @Override
     public Mono<AccountResponse> createDefaultAccount(AccountCreationRequest request) {
-        return generateAccountNumber(request.accountCurrency().name())
+        return generateAccountNumber(request.currency().name())
                 .flatMap(accountNumber -> {
                     AccountRequest accountRequest = new AccountRequest(
                             request.userId(),
@@ -39,7 +39,7 @@ public class AccountCreationService implements AccountCreationUseCase {
                             request.username(),
                             BigDecimal.ZERO,
                             CURRENT_ACCOUNT,
-                            request.accountCurrency());
+                            request.currency());
 
                     Account account = genericMapper.map(accountRequest, Account.class);
                     return accountRepository.save(account)
@@ -49,7 +49,7 @@ public class AccountCreationService implements AccountCreationUseCase {
 
     private Mono<String> generateAccountNumber(String currencyCode) {
         int accPrefix = 12345;
-        String accSuffix = AccountCurrency.fromCurrency(currencyCode);
+        String accSuffix = Currency.fromCurrency(currencyCode);
 
         return Mono.defer(() -> {
             long randomMiddle = ThreadLocalRandom.current().nextLong(100_000_000L, 999_999_999L);

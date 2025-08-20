@@ -1,6 +1,6 @@
 package am.banking.system.account.api.dto;
 
-import am.banking.system.common.shared.enums.AccountCurrency;
+import am.banking.system.common.shared.enums.Currency;
 import am.banking.system.common.shared.enums.AccountType;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
@@ -29,5 +29,5 @@ public record AccountRequest(
         @NotNull(message = "Account type is required")
         AccountType accountType,
         @NotNull(message = "Account currency is required")
-        AccountCurrency accountCurrency){
+        Currency currency){
 }
