@@ -3,7 +3,7 @@ package am.banking.system.user.infrastructure.adapter.out.notification;
 import am.banking.system.common.shared.dto.notification.EmailVerification;
 import am.banking.system.common.shared.dto.notification.PasswordReset;
 import am.banking.system.common.shared.dto.notification.WelcomeEmail;
-import am.banking.system.user.application.port.out.NotificationClientPort;
+import am.banking.system.user.application.port.out.notification.NotificationClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;

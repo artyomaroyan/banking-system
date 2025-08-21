@@ -2,7 +2,7 @@ package am.banking.system.user.application.service.validation;
 
 import am.banking.system.common.shared.response.ValidationResult;
 import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.domain.repository.UserRepository;
+import am.banking.system.user.infrastructure.adapter.out.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

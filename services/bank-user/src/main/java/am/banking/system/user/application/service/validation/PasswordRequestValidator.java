@@ -2,7 +2,7 @@ package am.banking.system.user.application.service.validation;
 
 import am.banking.system.common.shared.response.ValidationResult;
 import am.banking.system.user.api.dto.PasswordResetEmailRequest;
-import am.banking.system.user.domain.repository.UserRepository;
+import am.banking.system.user.infrastructure.adapter.out.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -65,7 +65,7 @@ public class PasswordRequestValidator implements RequestValidation<PasswordReset
         return userRepository.existsById(userId)
                 .map(exists -> {
                     if (Boolean.FALSE.equals(exists)) {
-                        String message = String.format("User with id %d does not exist", userId);
+                        String message = String.format("User with id %s does not exist", userId);
                         log.error(message);
                         return ValidationResult.invalid(message);
 

@@ -4,12 +4,12 @@ import am.banking.system.common.shared.dto.user.UserDto;
 import am.banking.system.common.shared.exception.NotFoundException;
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.UserRequest;
-import am.banking.system.user.application.mapper.ReactiveMapper;
-import am.banking.system.user.application.port.in.user.UserFactoryUseCase;
+import am.banking.system.user.api.mapper.ReactiveMapper;
+import am.banking.system.user.application.port.in.user.UserUseCase;
 import am.banking.system.user.application.port.in.user.UserUpdateUseCase;
 import am.banking.system.user.application.service.validation.RequestValidation;
-import am.banking.system.user.domain.entity.User;
-import am.banking.system.user.domain.repository.UserRepository;
+import am.banking.system.user.domain.model.User;
+import am.banking.system.user.infrastructure.adapter.out.persistence.UserRepository;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public class UserUpdateService implements UserUpdateUseCase {
     private final UserRepository userRepository;
-    private final UserFactoryUseCase userFactory;
+    private final UserUseCase userFactory;
     private final ReactiveMapper<User, UserDto> userReactiveMapper;
     private final RequestValidation<UserRequest> requestValidation;
 

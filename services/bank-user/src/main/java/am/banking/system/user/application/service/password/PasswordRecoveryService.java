@@ -3,7 +3,7 @@ package am.banking.system.user.application.service.password;
 import am.banking.system.common.shared.response.Result;
 import am.banking.system.user.api.dto.PasswordResetConfirmRequest;
 import am.banking.system.user.api.dto.PasswordResetEmailRequest;
-import am.banking.system.user.application.port.in.password.PasswordRecoveryFactoryUserCase;
+import am.banking.system.user.application.port.in.password.PasswordRecoveryHelperUserCase;
 import am.banking.system.user.application.port.in.password.PasswordRecoveryUseCase;
 import am.banking.system.user.application.service.validation.PasswordRequestValidator;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequiredArgsConstructor
 public class PasswordRecoveryService implements PasswordRecoveryUseCase {
     private final PasswordRequestValidator requestValidator;
-    private final PasswordRecoveryFactoryUserCase passwordRecoveryFactory;
+    private final PasswordRecoveryHelperUserCase passwordRecoveryFactory;
 
     @Override
     public Mono<Result<String>> resetPassword(PasswordResetConfirmRequest request) {

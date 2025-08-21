@@ -2,8 +2,8 @@ package am.banking.system.user.infrastructure.adapter.out.security;
 
 import am.banking.system.common.shared.dto.security.TokenInvalidateRequest;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
-import am.banking.system.user.application.port.out.TokenInvalidateClientPort;
-import am.banking.system.user.application.port.out.UserTokenClientPort;
+import am.banking.system.user.application.port.out.security.TokenInvalidateClientPort;
+import am.banking.system.user.application.port.out.security.UserTokenClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;

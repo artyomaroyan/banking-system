@@ -9,7 +9,7 @@ import am.banking.system.common.shared.exception.security.TimeoutException;
 import am.banking.system.common.shared.exception.security.token.EmptyTokenException;
 import am.banking.system.common.shared.exception.security.token.TokenGenerationException;
 import am.banking.system.common.shared.response.WebClientResponseHandler;
-import am.banking.system.user.application.port.out.UserTokenClientPort;
+import am.banking.system.user.application.port.out.security.UserTokenClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.constraints.NotBlank;
