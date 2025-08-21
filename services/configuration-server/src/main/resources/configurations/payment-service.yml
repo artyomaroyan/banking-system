@@ -1,0 +1,23 @@
+server:
+  port: 9203
+  ssl:
+    enabled: false
+
+internal:
+  system:
+    secret: {X-INTERNAL-SECRET}
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/payment_db
+    username: payment_owner
+    password: payment_owner
+
+  flyway:
+    enabled: true
+    url: r2dbc:postgresql://localhost:5432/payment_db
+    user: payment_owner
+    password: payment_owner
+    locations: classpath:db/migration
+    driver-class-name: org.postgresql.Driver
+    default-schema: payment
