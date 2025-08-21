@@ -1,0 +1,24 @@
+# transaction-service.yml from configuration-server service
+server:
+  port: 9202
+  ssl:
+    enabled: false
+
+internal:
+  system:
+    secret: ${X-INTERNAL-SECRET}
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/transaction_db
+    username: transaction_owner
+    password: transaction_owner
+
+  flyway:
+    enabled: true
+    url: r2dbc:postgresql://localhost:5432/transaction_db
+    user: transaction_owner
+    password: transaction_owner
+    locations: classpath:db/migration
+    driver-class-name: org.postgresql.Driver
+    default-schema: transaction
