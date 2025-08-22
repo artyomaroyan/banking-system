@@ -142,6 +142,10 @@
             <artifactId>spring-cloud-config-server</artifactId>
             <exclusions>
                 <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>net.i2p.crypto</groupId>
                     <artifactId>eddsa</artifactId>
                 </exclusion>
