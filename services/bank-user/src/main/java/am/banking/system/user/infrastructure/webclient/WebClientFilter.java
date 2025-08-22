@@ -1,8 +1,12 @@
 package am.banking.system.user.infrastructure.webclient;
 
 import am.banking.system.common.shared.exception.*;
+import am.banking.system.user.application.port.out.security.UserTokenClientPort;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -15,7 +19,13 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public final class WebClientFilter {
 
-    private WebClientFilter() {
+    public static ExchangeFilterFunction systemTokenPropagationFilter(ObjectProvider<UserTokenClientPort> provider) {
+        return ExchangeFilterFunction.ofRequestProcessor(request ->
+                provider.getObject()
+                        .generateSystemToken()
+                        .map(token -> ClientRequest.from(request)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .build()));
     }
 
     public static ExchangeFilterFunction errorResponseFilter() {
