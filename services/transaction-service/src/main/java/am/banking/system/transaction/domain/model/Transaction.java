@@ -1,4 +1,4 @@
-package am.banking.system.transaction.domain.entity;
+package am.banking.system.transaction.domain.model;
 
 import am.banking.system.common.shared.model.BaseEntity;
 import am.banking.system.transaction.domain.enums.TransactionType;
