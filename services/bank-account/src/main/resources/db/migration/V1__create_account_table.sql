@@ -7,5 +7,7 @@ create table if not exists account.account(
     account_owner_username varchar(30) not null ,
     balance bigint not null ,
     account_type varchar(30) not null,
-    currency varchar(10) not null
+    currency varchar(10) not null,
+    account_state varchar(20) not null ,
+    version bigint not null
 );

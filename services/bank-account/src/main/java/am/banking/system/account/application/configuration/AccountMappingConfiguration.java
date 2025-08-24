@@ -3,6 +3,7 @@ package am.banking.system.account.application.configuration;
 import am.banking.system.account.api.dto.AccountRequest;
 import am.banking.system.account.domain.entity.Account;
 import am.banking.system.common.shared.dto.account.AccountResponse;
+import am.banking.system.common.shared.enums.AccountState;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,7 +30,9 @@ public class AccountMappingConfiguration {
                             request.accountOwnerUsername(),
                             request.balance(),
                             request.accountType(),
-                            request.currency()
+                            request.currency(),
+                            AccountState.ACTIVE,
+                            1L
                     );
                 });
     }

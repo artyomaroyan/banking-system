@@ -1,10 +1,12 @@
 package am.banking.system.account.domain.entity;
 
+import am.banking.system.common.shared.enums.AccountState;
 import am.banking.system.common.shared.enums.Currency;
 import am.banking.system.common.shared.enums.AccountType;
 import am.banking.system.common.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -31,5 +33,36 @@ public class Account extends BaseEntity {
     @Column("account_type")
     private final AccountType accountType;
     @Column("currency")
-    private Currency currency;
+    private final Currency currency;
+    @Column("account_state")
+    private final AccountState accountState;
+    @Version
+    @Column("version")
+    private final long version;
+
+    public Account withBalance(BigDecimal newBalance) {
+        return new Account(
+                this.accountOwnerId,
+                this.accountNumber,
+                this.accountOwnerUsername,
+                newBalance,
+                this.accountType,
+                this.currency,
+                this.accountState,
+                this.version
+        );
+    }
+
+    public Account withVersion(long newVersion) {
+        return new Account(
+                this.accountOwnerId,
+                this.accountNumber,
+                this.accountOwnerUsername,
+                this.balance,
+                this.accountType,
+                this.currency,
+                this.accountState,
+                newVersion
+        );
+    }
 }
