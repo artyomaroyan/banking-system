@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 @Getter
 @Builder
-@Table("transaction")
+@Table("transaction.transaction")
 public final class Transaction extends BaseEntity {
     private final UUID userId;
     private final String username;
