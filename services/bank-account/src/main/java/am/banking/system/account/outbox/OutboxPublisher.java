@@ -1,12 +1,14 @@
 package am.banking.system.account.outbox;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -14,35 +16,37 @@ import java.util.UUID;
  * Date: 23.08.25
  * Time: 01:49:38
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OutboxPublisher {
     private final OutboxRepository outboxRepository;
     private final KafkaSender<String, String> kafkaSender;
 
-    @Scheduled(fixedDelayString = "PT2S") // every 2 seconds; tune as needed
+    private final Map<String, String> topicMapping = Map.of(
+            "AccountBalanceChangedV1", "account.balance-changed.v1",
+            "UserTransferRequestedV1", "user.transfer-requested.v1"
+    );
+
+    @Scheduled(fixedDelayString = "${outbox.publish-interval}") // every 2 seconds; tune as needed
     public void publishBatch() {
         outboxRepository.findTop100ByPublishedFalseOrderByOccurredAtAsc()
                 .flatMap(event -> {
-                    String topic;
-                    if ("AccountBalanceChangedV1".equals(event.getType())) {
-                        topic = "account.balance-changed.v1";
-                    } else {
-                        return Mono.error(new IllegalStateException("Unknown event type: " + event.getType()));
+                    String topic = topicMapping.get(event.getType());
+                    if (topic == null) {
+                        log.warn("Unknown event type: {}", event.getType());
+                        return Flux.empty();
                     }
 
-                    String key = event.getAggregateId().toString();
+                    SenderRecord<String, String, UUID> rec = SenderRecord.create(
+                            topic, null, null, event.getAggregateId().toString(),
+                            event.getPayload(), event.getEventId()
+                    );
 
-                    SenderRecord<String, String, UUID> record =
-                            SenderRecord.create(topic, null, null, key, event.getPayload(), event.getEventId());
-
-                    return kafkaSender.send(Mono.just(record))
-                            .next()
-                            .flatMap(_ -> {
-                                event.setPublished(true);
-                                return outboxRepository.save(event);
-                            });
+                    return kafkaSender.send(Flux.just(rec))
+                            .doOnError(err -> log.error("Kafka send failed for event {}", event.getEventId(), err));
                 })
-                .subscribe();
+                .subscribe(null, err ->
+                        log.error("Error publishing outbox events", err));
     }
 }

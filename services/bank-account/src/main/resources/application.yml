@@ -10,6 +10,9 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
+outbox:
+  publish-interval: 2000
+
 logging:
   level:
     root: info
