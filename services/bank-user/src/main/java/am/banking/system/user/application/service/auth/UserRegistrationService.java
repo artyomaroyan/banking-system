@@ -77,6 +77,7 @@ public class UserRegistrationService implements UserRegistrationUseCase {
 
     private Mono<Result<String>> processVerification(UserDto userDto) {
         return generateVerificationToken(userDto)
+                .flatMap(_ -> generateJwtAccessToken(userDto))
                 .flatMap(token -> sendVerificationEmail(userDto, token))
                 .thenReturn(Result.success("Your account has been registered. Please activate it by clicking the activation link we have sent to your email."));
     }
@@ -89,6 +90,11 @@ public class UserRegistrationService implements UserRegistrationUseCase {
     private Mono<Void> sendVerificationEmail(UserDto userDto, TokenResponse token) {
         return notificationClient.sendVerificationEmail(userDto.email(), userDto.username(), token.token())
                 .doOnSuccess(_ -> log.info("Verification email sent to: {}", userDto.email()));
+    }
+
+    private Mono<TokenResponse> generateJwtAccessToken(UserDto userDto) {
+        return userTokenClient.generateJwtAccessToken(userDto)
+                .doOnNext(token -> log.info("Generated jwt access token: {}", token.token().substring(7, 12)));
     }
 
     private Mono<Result<String>> handleRegistrationError(Throwable error) {
