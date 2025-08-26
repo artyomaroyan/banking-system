@@ -16,18 +16,18 @@ import java.util.UUID;
  * Time: 02:27:42
  */
 @Validated
-public record UserTransferRequestedV1(@NotNull UUID eventId, @NotNull UUID userId, @NotNull UUID destinationAccountId,
+public record UserTransferRequestedV1(@NotNull UUID eventId, @NotNull UUID userId, @NotNull UUID debitAccountId,
                                       @NotNull UUID creditAccountId, @NotNull @Positive BigDecimal amount,
                                       @NotNull Instant occurredAt) implements DomainEvent {
 
     @JsonCreator
     public UserTransferRequestedV1(@JsonProperty("eventId") UUID eventId, @JsonProperty("userId") UUID userId,
-                                   @JsonProperty("destinationAccountId") UUID destinationAccountId,
+                                   @JsonProperty("debitAccountId") UUID debitAccountId,
                                    @JsonProperty("creditAccountId") UUID creditAccountId,
                                    @JsonProperty("amount") BigDecimal amount, @JsonProperty("occurredAt") Instant occurredAt) {
         this.eventId = eventId;
         this.userId = userId;
-        this.destinationAccountId = destinationAccountId;
+        this.debitAccountId = debitAccountId;
         this.creditAccountId = creditAccountId;
         this.amount = amount;
         this.occurredAt = occurredAt;
