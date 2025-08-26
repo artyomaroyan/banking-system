@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Getter
 @AllArgsConstructor
-@Table("outbox_event")
+@Table("account.outbox_event")
 public class OutboxEvent {
     @Id
     private final UUID eventId;

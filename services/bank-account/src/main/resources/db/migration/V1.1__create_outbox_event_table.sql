@@ -1,4 +1,4 @@
-create table if not exists outbox_event(
+create table if not exists account.outbox_event(
     id uuid unique not null primary key default gen_random_uuid() ,
     aggregate_id uuid not null ,
     aggregate_type varchar(50) not null ,
@@ -8,4 +8,4 @@ create table if not exists outbox_event(
     published boolean not null default false
 );
 
-create index on outbox_event (published);
+create index on account.outbox_event (published);

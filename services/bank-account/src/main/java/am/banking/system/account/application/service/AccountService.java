@@ -33,10 +33,10 @@ public class AccountService implements AccountServiceUseCase {
     private final R2dbcTransactionManager transactionManager;
 
     @Override
-    public Mono<Void> applyDebit(UUID accountId, BigDecimal amount) {
+    public Mono<Void> applyDebit(UUID debitAccountId, BigDecimal amount) {
         TransactionalOperator txOperator = TransactionalOperator.create(transactionManager);
 
-        return accountRepository.findByIdForUpdate(accountId)
+        return accountRepository.findByIdForUpdate(debitAccountId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Account not found")))
                 .flatMap(acc -> {
                     if (acc.getBalance().compareTo(amount) < 0) {
@@ -44,6 +44,40 @@ public class AccountService implements AccountServiceUseCase {
                     }
 
                     final Account update = acc.withBalance(acc.getBalance().subtract(amount));
+
+                    return accountRepository.save(update)
+                            .flatMap(saved -> {
+                                final AccountBalanceChangedV1 event = new AccountBalanceChangedV1(
+                                        UUID.randomUUID(),
+                                        saved.getId(),
+                                        saved.getBalance(),
+                                        saved.getVersion(),
+                                        Instant.now()
+                                );
+
+                                final OutboxEvent outboxEvent = OutboxEvent.from(
+                                        "Account",
+                                        saved.getId(),
+                                        "AccountBalanceChangedV1",
+                                        event,
+                                        objectMapper
+                                );
+
+                                return outboxRepository.save(outboxEvent).then();
+                            });
+                })
+                .as(txOperator::transactional);
+    }
+
+    @Override
+    public Mono<Void> applyCredit(UUID creditAccountId, BigDecimal amount) {
+        TransactionalOperator txOperator = TransactionalOperator.create(transactionManager);
+
+        return accountRepository.findByIdForUpdate(creditAccountId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Account not found")))
+                .flatMap(acc -> {
+
+                    final Account update = acc.withBalance(acc.getBalance().add(amount));
 
                     return accountRepository.save(update)
                             .flatMap(saved -> {
