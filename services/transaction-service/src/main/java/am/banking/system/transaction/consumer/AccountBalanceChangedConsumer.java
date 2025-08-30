@@ -5,6 +5,7 @@ import am.banking.system.transaction.projection.BalanceProjectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 /**
  * Author: Artyom Aroyan
@@ -21,11 +22,12 @@ public class AccountBalanceChangedConsumer {
             groupId = "transaction-service",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void onMessage(AccountBalanceChangedV1 event) {
-        balanceProjectionRepository.upsertIfNewer(
+    public Mono<Void> onMessage(AccountBalanceChangedV1 event) {
+        return balanceProjectionRepository.upsertIfNewer(
                 event.accountId(),
                 event.newBalance(),
                 event.version(),
-                event.occurredAt());
+                event.occurredAt())
+                .then();
     }
 }
