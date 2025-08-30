@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
 
@@ -31,22 +32,28 @@ public class OutboxPublisher {
     @Scheduled(fixedDelayString = "${outbox.publish-interval}") // every 2 seconds; tune as needed
     public void publishBatch() {
         outboxRepository.findTop100ByPublishedFalseOrderByOccurredAtAsc()
-                .flatMap(event -> {
-                    String topic = topicMapping.get(event.getType());
-                    if (topic == null) {
-                        log.warn("Unknown event type: {}", event.getType());
-                        return Flux.empty();
-                    }
+                .collectList()
+                .filter(list -> !list.isEmpty())
+                .flatMapMany(Flux::fromIterable)
+                .flatMap(this::sendEventToKafka)
+                .subscribe(
+                        success -> log.info("Published event {}", success),
+                        error -> log.error("Error publishing outbox events", error)
+                );
+    }
 
-                    SenderRecord<String, String, UUID> rec = SenderRecord.create(
-                            topic, null, null, event.getAggregateId().toString(),
-                            event.getPayload(), event.getEventId()
-                    );
+    private Mono<UUID> sendEventToKafka(OutboxEvent event) {
+        String topic = topicMapping.get(event.getType());
+        if (topic == null) {
+            log.warn("Unknown event type: {}", event.getType());
+            return Mono.empty();
+        }
 
-                    return kafkaSender.send(Flux.just(rec))
-                            .doOnError(err -> log.error("Kafka send failed for event {}", event.getEventId(), err));
-                })
-                .subscribe(null, err ->
-                        log.error("Error publishing outbox events", err));
+        SenderRecord<String, String, UUID> rec = SenderRecord.create(topic, null, null,
+                event.getAggregateId().toString(), event.getPayload(), event.getEventId());
+
+        return kafkaSender.send(Mono.just(rec))
+                .doOnError(err -> log.error("Kafka send failed for event {}", event.getEventId(), err))
+                .then(Mono.just(event.getEventId()));
     }
 }

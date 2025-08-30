@@ -34,71 +34,41 @@ public class AccountService implements AccountServiceUseCase {
 
     @Override
     public Mono<Void> applyDebit(UUID debitAccountId, BigDecimal amount) {
-        TransactionalOperator txOperator = TransactionalOperator.create(transactionManager);
-
-        return accountRepository.findByIdForUpdate(debitAccountId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Account not found")))
-                .flatMap(acc -> {
-                    if (acc.getBalance().compareTo(amount) < 0) {
-                        return Mono.error(new InsufficientFundsException("Insufficient funds"));
-                    }
-
-                    final Account update = acc.withBalance(acc.getBalance().subtract(amount));
-
-                    return accountRepository.save(update)
-                            .flatMap(saved -> {
-                                final AccountBalanceChangedV1 event = new AccountBalanceChangedV1(
-                                        UUID.randomUUID(),
-                                        saved.getId(),
-                                        saved.getBalance(),
-                                        saved.getVersion(),
-                                        Instant.now()
-                                );
-
-                                final OutboxEvent outboxEvent = OutboxEvent.from(
-                                        "Account",
-                                        saved.getId(),
-                                        "AccountBalanceChangedV1",
-                                        event,
-                                        objectMapper
-                                );
-
-                                return outboxRepository.save(outboxEvent).then();
-                            });
-                })
-                .as(txOperator::transactional);
+        return applyBalance(debitAccountId, amount);
     }
 
     @Override
     public Mono<Void> applyCredit(UUID creditAccountId, BigDecimal amount) {
+        return applyBalance(creditAccountId, amount);
+    }
+
+    private Mono<Void> applyBalance(UUID accountId, BigDecimal amount) {
         TransactionalOperator txOperator = TransactionalOperator.create(transactionManager);
 
-        return accountRepository.findByIdForUpdate(creditAccountId)
+        return accountRepository.findByIdForUpdate(accountId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Account not found")))
                 .flatMap(acc -> {
+                    BigDecimal newBalance = acc.getBalance().add(amount);
+                    if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                        return Mono.error(new InsufficientFundsException("Insufficient funds"));
+                    }
 
-                    final Account update = acc.withBalance(acc.getBalance().add(amount));
+                    final Account update = acc.withBalance(newBalance);
 
                     return accountRepository.save(update)
-                            .flatMap(saved -> {
-                                final AccountBalanceChangedV1 event = new AccountBalanceChangedV1(
-                                        UUID.randomUUID(),
-                                        saved.getId(),
-                                        saved.getBalance(),
-                                        saved.getVersion(),
-                                        Instant.now()
-                                );
-
-                                final OutboxEvent outboxEvent = OutboxEvent.from(
-                                        "Account",
-                                        saved.getId(),
-                                        "AccountBalanceChangedV1",
-                                        event,
-                                        objectMapper
-                                );
-
-                                return outboxRepository.save(outboxEvent).then();
-                            });
+                            .flatMap(saved -> OutboxEvent.from(
+                                    "Account",
+                                    saved.getId(),
+                                    "AccountBalanceChangedV1",
+                                    new AccountBalanceChangedV1(
+                                            UUID.randomUUID(),
+                                            saved.getId(),
+                                            saved.getBalance(),
+                                            saved.getVersion(),
+                                            Instant.now()),
+                                    objectMapper
+                            ))
+                            .flatMap(outboxRepository::save).then();
                 })
                 .as(txOperator::transactional);
     }
