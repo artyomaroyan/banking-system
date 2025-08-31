@@ -31,8 +31,7 @@ public class PasswordHashingClient implements PasswordHashingClientPort {
     private final WebClientResponseHandler webClientResponseHandler;
 
     public PasswordHashingClient(@Qualifier("securityWebClient") WebClient webClient,
-                                 UserTokenClientPort jwtTokenServiceClient,
-                                 WebClientResponseHandler webClientResponseHandler) {
+                                 UserTokenClientPort jwtTokenServiceClient, WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.userTokenClient = jwtTokenServiceClient;
         this.webClientResponseHandler = webClientResponseHandler;

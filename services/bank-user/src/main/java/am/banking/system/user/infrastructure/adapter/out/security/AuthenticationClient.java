@@ -29,8 +29,7 @@ public class AuthenticationClient implements AuthenticationClientPort {
     private final WebClientResponseHandler webClientResponseHandler;
 
     public AuthenticationClient(@Qualifier("securityWebClient") WebClient webClient,
-                                UserTokenClientPort userTokenClient,
-                                WebClientResponseHandler webClientResponseHandler) {
+                                UserTokenClientPort userTokenClient, WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.userTokenClient = userTokenClient;
         this.webClientResponseHandler = webClientResponseHandler;
@@ -48,7 +47,7 @@ public class AuthenticationClient implements AuthenticationClientPort {
                                 .response(response, AuthenticationResponse.class, "Authentication"))
                         .timeout(Duration.ofSeconds(5))
                         .doOnNext(_ -> log.info("AuthenticationClient: user '{}' authenticated successfully", username))
-                        .doOnError(err -> log.error("AuthenticationClient: error for '{}' : {}", username,  err.getMessage()))
+                        .doOnError(err -> log.error("AuthenticationClient: error for '{}' : {}", username, err.getMessage()))
                 );
     }
 }

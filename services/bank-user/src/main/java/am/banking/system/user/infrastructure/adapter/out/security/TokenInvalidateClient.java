@@ -30,8 +30,7 @@ public class TokenInvalidateClient implements TokenInvalidateClientPort {
     private final WebClientResponseHandler webClientResponseHandler;
 
     public TokenInvalidateClient(@Qualifier("securityWebClient") WebClient webClient,
-                                 UserTokenClientPort userTokenClient,
-                                 WebClientResponseHandler webClientResponseHandler) {
+                                 UserTokenClientPort userTokenClient, WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.userTokenClient = userTokenClient;
         this.webClientResponseHandler = webClientResponseHandler;

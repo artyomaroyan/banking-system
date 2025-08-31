@@ -41,8 +41,7 @@ public class UserTokenClient implements UserTokenClientPort {
     private final WebClientResponseHandler webClientResponseHandler;
 
     public UserTokenClient(@Qualifier("securityWebClient") WebClient webClient,
-                           InternalSecretProperties secretProperties,
-                           WebClientResponseHandler webClientResponseHandler) {
+                           InternalSecretProperties secretProperties, WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.secretProperties = secretProperties;
         this.webClientResponseHandler = webClientResponseHandler;
@@ -127,7 +126,7 @@ public class UserTokenClient implements UserTokenClientPort {
                         .uri("/api/internal/security/token/access/validate")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(new TokenValidatorRequest(userId, username,  token))
+                        .bodyValue(new TokenValidatorRequest(userId, username, token))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, TokenValidatorResponse.class, "JWT Validation"))
                         .timeout(Duration.ofSeconds(5)));
