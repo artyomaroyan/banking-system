@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * Date: 09.08.25
  * Time: 00:04:51
  */
-public interface BankAccountUserCase {
+public interface BankAccountUseCase {
     Mono<String> getAccountNumber();
     Mono<BigDecimal> getAccountBalance();
 }
