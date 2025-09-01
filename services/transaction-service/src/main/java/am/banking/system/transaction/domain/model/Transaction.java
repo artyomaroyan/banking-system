@@ -23,5 +23,8 @@ public final class Transaction extends BaseEntity {
     private final BigDecimal amount;
     private final String debitAccount;
     private final String creditAccount;
+    private final String status; // ToDo: make status Enum
+    private final String reservationId;
+    private final String idempotencyKey;
     private final TransactionType transactionType;
 }

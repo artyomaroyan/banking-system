@@ -3,6 +3,7 @@ package am.banking.system.transaction.domain.repository;
 import am.banking.system.transaction.domain.model.Transaction;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -13,4 +14,5 @@ import java.util.UUID;
  */
 @Repository
 public interface TransactionRepository extends R2dbcRepository<Transaction, UUID> {
+    Mono<Transaction> findByIdempotencyKey(String idempotencyKey);
 }
