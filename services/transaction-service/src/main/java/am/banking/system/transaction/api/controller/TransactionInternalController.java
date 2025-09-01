@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/protected/transaction")
-public class TransactionController {
+@RequestMapping("/api/v1/internal/transfer")
+public class TransactionInternalController {
     private final TransactionUseCase transactionService;
 }
