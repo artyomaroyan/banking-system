@@ -30,8 +30,7 @@ public class CurrentAccountCreationClient implements CurrentAccountCreationClien
     private final WebClientResponseHandler webClientResponseHandler;
 
     public CurrentAccountCreationClient(@Qualifier("accountWebClient") WebClient webClient,
-                                        UserTokenClientPort userTokenClient,
-                                        WebClientResponseHandler webClientResponseHandler) {
+                                        UserTokenClientPort userTokenClient, WebClientResponseHandler webClientResponseHandler) {
         this.webClient = webClient;
         this.userTokenClient = userTokenClient;
         this.webClientResponseHandler = webClientResponseHandler;

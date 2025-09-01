@@ -58,4 +58,13 @@ public class UserWebClientConfiguration {
                 .filter(WebClientFilter.errorResponseFilter())
                 .build();
     }
+
+    @Bean
+    public WebClient transactionWebClient(WebClientFactory webClientFactory,  ObjectProvider<UserTokenClientPort> provider) {
+        return webClientFactory.createSecuredWebClient(baseUrlProperties.transactionBaseUrl())
+                .mutate()
+                .filter(WebClientFilter.systemTokenPropagationFilter(provider))
+                .filter(WebClientFilter.errorResponseFilter())
+                .build();
+    }
 }

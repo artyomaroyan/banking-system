@@ -14,5 +14,6 @@ import org.springframework.validation.annotation.Validated;
 public record BaseUrlProperties(
         @NotBlank String accountBaseUrl,
         @NotBlank String securityBaseUrl,
+        @NotBlank String transactionBaseUrl,
         @NotBlank String notificationBaseUrl) {
 }
