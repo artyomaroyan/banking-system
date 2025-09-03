@@ -19,10 +19,9 @@ import java.util.UUID;
 @Table("transaction.transaction")
 public final class Transaction extends BaseEntity {
     private final UUID userId;
-    private final String username;
-    private final BigDecimal amount;
     private final String debitAccount;
     private final String creditAccount;
+    private final BigDecimal amount;
     private final String status; // ToDo: make status Enum
     private final String reservationId;
     private final String idempotencyKey;
