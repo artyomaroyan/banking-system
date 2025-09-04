@@ -41,7 +41,8 @@ public class TransactionService implements TransactionUseCase {
         return null;
     }
 
-    private Mono<Transaction> createTransaction(UUID userId, UUID transferId, String from, String to, String amountStr, String idempotencyKey) {
+    @Override
+    public Mono<Transaction> createTransaction(UUID userId, UUID transferId, String from, String to, String amountStr, String idempotencyKey) {
         BigDecimal amount = new BigDecimal(amountStr);
         Mono<Transaction> existing = Mono.empty();
         if (idempotencyKey != null) {
