@@ -1,6 +1,7 @@
 package am.banking.system.transaction.domain.model;
 
 import am.banking.system.common.shared.model.BaseEntity;
+import am.banking.system.transaction.domain.enums.Status;
 import am.banking.system.transaction.domain.enums.TransactionType;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public final class Transaction extends BaseEntity {
     private final String debitAccount;
     private final String creditAccount;
     private final BigDecimal amount;
-    private final String status; // ToDo: make status Enum
+    private final Status status;
     private final String reservationId;
     private final String idempotencyKey;
     private final TransactionType transactionType;

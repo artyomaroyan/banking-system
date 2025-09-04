@@ -3,6 +3,7 @@ package am.banking.system.transaction.application.service;
 import am.banking.system.common.messages.ValidateAndReserveCommand;
 import am.banking.system.transaction.api.dto.TransactionRequest;
 import am.banking.system.transaction.application.port.in.TransactionUseCase;
+import am.banking.system.transaction.domain.enums.Status;
 import am.banking.system.transaction.domain.model.Transaction;
 import am.banking.system.transaction.domain.repository.TransactionRepository;
 import am.banking.system.transaction.outbox.OutboxEvent;
@@ -53,7 +54,7 @@ public class TransactionService implements TransactionUseCase {
                     .debitAccount(from)
                     .creditAccount(to)
                     .amount(amount)
-                    .status("NEW")
+                    .status(Status.NEW)
                     .idempotencyKey(idempotencyKey)
                     .build();
 
