@@ -26,25 +26,25 @@ import java.util.concurrent.CompletableFuture;
 public class NotificationClient implements NotificationClientPort {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
+    @Override
     @Retry(name = "notificationService")
     @CircuitBreaker(name = "notificationService")
-    @Override
     public Mono<Void> sendVerificationEmail(String email, String username, String link) {
         EmailVerification request = new EmailVerification(email, username, link);
         return sendKafkaMessage("email-verification", request);
     }
 
+    @Override
     @Retry(name = "notificationService")
     @CircuitBreaker(name = "notificationService")
-    @Override
     public Mono<Void> sendPasswordResetEmail(String email, String username, String link) {
         PasswordReset request = new PasswordReset(email, username, link);
         return sendKafkaMessage("password-reset", request);
     }
 
+    @Override
     @Retry(name = "notificationService")
     @CircuitBreaker(name = "notificationService")
-    @Override
     public Mono<Void> sendWelcomeEmail(String email,  String username) {
         WelcomeEmail request = new WelcomeEmail(email, username);
         return sendKafkaMessage("welcome-email", request);
