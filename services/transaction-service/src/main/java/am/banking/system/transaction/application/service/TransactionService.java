@@ -1,7 +1,7 @@
 package am.banking.system.transaction.application.service;
 
 import am.banking.system.common.messages.ValidateAndReserveCommand;
-import am.banking.system.transaction.api.dto.TransactionRequest;
+import am.banking.system.common.shared.dto.transaction.TransactionRequest;
 import am.banking.system.transaction.application.port.in.TransactionUseCase;
 import am.banking.system.transaction.domain.enums.Status;
 import am.banking.system.transaction.domain.model.Transaction;

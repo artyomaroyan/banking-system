@@ -1,6 +1,6 @@
 package am.banking.system.transaction.application.validation;
 
-import am.banking.system.transaction.api.dto.TransactionRequest;
+import am.banking.system.common.shared.dto.transaction.TransactionRequest;
 import reactor.core.publisher.Mono;
 
 /**
