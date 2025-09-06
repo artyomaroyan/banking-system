@@ -64,6 +64,11 @@ resilience4j:
         wait-duration:
           seconds: 1
 
+      transactionService:
+        max-attempts: 3
+        wait-duration:
+          seconds: 1
+
       notificationService:
         max-attempts: 3
         wait-duration: 500ms
@@ -85,6 +90,15 @@ resilience4j:
           seconds: 10
 
       securityService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          seconds: 10
+
+      transactionService:
         failure-rate-threshold: 50
         minimum-number-of-calls: 5
         sliding-window-type: count_based
