@@ -21,7 +21,7 @@ import java.util.UUID;
 public class TransactionInternalController {
     private final TransactionUseCase transactionService;
 
-    @PostMapping
+    @PostMapping("/create")
     public Mono<Map<String, Object>> create(@RequestBody Map<String, String> payload,
                                             @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
         UUID transactionId = UUID.fromString(payload.get("transactionId"));
