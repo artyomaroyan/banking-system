@@ -16,7 +16,7 @@ import java.util.UUID;
  * Time: 22:34:02
  */
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @Table("transaction.transaction")
 public final class Transaction extends BaseEntity {
     private final UUID userId;
