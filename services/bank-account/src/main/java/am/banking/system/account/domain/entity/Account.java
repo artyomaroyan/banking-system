@@ -5,6 +5,7 @@ import am.banking.system.common.shared.enums.Currency;
 import am.banking.system.common.shared.enums.AccountType;
 import am.banking.system.common.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
@@ -20,6 +21,7 @@ import java.util.UUID;
  */
 @Getter
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Table("account.account")
 public class Account extends BaseEntity {
     @Column("account_owner_id")
@@ -30,6 +32,8 @@ public class Account extends BaseEntity {
     private final String accountOwnerUsername;
     @Column("balance")
     private final BigDecimal balance;
+    @Column("reserved")
+    private final BigDecimal reserved;
     @Column("account_type")
     private final AccountType accountType;
     @Column("currency")
@@ -46,6 +50,7 @@ public class Account extends BaseEntity {
                 this.accountNumber,
                 this.accountOwnerUsername,
                 newBalance,
+                this.reserved,
                 this.accountType,
                 this.currency,
                 this.accountState,
@@ -59,6 +64,7 @@ public class Account extends BaseEntity {
                 this.accountNumber,
                 this.accountOwnerUsername,
                 this.balance,
+                this.reserved,
                 this.accountType,
                 this.currency,
                 this.accountState,

@@ -16,6 +16,7 @@ import java.util.UUID;
 @Repository
 public interface AccountRepository extends ReactiveCrudRepository<Account, UUID> {
     Mono<Boolean> existsAccountsByAccountNumber(String accountNumber);
+    Mono<Account> findAccountByAccountNumber(String accountNumber);
 
     @Query("SELECT * FROM account.account a WHERE a.id = :accountId FOR UPDATE")
     Mono<Account> findByIdForUpdate(UUID accountId);

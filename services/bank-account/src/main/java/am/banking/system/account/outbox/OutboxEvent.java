@@ -3,6 +3,7 @@ package am.banking.system.account.outbox;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -17,28 +18,17 @@ import java.util.UUID;
  * Time: 01:49:01
  */
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Table("account.outbox_event")
 public class OutboxEvent {
     @Id
-    private final UUID eventId;
-    private final UUID aggregateId;
-    private final String aggregateType;
-    private final String type;
-    private final String payload;
-    private final Instant occurredAt;
-    @Setter
+    private UUID id;
+    private String topic;
+    private String key;
+    private String payload;
+    private String header;
+    private Instant createdAt;
     private boolean published;
-
-    public static Mono<OutboxEvent> from(String aggregateType, UUID aggregateId, String type, Object payload, ObjectMapper mapper) {
-            return Mono.fromCallable(() -> new OutboxEvent(
-                    UUID.randomUUID(),
-                    aggregateId,
-                    aggregateType,
-                    type,
-                    mapper.writeValueAsString(payload),
-                    Instant.now(),
-                    false
-            ));
-    }
 }
