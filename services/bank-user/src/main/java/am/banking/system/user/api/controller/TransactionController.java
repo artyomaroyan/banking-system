@@ -1,7 +1,7 @@
 package am.banking.system.user.api.controller;
 
 import am.banking.system.common.shared.dto.transaction.TransactionRequest;
-import am.banking.system.user.application.port.in.TransactionUseCase;
+import am.banking.system.user.application.port.in.transaction.TransactionUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

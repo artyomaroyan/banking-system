@@ -1,4 +1,4 @@
-package am.banking.system.user.application.port.in;
+package am.banking.system.user.application.port.in.transaction;
 
 import am.banking.system.common.shared.dto.transaction.TransactionRequest;
 import reactor.core.publisher.Mono;

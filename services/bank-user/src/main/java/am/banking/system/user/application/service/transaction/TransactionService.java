@@ -1,7 +1,7 @@
 package am.banking.system.user.application.service.transaction;
 
 import am.banking.system.common.shared.dto.transaction.TransactionRequest;
-import am.banking.system.user.application.port.in.TransactionUseCase;
+import am.banking.system.user.application.port.in.transaction.TransactionUseCase;
 import am.banking.system.user.application.port.out.transaction.TransactionClientPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
