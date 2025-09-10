@@ -12,6 +12,6 @@ import java.util.UUID;
  * Time: 01:45:03
  */
 @Repository
-public interface OutboxRepository extends R2dbcRepository<OutboxEvent, UUID> {
-    Flux<OutboxEvent> findByPublishedFalse();
+public interface OutboxRepository extends R2dbcRepository<OutboxEventEntity, UUID> {
+    Flux<OutboxEventEntity> findByPublishedFalse();
 }

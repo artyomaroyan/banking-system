@@ -2,13 +2,12 @@ package am.banking.system.transaction.application.service;
 
 import am.banking.system.common.messages.ValidateAndReserveCommand;
 import am.banking.system.common.shared.dto.transaction.TransactionRequest;
+import am.banking.system.common.shared.outbox.GenericOutboxEvent;
 import am.banking.system.transaction.application.port.in.TransactionUseCase;
 import am.banking.system.transaction.domain.enums.Status;
 import am.banking.system.transaction.domain.model.Transaction;
 import am.banking.system.transaction.domain.repository.TransactionRepository;
-import am.banking.system.transaction.outbox.OutboxEvent;
-import am.banking.system.transaction.outbox.OutboxRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import am.banking.system.transaction.outbox.OutboxService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TransactionService implements TransactionUseCase {
-    private final ObjectMapper objectMapper;
-    private final OutboxRepository outboxRepository;
+    private final OutboxService outboxService;
     private final TransactionRepository transactionRepository;
 
     @Override
@@ -63,20 +61,15 @@ public class TransactionService implements TransactionUseCase {
                     .flatMap(saved -> {
                         var command = new ValidateAndReserveCommand(transferId, from, amount, Instant.now());
 
-                        try {
-                            var payload = objectMapper.writeValueAsString(command);
-                            var outbox = new OutboxEvent();
-                            outbox.setId(UUID.randomUUID());
-                            outbox.setTopic("accounts.commands");
-                            outbox.setKey(from);
-                            outbox.setPayload(payload);
-                            outbox.setHeader("{\"correlationId\":\"" + transferId + "\"}");
-                            outbox.setPublished(false);
-                            outbox.setCreatedAt(Instant.now());
-                            return outboxRepository.save(outbox).thenReturn(saved);
-                        } catch (Exception e) {
-                            return Mono.error(e);
-                        }
+                        var outboxEvent = new GenericOutboxEvent(
+                                "Transaction",
+                                saved.getId().toString(),
+                                "ValidateAndReserveCommand",
+                                command
+                        );
+
+                        return outboxService.saveEvent(outboxEvent)
+                                .thenReturn(saved);
                     });
         }));
     }
