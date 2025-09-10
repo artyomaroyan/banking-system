@@ -1,13 +1,12 @@
 package am.banking.system.account.outbox;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import am.banking.system.common.shared.outbox.OutboxStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -22,13 +21,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("account.outbox_event")
-public class OutboxEvent {
+public class OutboxEventEntity {
     @Id
     private UUID id;
-    private String topic;
-    private String key;
+    private String aggregateType;
+    private String aggregateId;
+    private String type;
     private String payload;
-    private String header;
+    private OutboxStatus status;
     private Instant createdAt;
-    private boolean published;
 }

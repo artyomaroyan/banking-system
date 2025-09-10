@@ -1,7 +1,7 @@
 package am.banking.system.account.infrastructure.adapter.in.kafka;
 
 import am.banking.system.account.domain.repository.AccountRepository;
-import am.banking.system.account.outbox.OutboxEvent;
+import am.banking.system.account.outbox.OutboxEventEntity;
 import am.banking.system.account.outbox.OutboxRepository;
 import am.banking.system.common.messages.FundsInsufficientEvent;
 import am.banking.system.common.messages.FundsReservedEvent;
@@ -59,12 +59,10 @@ public class AccountsCommandsConsumer {
                                             Instant.now());
 
                                     try {
-                                        var outbox = new OutboxEvent();
+                                        var outbox = new OutboxEventEntity();
                                         outbox.setId(UUID.randomUUID());
-                                        outbox.setTopic("accounts.events");
-                                        outbox.setKey(command.fromAccount());
+                                        outbox.setAggregateType("accounts.events");
                                         outbox.setPayload(objectMapper.writeValueAsString(event));
-                                        outbox.setPublished(false);
                                         outbox.setCreatedAt(Instant.now());
                                         return outboxRepository.save(outbox).then();
                                     } catch (Exception ex) {
@@ -81,12 +79,10 @@ public class AccountsCommandsConsumer {
                         );
 
                         try {
-                            var outbox = new OutboxEvent();
+                            var outbox = new OutboxEventEntity();
                             outbox.setId(UUID.randomUUID());
-                            outbox.setTopic("accounts.events");
-                            outbox.setKey(command.fromAccount());
+                            outbox.setAggregateType("accounts.events");
                             outbox.setPayload(objectMapper.writeValueAsString(event));
-                            outbox.setPublished(false);
                             outbox.setCreatedAt(Instant.now());
                             return outboxRepository.save(outbox).then();
                         } catch (Exception ex) {
@@ -103,12 +99,10 @@ public class AccountsCommandsConsumer {
                                 "ACCOUNT_NOT_FOUND",
                                 Instant.now()
                         );
-                        var outbox = new OutboxEvent();
+                        var outbox = new OutboxEventEntity();
                         outbox.setId(UUID.randomUUID());
-                        outbox.setTopic("accounts.events");
-                        outbox.setKey(command.fromAccount());
+                        outbox.setAggregateType("accounts.events");
                         outbox.setPayload(objectMapper.writeValueAsString(event));
-                        outbox.setPublished(false);
                         outbox.setCreatedAt(Instant.now());
                         return outboxRepository.save(outbox).then();
                     } catch (Exception ex) {

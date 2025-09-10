@@ -3,7 +3,7 @@
 //import am.banking.system.account.application.port.in.AccountServiceUseCase;
 //import am.banking.system.account.domain.entity.Account;
 //import am.banking.system.account.domain.repository.AccountRepository;
-//import am.banking.system.account.outbox.OutboxEvent;
+//import am.banking.system.account.outbox.OutboxEventEntity;
 //import am.banking.system.account.outbox.OutboxRepository;
 //import am.banking.system.common.contracts.event.AccountBalanceChangedV1;
 //import am.banking.system.common.shared.exception.NotFoundException;
@@ -19,7 +19,7 @@
 //import java.time.Instant;
 //import java.util.UUID;
 //
-///**
+//**
 // * Author: Artyom Aroyan
 // * Date: 23.08.25
 // * Time: 02:06:58
@@ -56,7 +56,7 @@
 //                    final Account update = acc.withBalance(newBalance);
 //
 //                    return accountRepository.save(update)
-//                            .flatMap(saved -> OutboxEvent.from(
+//                            .flatMap(saved -> OutboxEventEntity.from(
 //                                    "Account",
 //                                    saved.getId(),
 //                                    "AccountBalanceChangedV1",
