@@ -4,6 +4,7 @@ import am.banking.system.common.shared.dto.transaction.TransactionRequest;
 import am.banking.system.transaction.domain.model.Transaction;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -14,5 +15,5 @@ import java.util.UUID;
 public interface TransactionUseCase {
     Mono<Void> transferToCard(TransactionRequest request);
     Mono<Void> transferToAccount(TransactionRequest request);
-    Mono<Transaction> createTransaction(UUID userId, UUID transferId, String from, String to, String amountStr, String idempotencyKey);
+    Mono<Transaction> createTransaction(UUID userId, UUID transactionId, String from, String to, BigDecimal amount, String idempotencyKey);
 }

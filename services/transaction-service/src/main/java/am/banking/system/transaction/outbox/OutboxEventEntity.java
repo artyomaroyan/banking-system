@@ -24,10 +24,13 @@ import java.util.UUID;
 public class OutboxEventEntity {
     @Id
     private UUID id;
+    private String topic;
+    private String key;
     private String aggregateType;
     private String aggregateId;
     private String type;
     private String payload;
+    private boolean published;
     private OutboxStatus status;
     private Instant createdAt;
 }
