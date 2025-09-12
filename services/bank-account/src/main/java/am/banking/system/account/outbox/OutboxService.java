@@ -1,6 +1,6 @@
 package am.banking.system.account.outbox;
 
-import am.banking.system.common.shared.outbox.OutboxEvent;
+import am.banking.system.common.outbox.OutboxEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

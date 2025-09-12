@@ -37,23 +37,23 @@
 //                .flatMapMany(Flux::fromIterable)
 //                .flatMap(this::sendEventToKafka)
 //                .subscribe(
-//                        success -> log.info("Published event {}", success),
+//                        success -> log.info("Published events {}", success),
 //                        error -> log.error("Error publishing outbox events", error)
 //                );
 //    }
 //
-//    private Mono<UUID> sendEventToKafka(OutboxEventEntity event) {
-//        String topic = topicMapping.get(event.getType());
+//    private Mono<UUID> sendEventToKafka(OutboxEventEntity events) {
+//        String topic = topicMapping.get(events.getType());
 //        if (topic == null) {
-//            log.warn("Unknown event type: {}", event.getType());
+//            log.warn("Unknown events type: {}", events.getType());
 //            return Mono.empty();
 //        }
 //
 //        SenderRecord<String, String, UUID> rec = SenderRecord.create(topic, null, null,
-//                event.getAggregateId().toString(), event.getPayload(), event.getEventId());
+//                events.getAggregateId().toString(), events.getPayload(), events.getEventId());
 //
 //        return kafkaSender.send(Mono.just(rec))
-//                .doOnError(err -> log.error("Kafka send failed for event {}", event.getEventId(), err))
-//                .then(Mono.just(event.getEventId()));
+//                .doOnError(err -> log.error("Kafka send failed for events {}", events.getEventId(), err))
+//                .then(Mono.just(events.getEventId()));
 //    }
 //}

@@ -3,10 +3,10 @@ package am.banking.system.account.infrastructure.adapter.in.kafka;
 import am.banking.system.account.domain.repository.AccountRepository;
 import am.banking.system.account.outbox.OutboxEventEntity;
 import am.banking.system.account.outbox.OutboxRepository;
-import am.banking.system.common.messages.FundsInsufficientEvent;
-import am.banking.system.common.messages.FundsReservedEvent;
-import am.banking.system.common.messages.ValidateAndReserveCommand;
-import am.banking.system.common.shared.outbox.OutboxStatus;
+import am.banking.system.common.events.FundsInsufficientEvent;
+import am.banking.system.common.events.FundsReservedEvent;
+import am.banking.system.common.events.ValidateAndReserveCommand;
+import am.banking.system.common.outbox.OutboxStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -31,7 +31,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class AccountsCommandsConsumer {
-    private final Disposable disposable;
+    private Disposable disposable;
     private final ObjectMapper objectMapper;
     private final OutboxRepository outboxRepository;
     private final AccountRepository accountRepository;
@@ -42,15 +42,13 @@ public class AccountsCommandsConsumer {
         disposable = kafkaReceiver.receive()
                 .flatMap(this::process)
                 .doOnError(e -> log.error("AccountsCommandsConsumer error", e))
-                .retry(Long.MAX_VALUE, Duration.ofSeconds(1), Duration.ofSeconds(30))
+                .retry()
                 .subscribe();
     }
 
     @PreDestroy
     public void stop() {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
+        if (disposable != null && !disposable.isDisposed()) disposable.dispose();
     }
 
     private Mono<Void> process(ReceiverRecord<String, String> record) {

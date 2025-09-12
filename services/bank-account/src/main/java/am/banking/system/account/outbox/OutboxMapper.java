@@ -1,9 +1,9 @@
 package am.banking.system.account.outbox;
 
-import am.banking.system.common.shared.outbox.GenericOutboxEvent;
-import am.banking.system.common.shared.outbox.JsonEventSerializer;
-import am.banking.system.common.shared.outbox.OutboxEvent;
-import am.banking.system.common.shared.outbox.OutboxStatus;
+import am.banking.system.common.outbox.GenericOutboxEvent;
+import am.banking.system.common.outbox.JsonEventSerializer;
+import am.banking.system.common.outbox.OutboxEvent;
+import am.banking.system.common.outbox.OutboxStatus;
 
 /**
  * Author: Artyom Aroyan

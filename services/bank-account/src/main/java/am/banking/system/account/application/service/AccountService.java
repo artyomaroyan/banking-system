@@ -5,7 +5,7 @@
 //import am.banking.system.account.domain.repository.AccountRepository;
 //import am.banking.system.account.outbox.OutboxEventEntity;
 //import am.banking.system.account.outbox.OutboxRepository;
-//import am.banking.system.common.contracts.event.AccountBalanceChangedV1;
+//import am.banking.system.common.events.AccountBalanceChangedV1;
 //import am.banking.system.common.shared.exception.NotFoundException;
 //import am.banking.system.common.shared.exception.account.InsufficientFundsException;
 //import com.fasterxml.jackson.databind.ObjectMapper;

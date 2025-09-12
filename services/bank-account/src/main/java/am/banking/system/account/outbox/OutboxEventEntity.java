@@ -1,6 +1,6 @@
 package am.banking.system.account.outbox;
 
-import am.banking.system.common.shared.outbox.OutboxStatus;
+import am.banking.system.common.outbox.OutboxStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

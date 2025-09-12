@@ -1,7 +1,7 @@
 //package am.banking.system.account.infrastructure.adapter.in.kafka;
 //
 //import am.banking.system.account.application.service.AccountService;
-//import am.banking.system.common.contracts.event.UserTransferRequestedV1;
+//import am.banking.system.common.contracts.events.UserTransferRequestedV1;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.kafka.annotation.KafkaListener;
