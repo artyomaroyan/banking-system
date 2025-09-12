@@ -1,4 +1,4 @@
-package am.banking.system.common.shared.outbox;
+package am.banking.system.common.outbox;
 
 import lombok.Getter;
 

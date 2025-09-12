@@ -2,9 +2,11 @@ package am.banking.system.common.shared.dto.transaction;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Author: Artyom Aroyan
@@ -13,10 +15,10 @@ import java.math.BigDecimal;
  */
 @Validated
 public record TransactionRequest(
-        @NotBlank(message = "enter debit account number")
-        String debitAccount,
-        @NotBlank(message = "enter credit account number")
-        String creditAccount,
-        @NotNull(message = "Please input amount you want to transfer")
-        BigDecimal amount) {
+        @NotNull UUID userId,
+        @NotNull UUID transactionId,
+        @NotBlank String from,
+        @NotBlank String to,
+        @NotNull @Positive BigDecimal amount,
+        @NotNull String idempotencyKey) {
 }

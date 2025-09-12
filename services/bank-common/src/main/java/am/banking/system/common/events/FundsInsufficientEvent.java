@@ -1,4 +1,4 @@
-package am.banking.system.common.messages;
+package am.banking.system.common.events;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

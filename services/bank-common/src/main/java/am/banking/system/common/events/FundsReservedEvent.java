@@ -1,4 +1,4 @@
-package am.banking.system.common.messages;
+package am.banking.system.common.events;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,12 +12,13 @@ import java.util.UUID;
 /**
  * Author: Artyom Aroyan
  * Date: 31.08.25
- * Time: 16:32:55
+ * Time: 16:34:51
  */
 @Validated
-public record ValidateAndReserveCommand(
+public record FundsReservedEvent(
         @NotNull UUID transferId,
-        @NotBlank String fromAccount,
+        @NotBlank String reservationId,
+        @NotBlank String account,
         @NotNull @Positive BigDecimal amount,
-        @NotNull Instant requestedAt) {
+        @NotNull Instant occurredAt) {
 }

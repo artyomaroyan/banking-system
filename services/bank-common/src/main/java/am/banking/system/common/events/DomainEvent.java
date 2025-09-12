@@ -1,4 +1,4 @@
-package am.banking.system.common.contracts.event;
+package am.banking.system.common.events;
 
 import java.time.Instant;
 import java.util.UUID;

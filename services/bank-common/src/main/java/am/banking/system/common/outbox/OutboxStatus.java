@@ -1,4 +1,4 @@
-package am.banking.system.common.shared.outbox;
+package am.banking.system.common.outbox;
 
 /**
  * Author: Artyom Aroyan
@@ -6,5 +6,7 @@ package am.banking.system.common.shared.outbox;
  * Time: 18:21:30
  */
 public enum OutboxStatus {
-    PENDING, SENT, FAILED
+    PENDING,
+    SENT,
+    FAILED
 }
