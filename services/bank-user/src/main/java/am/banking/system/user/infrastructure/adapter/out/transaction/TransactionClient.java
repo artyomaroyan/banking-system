@@ -50,8 +50,8 @@ public class TransactionClient implements TransactionClientPort {
                         .header("Idempotency-Key", idempotencyKey == null ? transactionId.toString() : idempotencyKey)
                         .bodyValue(Map.of(
                                 "transferId", transactionId,
-                                "debitAccount", request.debitAccount(),
-                                "creditAccount", request.creditAccount(),
+                                "from", request.from(),
+                                "to", request.to(),
                                 "amount", request.amount()
                                 ))
                         .exchangeToMono(response -> webClientResponseHandler
