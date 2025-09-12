@@ -1,33 +1,39 @@
 package am.banking.system.transaction.outbox;
 
-import am.banking.system.common.shared.outbox.GenericOutboxEvent;
-import am.banking.system.common.shared.outbox.JsonEventSerializer;
-import am.banking.system.common.shared.outbox.OutboxEvent;
-import am.banking.system.common.shared.outbox.OutboxStatus;
+import am.banking.system.common.outbox.GenericOutboxEvent;
+import am.banking.system.common.outbox.JsonEventSerializer;
+import am.banking.system.common.outbox.OutboxEvent;
+import am.banking.system.common.outbox.OutboxStatus;
 
 /**
  * Author: Artyom Aroyan
  * Date: 09.09.25
  * Time: 18:33:42
  */
-public class OutboxMapper {
-    public static OutboxEventEntity toEntity(OutboxEvent event) {
-        OutboxEventEntity entity = new OutboxEventEntity();
-        entity.setId(event.getId());
-        entity.setAggregateType(event.getAggregateType());
-        entity.setAggregateId(event.getAggregateId());
-        entity.setType(event.getType());
-        entity.setPayload(getSerializedPayload(event));
-        entity.setStatus(OutboxStatus.PENDING);
-        entity.setCreatedAt(event.getCreatedAt());
-        return entity;
+public final class OutboxMapper {
+
+    private OutboxMapper() {
     }
 
-    private static String getSerializedPayload(OutboxEvent event) {
+    public static OutboxEventEntity toEntity(OutboxEvent event, String topic, String key) {
+        String payload;
         if (event instanceof GenericOutboxEvent generic) {
-            return JsonEventSerializer.serialize(generic.getPayload());
+            payload = JsonEventSerializer.serialize(generic.getPayload());
         } else {
-            return JsonEventSerializer.serialize(event);
+            payload = JsonEventSerializer.serialize(event);
         }
+
+        return OutboxEventEntity.builder()
+                .id(event.getId())
+                .topic(topic)
+                .key(key)
+                .aggregateType(event.getAggregateType())
+                .aggregateId(event.getAggregateId())
+                .type(event.getType())
+                .payload(payload)
+                .status(OutboxStatus.PENDING)
+                .tries(0)
+                .createdAt(event.getCreatedAt())
+                .build();
     }
 }

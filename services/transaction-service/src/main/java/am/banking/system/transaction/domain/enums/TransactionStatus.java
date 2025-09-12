@@ -5,6 +5,10 @@ package am.banking.system.transaction.domain.enums;
  * Date: 04.09.25
  * Time: 22:35:21
  */
-public enum Status {
-    NEW, RESERVED, CAPTURED, FAILED, TIMED_OUT
+public enum TransactionStatus {
+    NEW,
+    RESERVED,
+    COMPLETED,
+    FAILED,
+    CANCELLED
 }

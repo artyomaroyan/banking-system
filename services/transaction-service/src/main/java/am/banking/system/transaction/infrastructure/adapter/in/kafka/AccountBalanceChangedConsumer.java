@@ -1,6 +1,6 @@
 package am.banking.system.transaction.infrastructure.adapter.in.kafka;
 
-import am.banking.system.common.contracts.event.AccountBalanceChangedV1;
+import am.banking.system.common.events.AccountBalanceChangedV1;
 import am.banking.system.transaction.projection.BalanceProjectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;

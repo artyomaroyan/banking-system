@@ -1,6 +1,6 @@
 package am.banking.system.transaction.outbox;
 
-import am.banking.system.common.shared.outbox.OutboxEvent;
+import am.banking.system.common.outbox.OutboxEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -15,8 +15,12 @@ import reactor.core.publisher.Mono;
 public class OutboxService {
     private final OutboxRepository outboxRepository;
 
-    public Mono<Void> saveEvent(OutboxEvent event) {
-        OutboxEventEntity eventEntity = OutboxMapper.toEntity(event);
+    public Mono<Void> saveEvent(OutboxEvent event, String topic, String key) {
+        OutboxEventEntity eventEntity = OutboxMapper.toEntity(event, topic, key);
         return outboxRepository.save(eventEntity).then();
+    }
+
+    public Mono<Void> saveEntity(OutboxEventEntity entity) {
+        return outboxRepository.save(entity).then();
     }
 }

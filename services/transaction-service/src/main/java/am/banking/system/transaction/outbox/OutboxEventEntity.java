@@ -1,10 +1,7 @@
 package am.banking.system.transaction.outbox;
 
-import am.banking.system.common.shared.outbox.OutboxStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import am.banking.system.common.outbox.OutboxStatus;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -18,6 +15,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("transaction.outbox_event")
@@ -30,7 +28,8 @@ public class OutboxEventEntity {
     private String aggregateId;
     private String type;
     private String payload;
-    private boolean published;
     private OutboxStatus status;
+    private Integer tries;
+    private String lastError;
     private Instant createdAt;
 }
