@@ -8,6 +8,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -49,14 +50,14 @@ public class TransactionClient implements TransactionClientPort {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + systemToken)
                         .header("Idempotency-Key", idempotencyKey == null ? transactionId.toString() : idempotencyKey)
                         .bodyValue(Map.of(
-                                "transferId", transactionId,
+                                "transferId", transactionId.toString(),
+                                "userId", request.userId().toString(),
                                 "from", request.from(),
                                 "to", request.to(),
                                 "amount", request.amount()
                                 ))
                         .exchangeToMono(response -> webClientResponseHandler
-                                .response(response, Map.class, "createTransfer")
-                                .map(raw -> (Map<String, String>) raw))
+                                .response(response, new ParameterizedTypeReference<Map<String, String>>() {}, "createTransfer"))
                         .timeout(Duration.ofSeconds(5))
                 );
     }
