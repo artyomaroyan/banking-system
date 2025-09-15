@@ -1,6 +1,6 @@
 package am.banking.system.security.api.controller;
 
-import am.banking.system.common.shared.dto.ErrorResponse;
+import am.banking.system.common.shared.response.ErrorResponse;
 import am.banking.system.common.shared.exception.BadRequestException;
 import am.banking.system.common.shared.exception.NotFoundException;
 import am.banking.system.common.shared.exception.UnauthorizedException;
