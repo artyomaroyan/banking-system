@@ -1,4 +1,4 @@
-package am.banking.system.common.shared.dto;
+package am.banking.system.common.shared.response;
 
 import java.time.LocalDateTime;
 
