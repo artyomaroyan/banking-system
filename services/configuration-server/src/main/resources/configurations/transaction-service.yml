@@ -13,12 +13,23 @@ spring:
     url: r2dbc:postgresql://localhost:5432/transaction_db
     username: transaction_owner
     password: transaction_owner
+    properties:
+      show-sql: true
 
   flyway:
     enabled: true
-    url: r2dbc:postgresql://localhost:5432/transaction_db
+    url: jdbc:postgresql://localhost:5432/transaction_db
     user: transaction_owner
     password: transaction_owner
     locations: classpath:db/migration
     driver-class-name: org.postgresql.Driver
     default-schema: transaction
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: transaction-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    listener:
+      ack-mode: record
