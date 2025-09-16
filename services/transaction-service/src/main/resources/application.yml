@@ -1,12 +1,52 @@
+#application.yml file in transaction-service
 spring:
+  config:
+    import: optional:configserver:http://localhost:8888
   application:
     name: transaction-service
 
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: transaction-service
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-    listener:
-      ack-mode: record
+logging:
+  level:
+    root: info
+    web: info
+    sql: debug
+    org:
+      springframework:
+        http:
+          client:
+            reactive: trace
+        web:
+          client: info
+          reactive:
+            function:
+              client:
+                ExchangeFunction: trace
+              server: trace
+              _: trace
+            _: info
+          _: info
+        _: info
+        security:
+          core: debug
+          web: debug
+        data:
+          r2dbc:
+            core: debug
+          _: debug
+        r2dbc: info
+    reactor:
+      netty:
+        http:
+          server: info
+          client: info
+    io:
+      r2dbc:
+        postgresql:
+          QUERY: debug
+        spi: debug
+    am:
+      banking:
+        system:
+          user: info
+          security: info
+          notification: debug
