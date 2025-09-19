@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>am.banking.system.apigateway</groupId>
@@ -66,6 +66,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
+            <version>4.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -120,7 +121,6 @@
                 <artifactId>xstream</artifactId>
                 <version>1.4.21</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
@@ -128,29 +128,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>6.2.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>6.2.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>6.2.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>6.2.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <version>6.2.10</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-gateway-server</artifactId>
+                <version>4.3.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
