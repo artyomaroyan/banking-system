@@ -23,26 +23,27 @@ logging:
                 ExchangeFunction: trace
               _: info
             _: info
-          _: info
+          _: debug
         _: info
         security:
           core: debug
           web: debug
         data:
           r2dbc:
-            core: debug
-          _: debug
-        r2dbc: debug
+            core: info
+          _: info
+        r2dbc: info
     reactor:
       netty:
         http:
-          server: debug
-          client: debug
+          server: info
+          client: info
+      _: debug
     io:
       r2dbc:
         postgresql:
-          QUERY: debug
-        spi: debug
+          QUERY: info
+        spi: info
     am:
       banking:
         system:
