@@ -38,20 +38,21 @@ logging:
           web: debug
         data:
           r2dbc:
-            core: debug
-          _: debug
+            core: info
+          _: info
         r2dbc: info
     reactor:
       netty:
         http:
           server: info
           client: info
-        channel: debug
+        channel: info
+      _: off
     io:
       r2dbc:
         postgresql:
-          QUERY: debug
-        spi: debug
+          QUERY: info
+        spi: info
     am:
       banking:
         system:
