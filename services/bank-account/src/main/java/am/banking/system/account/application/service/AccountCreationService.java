@@ -38,6 +38,7 @@ public class AccountCreationService implements AccountCreationUseCase {
                             accountNumber,
                             request.username(),
                             BigDecimal.ZERO,
+                            BigDecimal.ZERO,
                             CURRENT_ACCOUNT,
                             request.currency());
 

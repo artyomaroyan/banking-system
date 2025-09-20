@@ -4,25 +4,13 @@ spring:
   application:
     name: bank-account
 
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
-outbox:
-  publish-interval: 2000
-
 logging:
   level:
     root: info
     web: info
     sql: debug
-    javax:
-      mail: debug
     org:
       springframework:
-        mail: debug
         http:
           client:
             reactive: debug
@@ -45,20 +33,21 @@ logging:
           web: debug
         data:
           r2dbc:
-            core: debug
-          _: debug
+            core: info
+          _: info
         r2dbc: info
     reactor:
       netty:
         http:
           server: info
           client: info
-        channel: debug
+        channel: info
+      _: off
     io:
       r2dbc:
         postgresql:
-          QUERY: debug
-        spi: debug
+          QUERY: info
+        spi: info
     am:
       banking:
         system:

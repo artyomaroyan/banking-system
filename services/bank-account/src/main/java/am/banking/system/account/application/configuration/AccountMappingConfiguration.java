@@ -29,6 +29,7 @@ public class AccountMappingConfiguration {
                             request.accountNumber(),
                             request.accountOwnerUsername(),
                             request.balance(),
+                            request.reserved(),
                             request.accountType(),
                             request.currency(),
                             AccountState.ACTIVE,

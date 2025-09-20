@@ -6,6 +6,7 @@ create table if not exists account.account(
     account_number varchar(16) unique not null ,
     account_owner_username varchar(30) not null ,
     balance bigint not null ,
+    reserved bigint not null ,
     account_type varchar(30) not null,
     currency varchar(10) not null,
     account_state varchar(20) not null ,

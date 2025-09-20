@@ -26,6 +26,9 @@ public record AccountRequest(
         @DecimalMin(value = "0.00", message = "Balance must be zero or positive")
         @Digits(integer = 10, fraction = 2, message = "Balance must be a valid monetary amount")
         BigDecimal balance,
+        @DecimalMin(value = "0.00")
+        @Digits(integer = 10, fraction = 2)
+        BigDecimal reserved,
         @NotNull(message = "Account type is required")
         AccountType accountType,
         @NotNull(message = "Account currency is required")
