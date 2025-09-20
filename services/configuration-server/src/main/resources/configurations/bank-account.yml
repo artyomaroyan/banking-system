@@ -7,6 +7,9 @@ internal:
   system:
     secret: ${X_INTERNAL_SECRET}
 
+outbox:
+  publish-interval: 2000
+
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/account_db
@@ -21,3 +24,9 @@ spring:
     locations: classpath:db/migration
     driver-class-name: org.postgresql.Driver
     default-schema: account
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
