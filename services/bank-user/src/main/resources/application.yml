@@ -5,10 +5,6 @@ spring:
   application:
     name: bank-user
 
-  r2dbc:
-    properties:
-      show-sql: true
-
 logging:
   level:
     root: info
@@ -28,29 +24,30 @@ logging:
               server: trace
               _: trace
             _: info
-          _: info
+          _: debug
         _: info
         security:
           core: debug
           web: debug
         data:
           r2dbc:
-            core: debug
-          _: debug
+            core: info
+          _: info
         r2dbc: info
     reactor:
       netty:
         http:
           server: info
           client: info
+      _: debug
     io:
       r2dbc:
         postgresql:
-          QUERY: debug
-        spi: debug
+          QUERY: info
+        spi: info
     am:
       banking:
         system:
           user: info
           security: info
-          notification: debug
+          notification: info

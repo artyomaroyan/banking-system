@@ -68,7 +68,7 @@ public class UserTokenClient implements UserTokenClientPort {
                     }
                     log.info("System token successfully generated");
                 })
-                .timeout(Duration.ofSeconds(5),
+                .timeout(Duration.ofSeconds(10),
                         Mono.error(new TimeoutException("System token request timed out")));
     }
 

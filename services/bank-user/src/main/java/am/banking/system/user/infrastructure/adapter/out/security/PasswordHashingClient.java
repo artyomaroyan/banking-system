@@ -49,7 +49,7 @@ public class PasswordHashingClient implements PasswordHashingClientPort {
                         .bodyValue(new PasswordHashingRequest(password))
                         .exchangeToMono(response -> webClientResponseHandler
                                 .response(response, PasswordHashingResponse.class, "Password Hashing"))
-                        .timeout(Duration.ofSeconds(5)));
+                        .timeout(Duration.ofSeconds(10)));
     }
 
     @Override
