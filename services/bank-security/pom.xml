@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
+        <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>am.banking.system</groupId>
@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>23</java.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -239,3 +239,246 @@
     </build>
 
 </project>
+
+
+        <!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"-->
+<!--         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">-->
+<!--    <modelVersion>4.0.0</modelVersion>-->
+<!--    <parent>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-starter-parent</artifactId>-->
+<!--        <version>3.5.5</version>-->
+<!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+<!--    </parent>-->
+<!--    <groupId>am.banking.system</groupId>-->
+<!--    <artifactId>bank-security</artifactId>-->
+<!--    <version>0.0.1-SNAPSHOT</version>-->
+<!--    <name>bank-security</name>-->
+<!--    <description>bank-security</description>-->
+<!--    <url/>-->
+<!--    <licenses>-->
+<!--        <license/>-->
+<!--    </licenses>-->
+<!--    <developers>-->
+<!--        <developer/>-->
+<!--    </developers>-->
+<!--    <scm>-->
+<!--        <connection/>-->
+<!--        <developerConnection/>-->
+<!--        <tag/>-->
+<!--        <url/>-->
+<!--    </scm>-->
+<!--    <properties>-->
+<!--        <java.version>23</java.version>-->
+<!--        <spring-cloud.version>2025.0.0</spring-cloud.version>-->
+<!--    </properties>-->
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+<!--                <version>${spring-cloud.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+
+<!--            &lt;!&ndash; these dependencies are to fix bank-common's Vulnerability &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>com.google.guava</groupId>-->
+<!--                <artifactId>guava</artifactId>-->
+<!--                <version>33.4.8-jre</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.thoughtworks.xstream</groupId>-->
+<!--                <artifactId>xstream</artifactId>-->
+<!--                <version>1.4.21</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>org.apache.httpcomponents</groupId>-->
+<!--                <artifactId>httpclient</artifactId>-->
+<!--                <version>4.5.14</version>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-webflux</artifactId>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; database &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-r2dbc</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.postgresql</groupId>-->
+<!--            <artifactId>r2dbc-postgresql</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.postgresql</groupId>-->
+<!--            <artifactId>postgresql</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--            <version>9.22.3</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-validation</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-test</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-test</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Security &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.bouncycastle</groupId>-->
+<!--            <artifactId>bcprov-jdk18on</artifactId>-->
+<!--            <version>1.80</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>jakarta.servlet</groupId>-->
+<!--            <artifactId>jakarta.servlet-api</artifactId>-->
+<!--            <version>6.1.0</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; MacOS DnsServerAddressStreamProviders error resolver do not delete &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>io.netty</groupId>-->
+<!--            <artifactId>netty-resolver-dns-native-macos</artifactId>-->
+<!--            <version>4.2.1.Final</version>-->
+<!--            <classifier>osx-aarch_64</classifier>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; JWT &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>io.jsonwebtoken</groupId>-->
+<!--            <artifactId>jjwt-api</artifactId>-->
+<!--            <version>0.12.6</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.jsonwebtoken</groupId>-->
+<!--            <artifactId>jjwt-impl</artifactId>-->
+<!--            <version>0.12.6</version>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.jsonwebtoken</groupId>-->
+<!--            <artifactId>jjwt-jackson</artifactId>-->
+<!--            <version>0.12.6</version>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.micrometer</groupId>-->
+<!--            <artifactId>micrometer-core</artifactId>-->
+<!--            <version>1.15.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Jackson &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--            <artifactId>jackson-annotations</artifactId>-->
+<!--            <version>2.19.0-rc2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--            <artifactId>jackson-databind</artifactId>-->
+<!--            <version>2.19.0-rc2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.module</groupId>-->
+<!--            <artifactId>jackson-module-parameter-names</artifactId>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; project &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>am.banking.system</groupId>-->
+<!--            <artifactId>bank-common</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-config</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>org.projectlombok</groupId>-->
+<!--                            <artifactId>lombok</artifactId>-->
+<!--                        </path>-->
+<!--                    </annotationProcessorPaths>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.hibernate.orm.tooling</groupId>-->
+<!--                <artifactId>hibernate-enhance-maven-plugin</artifactId>-->
+<!--                <version>${hibernate.version}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>enhance</id>-->
+<!--                        <goals>-->
+<!--                            <goal>enhance</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <enableLazyInitialization>true</enableLazyInitialization>-->
+<!--                            <enableDirtyTracking>true</enableDirtyTracking>-->
+<!--                            <enableAssociationManagement>true</enableAssociationManagement>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.graalvm.buildtools</groupId>-->
+<!--                <artifactId>native-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <excludes>-->
+<!--                        <exclude>-->
+<!--                            <groupId>org.projectlombok</groupId>-->
+<!--                            <artifactId>lombok</artifactId>-->
+<!--                        </exclude>-->
+<!--                    </excludes>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+
+<!--</project>-->
