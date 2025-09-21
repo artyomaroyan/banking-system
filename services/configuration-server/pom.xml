@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
+        <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>am.banking.system</groupId>
@@ -28,12 +28,13 @@
     </scm>
     <properties>
         <java.version>23</java.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>
+            <version>4.2.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.i2p.crypto</groupId>
@@ -41,10 +42,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -104,3 +102,110 @@
     </build>
 
 </project>
+
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">-->
+<!--    <modelVersion>4.0.0</modelVersion>-->
+<!--    <parent>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-starter-parent</artifactId>-->
+<!--        <version>3.5.5</version>-->
+<!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+<!--    </parent>-->
+<!--    <groupId>am.banking.system</groupId>-->
+<!--    <artifactId>configuration-server</artifactId>-->
+<!--    <version>0.0.1-SNAPSHOT</version>-->
+<!--    <name>configuration-server</name>-->
+<!--    <description>configuration-server</description>-->
+<!--    <url/>-->
+<!--    <licenses>-->
+<!--        <license/>-->
+<!--    </licenses>-->
+<!--    <developers>-->
+<!--        <developer/>-->
+<!--    </developers>-->
+<!--    <scm>-->
+<!--        <connection/>-->
+<!--        <developerConnection/>-->
+<!--        <tag/>-->
+<!--        <url/>-->
+<!--    </scm>-->
+<!--    <properties>-->
+<!--        <java.version>23</java.version>-->
+<!--        <spring-cloud.version>2025.0.0</spring-cloud.version>-->
+<!--    </properties>-->
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-config-server</artifactId>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>net.i2p.crypto</groupId>-->
+<!--                    <artifactId>eddsa</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-beans</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-test</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+<!--                <version>${spring-cloud.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+
+<!--            &lt;!&ndash; these dependencies are to fix spring cloud config server's Vulnerability &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>org.bouncycastle</groupId>-->
+<!--                <artifactId>bcprov-jdk18on</artifactId>-->
+<!--                <version>1.81</version>-->
+<!--            </dependency>-->
+
+<!--            <dependency>-->
+<!--                <groupId>net.i2p.crypto</groupId>-->
+<!--                <artifactId>eddsa</artifactId>-->
+<!--                <version>0.3.0</version>-->
+<!--                <scope>provided</scope> &lt;!&ndash; Effectively blocks transitive inclusion &ndash;&gt;-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.graalvm.buildtools</groupId>-->
+<!--                <artifactId>native-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+
+<!--            <plugin>-->
+<!--                <groupId>org.owasp</groupId>-->
+<!--                <artifactId>dependency-check-maven</artifactId>-->
+<!--                <version>8.4.3</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+
+<!--</project>-->
