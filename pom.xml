@@ -10,11 +10,11 @@
     </parent>
 
     <groupId>am.banking.system</groupId>
-    <artifactId>BankingSystem</artifactId>
+    <artifactId>OnboardingAndTransactionsApp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>BankingSystem</name>
-    <description>BankingSystem</description>
+    <name>OnboardingAndTransactionsApp</name>
+    <description>OnboardingAndTransactionsApp</description>
     <url/>
 
     <licenses>
